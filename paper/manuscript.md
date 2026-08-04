@@ -24,11 +24,15 @@ positive controls, measured the false-positive rate against the full pool of
 
 **Deviation from protocol.** Ω was pre-specified and **failed**, recovering
 4/16 positive controls against **12/16** for an additive (excess-risk) null at
-the same threshold and an almost identical false-positive rate (6.4% vs 6.7%).
+the same threshold. The pooled false-positive rates of the two nulls are close
+(6.4% vs 6.7%), but that pooling is over a pool that does not occupy the regime
+where recovery is measured; in regime the rates are 2.2% and 9.3%, so the
+recovery comparison is between two very different operating points (§4.6).
 We adopted the additive null after observing this. Ω also becomes more negative
 as the marginal associations strengthen (r = −0.63, n = 16, 95% CI −0.86 to
 −0.19, p = 0.009) — but so does Ω_add (r = −0.65, p = 0.007), while the
-*observed* joint event rate is flat in marginal strength (r = +0.12, p = 0.67).
+*observed* joint event rate rises far more shallowly with marginal strength
+than either null predicts (r = +0.12, 95% CI −0.40 to +0.58).
 Both nulls therefore over-predict for strongly-associated pairs; what separates
 them is the size of the expectation, not its gradient. Because the estimand was
 selected on the evaluation set, the (binary) selection was cross-validated: the
@@ -418,8 +422,11 @@ this paper's remedy — shows the same gradient, slightly stronger:
 | Ω (multiplicative) | −0.63 (−0.86 to −0.19) | 0.009 |
 | **Ω_add (additive)** | **−0.65 (−0.86 to −0.22)** | **0.007** |
 
-**The observed joint event rate does not rise with marginal strength at all.**
-Both nulls predict that it should, and steeply; both are therefore wrong in the
+**The observed joint event rate rises far more shallowly with marginal strength
+than either null predicts.** The observed gradient is not distinguishable from
+zero, but its interval (−0.40 to +0.58) admits a moderate rise, so the claim is
+that the gradient is much shallower than predicted rather than that it is
+absent. Both nulls predict a steep rise; both are therefore wrong in the
 same direction, and the gradient in Ω reflects a property of the data — joint
 risk saturates as the individual risks grow — rather than a defect peculiar to
 multiplicativity. It will appear in any statistic that divides an observed rate
@@ -543,8 +550,12 @@ interactions — 19,826 pairs. Across the whole pool the additive null fires on
 **7.2%** and the multiplicative on **3.7%**. Restricted to the **2,345** pairs
 at positive-control strength the rates are **9.3%** and **2.2%**, against 9.0%
 and 1.2% on the 166 in-regime pairs the standard generator happens to yield.
-**Against a nominal 2.5%, Ω is about twice as conservative as advertised in this
-regime and Ω_add about four times too permissive.**
+**Against a nominal 2.5%, Ω runs at close to its advertised rate in this regime
+(2.2%) while Ω_add runs close to fourfold above it (9.3%).** The miscalibration
+is one-sided: on error rate alone, only the additive null is out of
+specification. What disqualifies Ω here is power rather than size — it is
+systematically negative in this regime, so it holds its nominal rate by almost
+never firing.
 
 **Recovery at matched in-regime error rates.** Calibrating each null against the
 in-regime negatives separates the choice of null from the choice of operating
@@ -1115,9 +1126,10 @@ in-regime negatives):
 null has no advantage.** The 9-versus-0 result is an artefact of the
 conventional threshold sitting at wildly different error rates for the two
 measures on this event. What replicates on torsade is therefore the
-*calibration* finding — Ω again far more conservative than its nominal 2.5%, the
-additive null far more permissive, by a wider margin than on rhabdomyolysis —
-and not the recovery finding.
+*asymmetry* — Ω again close to its nominal 2.5% (2.0%, on 152 in-regime
+negatives), the additive null far above it (42.8%), by a wider margin than on
+rhabdomyolysis — and not the recovery finding. On neither event is Ω's error
+rate the problem.
 
 The marginal-strength gradient reproduces (r = −0.81, p = 0.005) and, as in
 §4.1, **it is not specific to the multiplicative null**: Ω_add shows
@@ -1166,11 +1178,11 @@ likely to be validated, so the failure mode is one a method could pass into
 routine use without encountering. The condition is checkable in advance: compute
 the marginal relative risks before choosing the null.
 
-The mechanism is narrower than we first claimed. Observed joint event rates are
-**flat** in marginal strength (r = +0.12), while both nulls predict them to rise
-steeply (r ≈ +0.94); joint risk saturates, and both models miss it. The
-multiplicative null fails much harder only because its expectation is larger at
-every point. We initially read the Ω-versus-marginals correlation as diagnostic
+The mechanism is narrower than we first claimed. Observed joint event rates rise
+**far more shallowly** with marginal strength (r = +0.12, 95% CI −0.40 to +0.58)
+than either null predicts (r ≈ +0.94); joint risk saturates, and both models
+miss it. The multiplicative null overshoots much harder only because its
+expectation is larger at every point. We initially read the Ω-versus-marginals correlation as diagnostic
 of multiplicativity; it is not, since the additive null shows the same gradient
 (§4.1). Nor is the recovery comparison diagnostic unless the error rates are
 matched first — and once they are, the two nulls are close.
@@ -1305,11 +1317,13 @@ against author-curated reference lists should be read accordingly.
 A reproducible pipeline over the complete public FAERS history recovers known
 rhabdomyolysis interactions on an author-curated control set with a measured
 false-positive rate, and finds no evidence of novel interaction discovery. The
-robust methodological contributions are the demonstration that **both**
-disproportionality nulls are severely miscalibrated at their conventional
-operating point when the drugs under study dominate the outcome — 2.2% and 9.3%
-against a nominal 2.5%, on a purpose-built pool of 2,345 strongly-associated
-non-interacting pairs — and the quantification of polypharmacy leverage in
+robust methodological contributions are the demonstration that **neither**
+disproportionality null is usable at its conventional operating point when the
+drugs under study dominate the outcome — though they fail in different
+currencies, 2.2% and 9.3% against a nominal 2.5% on a purpose-built pool of
+2,345 strongly-associated non-interacting pairs, so that only the additive null
+is miscalibrated on error rate while Ω holds its advertised rate and is
+disqualified by power — and the quantification of polypharmacy leverage in
 pairwise screens. The apparent superiority of the additive null is mostly an
 operating-point effect and does not survive matched error rates on the
 replication event. The

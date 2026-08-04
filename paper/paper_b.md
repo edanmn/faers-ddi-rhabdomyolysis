@@ -24,7 +24,7 @@ The result is negative, and it is reported as the finding. We also report why th
 
 A curated, ingredient-level, severity-graded DDI compendium remains unavailable, and that absence is the single largest limitation of this evaluation.
 
-**Disproportionality and the estimand.** The measures used here follow the shrinkage logic of Bate et al. (1998) and DuMouchel (1999). The screen is run on an additive (excess-risk) null rather than the multiplicative null underlying Ω (Norén et al., 2008). At the conventional threshold Ω₀₂₅ > 0 the additive null recovers 12 of 16 positive controls against 4 for Ω. **That comparison is made at very different error rates, not matched ones**: among pairs as strongly associated as the positive controls, Ω fires on 2.2% of non-interacting pairs and the additive null on 9.3%, against a nominal 2.5% for both. Equalising the rates reduces the recovery gap from eight pairs to one or two. The companion paper establishes this; what matters here is that **the screen's operating point is empirical rather than nominal** — the threshold used below (+0.436) was calibrated against negative controls and validated out of sample, not taken from the measure's conventional cut.
+**Disproportionality and the estimand.** The measures used here follow the shrinkage logic of Bate et al. (1998) and DuMouchel (1999). The screen is run on an additive (excess-risk) null rather than the multiplicative null underlying Ω (Norén et al., 2008). At the conventional threshold Ω₀₂₅ > 0 the additive null recovers 12 of 16 positive controls against 4 for Ω. **That comparison is made at very different error rates, not matched ones**: among pairs as strongly associated as the positive controls, Ω fires on 2.2% of non-interacting pairs and the additive null on 9.3%, against a nominal 2.5% for both. The departure is one-sided — Ω runs at close to its advertised rate and the additive null close to fourfold above it — so the screen below is run on the more permissive of the two measures, and its threshold is calibrated rather than nominal for that reason. Equalising the rates reduces the recovery gap from eight pairs to one or two. The companion paper establishes this; what matters here is that **the screen's operating point is empirical rather than nominal** — the threshold used below (+0.436) was calibrated against negative controls and validated out of sample, not taken from the measure's conventional cut.
 
 **That validation is specification-dependent, and this paper's foundation inherits the dependence.** Two binary design choices exist — the event tier (`core`, specific; `broad`, inclusive) and the drug role policy (`primary`, suspect roles only; `sensitivity`, wider). All four arms were computed, and the additive null's advantage is not uniform across them (Table 1). It holds under either widening alone and vanishes under both together. `core`/`primary` is pre-specified in configuration and is the arm underlying every result below.
 
@@ -53,6 +53,8 @@ The screen covers the top 200 ingredients by co-reporting with the event, giving
 
 We do not remove them from the primary analysis: the drug-selection rule was fixed in advance, and excluding terms after seeing results would be a researcher degree of freedom. The sensitivity is reported instead (§4.4), and it is small. Each pair is assigned in advance to one of four bands: `positive_control` (one of the 16 validated controls), `known_pair` (both drugs on the author-curated implicated list), `plausible` (one implicated drug plus an unimplicated partner — designated in advance as where a novel interaction would appear), and `unsupported` (neither implicated).
 
+**Fifteen of the sixteen controls enter the screen.** Itraconazole + lovastatin does not. Both ingredients are among the 200, but the pair is co-reported once in 22 years and so falls below the three-co-report floor fixed in advance. Recovery figures quoted from the companion paper are therefore out of 16 while the screen's `positive_control` band has 15 members; the two denominators are not interchangeable, and the missing pair is the least powered of the sixteen rather than a failure to detect.
+
 The signal threshold was calibrated against the full pool of 16,138 generated negative controls and validated out of sample by 500 half-splits: held-out threshold +0.429 and held-out false-positive rate **5.03% (95% CI 4.37–5.74%)** against the in-sample +0.436.
 
 The threshold depends on the gamma-posterior shrinkage constant, α = 0.5, which is conventional but **could not be verified against the primary source** (paywalled and unread by the authors). The companion paper varies it over a 20-fold range with the threshold recalibrated at each value: control recovery varies by two pairs and the signal count by 7%. No conclusion here turns on it, but the dependency is real and is stated rather than assumed away.
@@ -79,7 +81,7 @@ Of 17,375 pairs, **1,022** exceeded threshold. A pooled chance expectation — t
 
 **That calculation assumes the false-positive rate is constant across the screen, and it is not.** Measured on the negative controls it runs from 0.93% to 10.91% across quintiles of marginal strength, and the four bands differ systematically on that variable (median log₂(RR_A × RR_B) of 2.85, 4.16, 5.32 and 8.15). Matching each screened pair to the observed rate among negative controls of similar marginal strength:
 
-**Table 1.** Observed signals against a pooled and a strength-matched chance expectation.
+**Table 2.** Observed signals against a pooled and a strength-matched chance expectation.
 
 | band | tested | observed | pooled (5.03%) | strength-matched |
 |---|---:|---:|---:|---:|
@@ -91,11 +93,13 @@ Of 17,375 pairs, **1,022** exceeded threshold. A pooled chance expectation — t
 
 **Under the strength-matched expectation the screen returns fewer signals than chance predicts** — 1,022 against 1,212 — and only `known_pair` exceeds its own expectation. The apparent excess under the pooled figure is an artefact of averaging a rate that varies by an order of magnitude.
 
-This does not change the paper's conclusion; it sharpens it. But the strength-matched column extrapolates into the high-marginal bands from a thin and unrepresentative slice of the negative pool (§3.4), so the 1,212 figure carries real uncertainty. That the uniform assumption is wrong does not.
+This does not change the paper's conclusion; it sharpens it. **But the 1,212 figure is far weaker than the 1,022 it is compared against, and we state how weak.** The negative pool's top quintile spans marginal strength 2.80 to 8.95, and the median pair of *every* band in the screen — 2.85 unsupported, 4.16 plausible, 5.32 known pair, 8.15 positive control — falls inside it. More than half the screen therefore collapses into a single bin and inherits a single rate (7.06%), which is why 17,375 × 7.06% reproduces the strength-matched total to within about one percent. The column is closer to one extrapolated number applied to the whole screen than to a genuine per-pair matching, and that number is estimated from negatives concentrated near the bottom of the bin. The rate is also non-monotone at the top — 0.78%, 2.83%, 5.72%, 8.71%, 7.06% across quintiles — so it is not even clear that extrapolating upward is conservative.
+
+We report the comparison because the uniform assumption is demonstrably wrong and the direction of that error is not in doubt. We do not rest anything on the precise deficit: "fewer signals than a strength-aware chance model predicts" is the claim, and the size of the shortfall should not be read closely.
 
 $\Omega_{\mathrm{add},025}$ is a shrinkage bound, not a *p*-value, and carries no false-discovery guarantee; the calibrated threshold stands in for one. As an independent check, a one-sided Poisson test of each triple count against its additive expectation with Benjamini–Hochberg control at *q* = 0.05 yields **1,147 discoveries**, and every one of the 1,022 shrinkage signals is among them. The shrinkage rule is the more conservative of the two, so no conclusion below depends on the absence of a formal correction.
 
-**Table 1.** Signal rate by pre-specified band.
+**Table 3.** Signal rate by pre-specified band.
 
 | Band | Signalled | Rate | Enrichment (95% CI) |
 |---|---|---:|---|
@@ -112,7 +116,7 @@ All 12 positive-control drugs are among the 64 drugs defining "known pair", and 
 
 Two corrections were required before the independent reference could be used. First, a label documents that two drugs interact, not that the interaction causes *this* event: 82% of name-matched pairs are documented for an unrelated endpoint, and omeprazole + warfarin — a real CYP2C19 interaction affecting INR — was being counted as a hit in a myotoxicity screen. The endpoint-specific reference additionally requires a myotoxicity term within 600 characters of the partner drug's name, giving 709 pairs that still capture 16/16 positive controls. Second, documented pairs are co-reported about three times more often than undocumented ones (median 202 versus 69, Mann–Whitney *p* = 2 × 10⁻⁷⁵), and co-report count drives power directly, so results are also stratified on co-report decile.
 
-**Table 2.** Enrichment under every annotation scheme.
+**Table 4.** Enrichment under every annotation scheme.
 
 | Annotation | Scope | Signalled | Enrichment (95% CI) | Strat. |
 |---|---|---|---|---|
@@ -133,7 +137,7 @@ All annotations agree. Pooled enrichment is real and, under the endpoint-specifi
 
 The gap is not random. It falls on agents without a current US marketing authorisation, and the one that matters for this endpoint is **fusidic acid**, whose statin combination is contraindicated in practice and is the screen's highest-ranked pair by event rate (§4.6).
 
-Widening the reference beyond the screened set makes the coverage problem more visible without changing the screen: of the 800 ingredients for which labels were retrieved for the screen-size sensitivity analysis (§4.3), 138 (17.2%) have none, and those include **cerivastatin** — a statin withdrawn worldwide for rhabdomyolysis with gemfibrozil — together with **bezafibrate, ciprofibrate** and **telithromycin**. None of the four entered the top-200 screen, so they do not bear on the result reported here; they indicate that any wider screen would inherit a larger version of the same blindness.
+Widening the reference beyond the screened set makes the coverage problem more visible without changing the screen: of the 800 ingredients for which labels were retrieved for the screen-size sensitivity analysis reported later in this section, 138 (17.2%) have none, and those include **cerivastatin** — a statin withdrawn worldwide for rhabdomyolysis with gemfibrozil — together with **bezafibrate, ciprofibrate** and **telithromycin**. None of the four entered the top-200 screen, so they do not bear on the result reported here; they indicate that any wider screen would inherit a larger version of the same blindness.
 
 Restricting to non-control pairs where *both* labels exist, so that "undocumented" means the label is silent rather than absent, gives enrichment **1.24 (0.68–2.26)** crude and **1.067 (0.292–1.972)** stratified. **The negative result is unchanged by the correction**, but the reference's coverage is a property of US marketing status rather than of pharmacology and should be read that way.
 
@@ -151,7 +155,7 @@ Because the bands differ systematically in the marginal strength of their consti
 
 **Confounding by inpatient status.** Two adjustments were attempted and only the second is adequate. Excluding cases containing any of 30 hand-picked procedural or critical-care agents removes 275,205 cases — **1.4% of the population** — and leaves band enrichment essentially unchanged (0.76 → 0.75). That is not evidence that inpatient confounding is absent: perturbing 1.4% of the data cannot exclude a confounder, and a null was near-guaranteed before the analysis ran. FAERS records the outcome directly, and stratification on `outc_cod = 'HO'` (5,709,555 reports) splits the population into two large, comparable halves.
 
-**Table 3.** Screen stratified on reported hospitalisation.
+**Table 5.** Screen stratified on reported hospitalisation.
 
 | Stratum | Cases | Event rate | Plausible | Known pair |
 |---|---:|---:|---:|---:|
@@ -168,9 +172,9 @@ Of the 19, nine carry prior support. But the same filter applied to the 6,471 ne
 
 **Figure 3.** *Era-stability against chance* (`figure4_era_stability.png`). Era-stable pairs observed (red diamond) against the number expected by chance (bar, 95% interval) from applying the same filter to negative controls.
 
-A composition-based claim appeared to survive — among era-stable pairs, 10 of 1,339 label-documented pairs signal against 9 of 16,036 undocumented, enrichment 13.31× (5.42–32.69). It does not withstand the two corrections applied to every other enrichment here (Table 4). **Once the reference is endpoint-specific and control drugs are removed, not one era-stable pair is documented.** The claim rested on the same circularity, which an earlier draft asserted this analysis had escaped. It had not. The count of era-stable pairs is separately shown to be an artefact of bin choice, running from 84 at two bins to 3 at five.
+A composition-based claim appeared to survive — among era-stable pairs, 10 of 1,339 label-documented pairs signal against 9 of 16,036 undocumented, enrichment 13.31× (5.42–32.69). It does not withstand the two corrections applied to every other enrichment here (Table 6). **Once the reference is endpoint-specific and control drugs are removed, not one era-stable pair is documented.** The claim rested on the same circularity, which an earlier draft asserted this analysis had escaped. It had not. The count of era-stable pairs is separately shown to be an artefact of bin choice, running from 84 at two bins to 3 at five.
 
-**Table 4.** Era-stable composition by reference and scope.
+**Table 6.** Era-stable composition by reference and scope.
 
 | Reference | Scope | Doc. signalled | Crude |
 |---|---|---|---|
@@ -183,9 +187,9 @@ A composition-based claim appeared to survive — among era-stable pairs, 10 of 
 
 The eight era-stable pairs without prior support are statin proxies: most carry a statin, fibrate or colchicine on **88–100%** of their event cases against a 40.5% background, with paroxetine + valsartan, levothyroxine + valsartan, aspirin + metoprolol and aspirin + ramipril at exactly 100%. These are markers for "cardiovascular patient taking a statin".
 
-That explanation does **not** dispose of the two era-stable pairs in the `plausible` band (Table 5).
+That explanation does **not** dispose of the two era-stable pairs in the `plausible` band (Table 7).
 
-**Table 5.** The two era-stable pairs in the discovery band.
+**Table 7.** The two era-stable pairs in the discovery band.
 
 | Pair | *n* | Events | Rate | Third implicated drug |
 |---|---:|---:|---:|---:|

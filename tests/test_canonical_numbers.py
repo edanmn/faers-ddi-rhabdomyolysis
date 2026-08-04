@@ -1222,6 +1222,22 @@ def test_no_maintained_document_carries_a_withdrawn_claim(maintained):
             "round 9: recomputed to 141.4x",
         "189.2 expected":
             "round 9: the Tier A table gives 189.5",
+        "almost identical false-positive rate":
+            "round 17: the same claim round 11 withdrew, surviving in "
+            "manuscript.md behind a synonym -- the fifth time a guard here has "
+            "been defeated by a surface detail rather than by an argument",
+        "twice as conservative":
+            "round 17: 2.5/2.2 = 1.13x, not 2x. The additive figure "
+            "(9.3/2.5 = 3.7x) was right; this one was never computed",
+        "does not rise with marginal strength at all":
+            "round 17: r = +0.12 with CI -0.40 to +0.58 cannot exclude a "
+            "moderate rise; the supported claim is 'far shallower than either "
+            "null predicts'",
+        "both disproportionality nulls are severely miscalibrated":
+            "round 17: only the additive null is miscalibrated on error rate. "
+            "Omega runs at 2.2% against a nominal 2.5% (52/2345, Jeffreys "
+            "interval covers 2.5%, exact binomial p = 0.43) and at 2.0% on "
+            "torsade (3/152, p = 1.00). It is disqualified by power, not size",
     }
     # Collapse whitespace first. The first version of this test matched
     # contiguous strings and missed "138 of the 800\nscreened ingredients" in
@@ -1232,6 +1248,37 @@ def test_no_maintained_document_carries_a_withdrawn_claim(maintained):
         for phrase, why in withdrawn.items():
             assert " ".join(phrase.split()) not in flat, (
                 f"{name} still carries '{phrase}' — {why}")
+
+
+def test_documents_report_the_in_regime_miscalibration_as_one_sided(maintained, regime):
+    """Round 17. The registry above forbids the withdrawn wording; this asserts
+    the replacement is actually present, because deleting a bad sentence and
+    writing nothing passes a negative guard.
+
+    The in-regime rates are 2.2% (multiplicative) and 9.3% (additive) against a
+    nominal 2.5%. Only the second is a miscalibration: 52/2345 has a Jeffreys
+    interval covering 2.5% and an exact binomial p of 0.43 against it, and the
+    torsade replication is 3/152 (p = 1.00). Any document quoting BOTH rates is
+    making the comparison and must say which way it runs.
+
+    Both rates are read from the canonical file rather than hardcoded, so this
+    guard follows the numbers if they move.
+    """
+    rates = regime["high_marginal_pool"]["at_positive_control_strength"]
+    mult = f"{100 * rates['fpr_multiplicative']:.1f}%"
+    add = f"{100 * rates['fpr_additive']:.1f}%"
+    markers = ("advertised rate", "roughly as advertised", "one-sided",
+               "different currencies", "disqualified by power",
+               "power rather than size", "power, not size")
+    for name, text in maintained.items():
+        flat = " ".join(text.split())
+        if mult not in flat or add not in flat:
+            continue
+        assert any(m in flat for m in markers), (
+            f"{name} quotes the in-regime pair ({mult} multiplicative, {add} "
+            f"additive) without stating that the miscalibration is one-sided; "
+            f"at {mult} against a nominal 2.5% the multiplicative null is "
+            f"correctly calibrated and fails on power instead")
 
 
 def test_every_document_that_compares_nulls_reports_in_regime_rates(maintained, regime):
