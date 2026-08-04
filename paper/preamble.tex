@@ -1,0 +1,67 @@
+% Preamble for the typeset manuscript. The body is generated from
+% paper/manuscript.md by paper/build.py -- do not edit manuscript.tex by hand.
+%
+% manuscript.md is the single source of truth: tests/test_canonical_numbers.py
+% asserts it against results/canonical_numbers.json. An earlier round of this
+% project shipped two artifacts written by different runs that disagreed in the
+% third decimal; keeping a hand-maintained .tex alongside the .md would be the
+% same mistake in a different place.
+
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{calc}
+\usepackage{caption}
+\usepackage{microtype}
+\usepackage[hidelinks]{hyperref}
+\usepackage{newunicodechar}
+
+\graphicspath{{../results/figures/}}
+
+\captionsetup{font=small,labelfont=bf}
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.15}
+\setlength{\emergencystretch}{3em}
+% The markdown headings already carry their own numbers ("4.1 Omega fails"),
+% so LaTeX must not add a second set on top of them.
+\setcounter{secnumdepth}{0}
+\urlstyle{same}
+
+% pandoc emits these
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\providecommand{\pandocbounded}[1]{#1}
+% pandoc wraps uncaptioned longtables in \def\LTcaptype{none}; longtable then
+% steps a counter of that name, which does not otherwise exist.
+\newcounter{none}
+
+% The manuscript's non-ASCII characters, mapped so the document builds with
+% ordinary Computer Modern rather than depending on a system Unicode font.
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{×}{\ensuremath{\times}}
+\newunicodechar{−}{\ensuremath{-}}
+\newunicodechar{≥}{\ensuremath{\ge}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{↔}{\ensuremath{\leftrightarrow}}
+\newunicodechar{₀}{\ensuremath{_0}}
+\newunicodechar{₂}{\ensuremath{_2}}
+\newunicodechar{₅}{\ensuremath{_5}}
+\newunicodechar{⁻}{\ensuremath{^-}}
+\newunicodechar{⁵}{\ensuremath{^5}}
+\newunicodechar{⁷}{\ensuremath{^7}}
+\newunicodechar{é}{\'e}
+
+\title{%%TITLE%%}
+\author{%%AUTHORS%%}
+\date{\today}
+
+\begin{document}
+\maketitle

@@ -1,0 +1,313 @@
+# FAERS drug-drug interaction study -- master configuration
+# Target event: rhabdomyolysis / myotoxicity
+# Window: full FAERS history, 2004Q1 - 2026Q2 (90 quarters)
+#
+# NOTE ON ERA METADATA: the `eras` block below records the *expected* schema for
+# each era, taken from FDA documentation. It is NOT authoritative. Phase 1a
+# (01a_column_audit.py) reads the actual header of every table in every quarter
+# and reports any disagreement with these expectations. Where the audit and this
+# file disagree, the audit wins and this file gets corrected.
+
+project: faers-ddi-rhabdomyolysis
+seed: 20260802
+
+data:
+  base_url: https://fis.fda.gov/content/Exports
+  start_quarter: 2004q1
+  end_quarter: 2026q2
+  # Filename prefix changed when LAERS became FAERS. Verified empirically:
+  # aers_ascii_2012q3.zip exists, faers_ascii_2012q3.zip does not, and vice
+  # versa for 2012q4.
+  legacy_prefix: aers_ascii_
+  modern_prefix: faers_ascii_
+  legacy_last_quarter: 2012q3
+  tables: [demo, drug, reac, outc, rpsr, ther, indi]
+  delimiter: "$"
+  # Keep the downloaded zips; stream-parse to parquet and never retain the
+  # uncompressed .txt files (they total tens of GB).
+  keep_zips: true
+  keep_extracted_text: false
+
+eras:
+  laers:
+    start: 2004q1
+    end: 2012q3
+    report_key: isr
+    case_key: case
+    version_key: i_f_cod       # initial / follow-up flag; no integer version
+    sex_col: gndr_cod
+    has_prod_ai: false
+    has_deleted_case_list: false
+  faers_early:
+    start: 2012q4
+    end: 2014q2
+    report_key: primaryid
+    case_key: caseid
+    version_key: caseversion
+    sex_col: gndr_cod
+    has_prod_ai: false
+    has_deleted_case_list: false   # corrected by the Phase 1a audit
+  faers_modern:
+    start: 2014q3
+    end: 2026q2
+    report_key: primaryid
+    case_key: caseid
+    version_key: caseversion
+    sex_col: sex
+    has_prod_ai: true
+    has_deleted_case_list: partial  # 2019q1-2021q3 only; see deleted_cases below
+
+# Deleted-case coverage, established by the Phase 1a audit rather than assumed.
+# FDA ships deleted-case lists INSIDE the quarterly archive for only 11 of the
+# 90 quarters. The plan assumed they were present for the whole FAERS era; they
+# are not.
+deleted_cases:
+  # Every quarter from 2019q1 to 2026q2 ships one (30 quarters, no gaps), and
+  # 2019q1 additionally ships a cumulative list of 83,845 case ids covering
+  # everything deleted before it. Coverage over the study window is therefore
+  # complete, with no era needing a stated exemption.
+  first_quarter: 2019q1
+  cumulative_file: {quarter: 2019q1, member: "deleted/AllDeletedCases.txt"}
+
+  # Five naming conventions across 30 quarters. Match on the substring "delet"
+  # in the FULL PATH, case-insensitively -- not on "deleted", and not on the
+  # basename alone:
+  #   2019q1-2019q4  deleted/ADR19QnDeletedCases.txt
+  #   2020q1         DELETED/ADR20Q1DeletedCases.txt
+  #   2020q2-2020q3  Deleted/ADR20QnDeletedCases.txt
+  #   2020q4-2021q3  Deleted/nnQnDeletedCases.txt      (ADR prefix dropped)
+  #   2021q4-2026q2  Deleted/DELETEnnQn.txt            (no "deleted" at all)
+  # Testing the basename for "deleted" silently misses the last form, making 19
+  # quarters appear to ship no list. They all do.
+  member_pattern: "(?i)delet"
+
+  # One case id per line. Every file begins with a single blank/whitespace line
+  # that must be skipped before parsing.
+  skip_leading_blank: true
+
+# Column harmonization, derived from the Phase 1a audit of all 90 archives
+# (results/tables/schema_changepoints.csv). Every entry here corresponds to an
+# observed inconsistency, not a precaution.
+harmonization:
+  # A UTF-8 BOM is welded to the first column name of DRUG12Q4.txt and nothing
+  # else. Left alone it yields a column called "﻿primaryid", so every drug
+  # join for that quarter silently matches zero rows. Strip on every header.
+  strip_bom: true
+
+  # One-quarter spelling anomalies. 2012q4 is the worst offender: it is the
+  # LAERS->FAERS transition quarter and three columns are spelled differently
+  # there than in either neighbouring quarter.
+  rename:
+    i_f_code: i_f_cod      # 2012q4 onward vs legacy i_f_cod
+    outc_code: outc_cod    # 2012q4 only; reverts at 2013q1
+    lot_nbr: lot_num       # 2012q4 only; reverts at 2013q1
+    gndr_cod: sex          # legacy + faers_early -> the modern name
+
+  # Identity columns are given era-neutral names so downstream stages do not
+  # branch on era. The original values are NOT merged: legacy `case` and modern
+  # `caseid` are separate ID spaces until Phase 3 verifies the bridge, so `era`
+  # is retained on every row and must be carried into any grouping.
+  identity:
+    laers:        {report_id: isr,       case_id: case}
+    faers_early:  {report_id: primaryid, case_id: caseid}
+    faers_modern: {report_id: primaryid, case_id: caseid}
+
+  # Legacy-only table, empty header, unused by this study. Recorded so its
+  # absence downstream is a decision rather than an oversight.
+  ignore_tables: [stat]
+
+dedup:
+  # Applied in order; each step logs before/after case counts to
+  # results/tables/attrition.csv
+  steps:
+    - within_laers_max_isr        # keep highest isr per `case`
+    - within_faers_max_caseversion
+    - apply_deleted_case_lists    # FAERS era only -- see limitation note
+    - bridge_laers_faers_ids      # verify empirically before applying
+    - rule_based_near_duplicates
+  # Fingerprint for near-duplicate detection: a case is a suspected duplicate of
+  # another when every field below matches.
+  fingerprint_fields: [event_dt, age_years, sex, country, drug_set, pt_set]
+
+  # Eligibility is by REQUIRED FIELDS, not by a count of populated ones.
+  #
+  # The original rule was "any 4 of 6 populated". Measured, it removed 14.5% of
+  # cases and produced a largest "duplicate group" of 9,270 -- which is not
+  # 9,270 submissions of one report but a collision among sparse records. A bare
+  # count treats country as evidence equal to event date, and country is nearly
+  # constant (mostly US), so records missing both event_dt and age collapsed en
+  # masse. Every one of the largest groups sat exactly at the threshold.
+  #
+  #   rule                  eligible   removed   rate  max group  cases in >100
+  #   any 4 of 6          18,903,267 2,980,676  14.5%      9,270        762,456
+  #   any 5 of 6          13,226,932   914,924   4.4%        775         32,716
+  #   all 6                8,052,665   288,951   1.4%         36              0
+  #   event+drug+pt       10,349,201   486,373   2.4%        775         25,829
+  #   event+age+drug+pt    8,334,929   294,307   1.4%         36              0
+  #
+  # event+age+drug+pt covers more cases than requiring all six while producing
+  # the same maximum group size and no group above 100.
+  fingerprint_required: [event_dt, age_years, drug_set, pt_set]
+
+  # Reported alongside the primary result. Looser -- it drops the age
+  # requirement, so it detects ~65% more duplicates at the cost of some
+  # over-merging (max group 775). Quantifies how sensitive the case count is to
+  # this choice rather than leaving it as an unexamined judgement call.
+  fingerprint_required_sensitivity: [event_dt, drug_set, pt_set]
+
+  # A case not eligible under the rule is KEPT. Duplicates inflate the counts a
+  # DDI signal is built from, so missing them is not harmless -- but a false
+  # merge destroys a real report outright, and 12M cases simply lack the fields
+  # needed to judge. The conservative direction is to keep.
+
+event:
+  name: rhabdomyolysis
+  pt_set_file: config/pt_sets/rhabdomyolysis.csv
+  primary_tier: core             # narrow definition drives the headline result
+  sensitivity_tiers: [core, broad]
+
+analysis:
+  drug_roles:
+    # Suspect + interacting. Retained as primary on the evidence: it recovers
+    # 11/16 controls against 9/16 for all-roles under the additive null.
+    #
+    # Note the interaction with the null model. Suspect-only concentrates the
+    # marginal association -- P(event | simvastatin-as-suspect) is 9.8% against
+    # 2.2% when concomitant use is included -- because a drug is named a suspect
+    # precisely when the reporter already blames it. Under the MULTIPLICATIVE
+    # null that inflation is fatal (2/16), since it pushes the predicted joint
+    # rate further past unity. Under the ADDITIVE null it is an advantage. The
+    # role policy cannot be chosen independently of the null.
+    primary: [PS, SS, I]
+    sensitivity: [PS, SS, I, C]  # adds concomitant
+  min_co_reports: 3              # minimum n_111 to enter the screen
+
+  # Cap on distinct drugs per case. Discovered via Tier B: 19,005 cases (0.09%
+  # of the database) list 21 or more suspect drugs and contribute 34.7% of ALL
+  # drug pairs, at an event rate of 0.89% against 0.207% overall. One case in a
+  # thousand was supplying a third of the pair-level evidence, and precisely the
+  # event-enriched third.
+  #
+  #   drugs/case   cases        % of all pairs   event rate
+  #   1            15,366,836            0.0%       0.13%
+  #   2-5           4,424,434           28.6%       0.43%
+  #   6-10            411,109           22.3%       0.53%
+  #   11-20            71,563           14.4%       0.67%
+  #   21-30             9,861            6.7%       0.85%
+  #   31-50             5,842           10.0%       1.44%
+  #   51+               3,302           18.0%       0.03%
+  #
+  # A report listing 40 drugs contributes 780 pairs. The strongest Tier B false
+  # positive (ALIROCUMAB+IPRATROPIUM, 88 co-reports and 88 events) came from a
+  # cluster of such reports: 31-40 drugs each, 5 distinct event dates and 1
+  # distinct age across 88 cases -- residual near-duplicates the exact-set
+  # fingerprint could not merge because their drug lists differ slightly.
+  max_drugs_per_case: 20
+  max_drugs_per_case_sensitivity: [10, 30]
+
+  # Restrict to reports without inpatient/critical-care markers. See
+  # contingency.HOSPITAL_CONTEXT. Off for the primary analysis, run as a
+  # sensitivity analysis, because it costs real scope (propofol myotoxicity
+  # becomes unstudiable) and the question it answers is whether the screen's
+  # top hits are drug interactions or shared clinical setting.
+  exclude_hospital_context: false
+  # PRIMARY NULL MODEL: additive (excess risk), not multiplicative.
+  #
+  # The plan and the source guide both specify Omega, whose null is
+  # multiplicative on the odds scale. That is a very demanding null for this
+  # event. The drugs of interest are the dominant reported causes of
+  # rhabdomyolysis, so marginal RRs run 3-19 and the fitted multiplicative null
+  # predicts joint event rates of 13-85% among co-reports -- 72.9% for
+  # gemfibrozil + simvastatin, against 55.1% observed. Two agents that both
+  # strongly cause the same outcome behave sub-multiplicatively as a rule, so
+  # the criterion rejects most real interactions. Across the 16 positive
+  # controls Omega correlates at r = -0.42 with log2(RR_A x RR_B): the better
+  # established the pair, the more negative it looks.
+  #
+  # (The fit is margin-constrained and cannot exceed 100%; an unconstrained RR
+  # product would, for 4 of 16 controls. Departure from ADDITIVITY is the
+  # standard criterion for clinically meaningful interaction.)
+  #
+  # Tier A recovery, additive vs multiplicative:
+  #   policy       tier    additive  multiplicative
+  #   primary      core       11/16            2/16     <- adopted
+  #   primary      broad       9/16            5/16
+  #   sensitivity  core        9/16            4/16
+  #   sensitivity  broad       8/16            5/16
+  #
+  # DISCLOSURE: Omega was pre-specified as the gate and failed; the estimand was
+  # changed after seeing that failure. The justification is that additivity is
+  # the standard scale for clinically meaningful interaction and does not
+  # require super-multiplicativity of two agents causing the same outcome -- an
+  # argument that stands independently of any pair's result. But the ordering is
+  # what it is, and the paper states it. Both measures are computed and reported
+  # for every pair.
+  primary_null: additive
+  report_both_nulls: true
+
+  omega:
+    # Noren et al. 2008, Stat Med. Omega = log2((n + a) / (E + a)); E is the
+    # expected count under the log-linear model with all pairwise associations
+    # and NO three-way interaction term. Signal if the lower credibility bound
+    # exceeds the threshold.
+    alpha: 0.5
+    quantile: 0.025              # report Omega_025
+
+    # EMPIRICALLY CALIBRATED, not nominal. Omega_025 > 0 is a nominal 2.5%
+    # criterion under a null that assumes away confounding by indication,
+    # channelling and co-prescription. Measured against 2,000 generated negative
+    # controls it yields 6.2% overall and 8.0% in the stratum where one drug is
+    # itself event-associated -- the stratum a screen mostly encounters.
+    #
+    # +0.305 is the threshold holding the false-positive rate at 5% on that null
+    # set, and it costs nothing in sensitivity: 12/14 powered positive controls
+    # recover at both 0.0 and +0.305.
+    #
+    #   threshold  sensitivity  FPR all  FPR hard
+    #      +0.00           86%     6.2%      8.0%
+    #      +0.305          86%     ~5.0%     ~6.5%
+    #      +0.50           71%     4.7%      5.8%
+    #      +1.00           57%     3.1%      3.7%
+    #
+    # The measured rate is an UPPER bound: without a DDI reference database some
+    # generated negatives are likely genuine undocumented interactions.
+    signal_threshold: 0.436
+    nominal_threshold: 0.0       # reported alongside for comparison
+  logistic:
+    formula: "event ~ drug_a + drug_b + drug_a:drug_b + age_years + sex + report_year"
+  screen:
+    top_n_drugs: 200             # drugs ranked by co-report count with the event
+  era_stratification:
+    - {name: "2004-2012", start: 2004q1, end: 2012q4}
+    - {name: "2013-2018", start: 2013q1, end: 2018q4}
+    - {name: "2019-2026", start: 2019q1, end: 2026q2}
+
+controls:
+  positive_file: config/positive_controls.csv
+  # Negative controls are GENERATED in Phase 8, not hand-picked, to avoid
+  # selecting pairs that flatter the pipeline. Criteria:
+  negative_generation:
+    # 2,000, not 50. A 95th-percentile calibration on 50 pairs is the 2nd-highest
+    # observation: the same procedure gave +2.358 at n=50 and +0.305 at n=2000,
+    # and flipped the sign of the easy-vs-hard stratum difference.
+    n_pairs: 2000
+    frequency_matched_to_positives: true
+    frequency_match_tolerance: 0.5     # log10 units of co-report count
+    exclude_if_in_drugbank_ddi: true
+    exclude_if_shared_atc_level: 3     # no pairs from the same ATC-3 class
+    exclude_known_myotoxic_monotherapy: true
+
+reference:
+  diana_dictionary: data/reference/diana/
+  drugbank: data/reference/drugbank/
+  rxnorm_cache: data/reference/rxnorm_cache/
+  rxnav_base_url: https://rxnav.nlm.nih.gov/REST
+  rxnav_rate_limit_per_sec: 15         # NLM published cap is 20/s; stay under
+
+paths:
+  raw: data/raw/faers
+  parquet: data/interim/parquet
+  duckdb: data/processed/faers.duckdb
+  tables: results/tables
+  figures: results/figures
+  logs: results/logs

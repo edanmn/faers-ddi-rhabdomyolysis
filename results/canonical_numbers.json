@@ -1,0 +1,2447 @@
+{
+  "alpha_sensitivity": [
+    {
+      "alpha": 0.1,
+      "calibrated_threshold": 0.635,
+      "n_positive_controls_screened": 15,
+      "n_signalled": 998,
+      "positive_controls_recovered": 10
+    },
+    {
+      "alpha": 0.25,
+      "calibrated_threshold": 0.544,
+      "n_positive_controls_screened": 15,
+      "n_signalled": 1011,
+      "positive_controls_recovered": 10
+    },
+    {
+      "alpha": 0.5,
+      "calibrated_threshold": 0.436,
+      "n_positive_controls_screened": 15,
+      "n_signalled": 1022,
+      "positive_controls_recovered": 11
+    },
+    {
+      "alpha": 1.0,
+      "calibrated_threshold": 0.303,
+      "n_positive_controls_screened": 15,
+      "n_signalled": 1041,
+      "positive_controls_recovered": 12
+    },
+    {
+      "alpha": 2.0,
+      "calibrated_threshold": 0.156,
+      "n_positive_controls_screened": 15,
+      "n_signalled": 1069,
+      "positive_controls_recovered": 12
+    }
+  ],
+  "audit": {
+    "band_by_marginal_strength": {
+      "known_pair": {
+        "crude_enrichment": 2.015,
+        "stratified_ci_cluster_bootstrap": [
+          0.99,
+          2.989
+        ],
+        "stratified_excludes_unity": false,
+        "stratified_on_marginal_strength": 1.835
+      },
+      "median_strength_by_band": {
+        "known_pair": 5.32,
+        "plausible": 4.16,
+        "positive_control": 8.15,
+        "unsupported": 2.85
+      },
+      "n_pairs": 17375,
+      "note": "strata are deciles of log2(RR_a * RR_b); the reference band is `unsupported`, matching the pooled band table",
+      "plausible": {
+        "crude_enrichment": 0.767,
+        "stratified_ci_cluster_bootstrap": [
+          0.567,
+          0.973
+        ],
+        "stratified_excludes_unity": true,
+        "stratified_on_marginal_strength": 0.749
+      },
+      "quintile_signal_rate": [
+        {
+          "n": 3475,
+          "quintile": 1,
+          "signal_rate": 0.0374,
+          "strength_range": [
+            -5.45,
+            1.41
+          ]
+        },
+        {
+          "n": 3475,
+          "quintile": 2,
+          "signal_rate": 0.0722,
+          "strength_range": [
+            1.41,
+            2.69
+          ]
+        },
+        {
+          "n": 3475,
+          "quintile": 3,
+          "signal_rate": 0.0656,
+          "strength_range": [
+            2.69,
+            3.75
+          ]
+        },
+        {
+          "n": 3475,
+          "quintile": 4,
+          "signal_rate": 0.0518,
+          "strength_range": [
+            3.75,
+            5.09
+          ]
+        },
+        {
+          "n": 3475,
+          "quintile": 5,
+          "signal_rate": 0.0671,
+          "strength_range": [
+            5.09,
+            12.79
+          ]
+        }
+      ]
+    },
+    "cap_sweep": [
+      {
+        "cap": 10,
+        "fpr_at_zero": 0.0605,
+        "n_cases": 20202853,
+        "n_controls": 16,
+        "n_event_cases": 41410,
+        "n_negative_controls": 13148,
+        "n_powered": 14,
+        "recovered_additive": 13,
+        "recovered_multiplicative": 4,
+        "recovered_powered": 12
+      },
+      {
+        "cap": 15,
+        "fpr_at_zero": 0.0604,
+        "n_cases": 20259682,
+        "n_controls": 16,
+        "n_event_cases": 41753,
+        "n_negative_controls": 15070,
+        "n_powered": 14,
+        "recovered_additive": 12,
+        "recovered_multiplicative": 4,
+        "recovered_powered": 12
+      },
+      {
+        "cap": 20,
+        "fpr_at_zero": 0.0667,
+        "n_cases": 20274416,
+        "n_controls": 16,
+        "n_event_cases": 41889,
+        "n_negative_controls": 16138,
+        "n_powered": 14,
+        "recovered_additive": 12,
+        "recovered_multiplicative": 4,
+        "recovered_powered": 12
+      },
+      {
+        "cap": 30,
+        "fpr_at_zero": 0.0775,
+        "n_cases": 20284277,
+        "n_controls": 16,
+        "n_event_cases": 41973,
+        "n_negative_controls": 16434,
+        "n_powered": 14,
+        "recovered_additive": 12,
+        "recovered_multiplicative": 2,
+        "recovered_powered": 12
+      },
+      {
+        "cap": 40,
+        "fpr_at_zero": 0.0756,
+        "n_cases": 20288002,
+        "n_controls": 16,
+        "n_event_cases": 42044,
+        "n_negative_controls": 17164,
+        "n_powered": 14,
+        "recovered_additive": 12,
+        "recovered_multiplicative": 2,
+        "recovered_powered": 12
+      },
+      {
+        "cap": null,
+        "fpr_at_zero": 0.0686,
+        "n_cases": 20293421,
+        "n_controls": 16,
+        "n_event_cases": 42058,
+        "n_negative_controls": 18857,
+        "n_powered": 14,
+        "recovered_additive": 11,
+        "recovered_multiplicative": 2,
+        "recovered_powered": 11
+      }
+    ],
+    "era_stable_plausible": [
+      {
+        "background_share": 0.4874,
+        "event_cases": 152,
+        "event_cases_with_another_implicated_drug": 68,
+        "pair": "CIPROFLOXACIN+SIMVASTATIN",
+        "share": 0.4474
+      },
+      {
+        "background_share": 0.4874,
+        "event_cases": 155,
+        "event_cases_with_another_implicated_drug": 13,
+        "pair": "ATORVASTATIN+FUSIDIC ACID",
+        "share": 0.0839
+      }
+    ],
+    "fdr": {
+      "method": "Benjamini-Hochberg on one-sided Poisson tail probabilities",
+      "n_discoveries": 1147,
+      "n_signalled_by_shrinkage_threshold": 1022,
+      "n_tested": 17375,
+      "note": "the shrinkage bound is not a p-value and carries no multiplicity guarantee; this is the FDR-controlled count for comparison",
+      "overlap_with_shrinkage_signals": 1022,
+      "q": 0.05
+    },
+    "heldout_calibration": {
+      "heldout_fpr_ci": [
+        0.0437,
+        0.0574
+      ],
+      "heldout_fpr_mean": 0.0503,
+      "heldout_threshold_median": 0.429,
+      "in_sample_threshold": 0.436,
+      "n_negative_controls": 16138,
+      "n_splits": 500,
+      "note": "in-sample calibration returns the target by construction; the held-out rate is the measured one",
+      "target_fpr": 0.05
+    },
+    "induced_correlation": {
+      "additive_exceeds_null": true,
+      "both_nulls_show_the_gradient": true,
+      "multiplicative_exceeds_null": true,
+      "n": 16,
+      "note": "x = log2(RR_a * RR_b). Omega = log2((O+a)/(E+a)); E rises with x by construction, so a negative r is partly mechanical. The null simulation draws O from each model's own expectation.",
+      "null_r_additive": {
+        "ci": [
+          -0.365,
+          0.424
+        ],
+        "median": 0.032
+      },
+      "null_r_multiplicative": {
+        "ci": [
+          -0.233,
+          0.255
+        ],
+        "median": 0.026
+      },
+      "r_expected_additive": 0.935,
+      "r_expected_multiplicative": 0.941,
+      "r_observed_event_rate": 0.117,
+      "r_omega_additive": -0.646,
+      "r_omega_multiplicative": -0.628
+    },
+    "inpatient_stratification": {
+      "note": "stratified on FAERS outc_cod = 'HO', the reported hospitalisation outcome, rather than a 30-drug proxy",
+      "strata": [
+        {
+          "bands": {
+            "known_pair": {
+              "enrichment": 1.839,
+              "rate": 0.0811,
+              "signalled": 39,
+              "tested": 481
+            },
+            "plausible": {
+              "enrichment": 0.639,
+              "rate": 0.0282,
+              "signalled": 121,
+              "tested": 4285
+            },
+            "unsupported": {
+              "rate": 0.0441,
+              "signalled": 486,
+              "tested": 11012
+            }
+          },
+          "event_rate": 0.006693,
+          "n_cases": 4274465,
+          "n_event_cases": 28610,
+          "n_pairs": 15792,
+          "stratum": "hospitalised"
+        },
+        {
+          "bands": {
+            "known_pair": {
+              "enrichment": 1.885,
+              "rate": 0.072,
+              "signalled": 36,
+              "tested": 500
+            },
+            "plausible": {
+              "enrichment": 0.825,
+              "rate": 0.0315,
+              "signalled": 140,
+              "tested": 4443
+            },
+            "unsupported": {
+              "rate": 0.0382,
+              "signalled": 417,
+              "tested": 10923
+            }
+          },
+          "event_rate": 0.00083,
+          "n_cases": 15999951,
+          "n_event_cases": 13279,
+          "n_pairs": 15881,
+          "stratum": "not_hospitalised"
+        }
+      ]
+    },
+    "provenance": {
+      "aeolus_benchmark": {
+        "aeolus_published_cases": 4928413,
+        "difference_fraction": 0.0831,
+        "this_pipeline_cases": 5337888,
+        "window": "2004q1-2015q2"
+      },
+      "cross_era_bridge_identifiers": 82342,
+      "cross_era_bridge_source": "results/tables/attrition.csv",
+      "hospital_context_excluded_cases": 275205,
+      "hospital_context_excluded_share": 0.0136,
+      "hospitalisation_outcome_reports": 5709555,
+      "implicated_drug_share_among_event_cases": 0.4874,
+      "laers_rows_without_case_id": 7,
+      "note": "pipeline figures quoted in the papers, persisted so the availability claim is true rather than assumed",
+      "polypharmacy_excluded_cases": 19005,
+      "pt_vocabulary_size": 25047,
+      "raw_demo_rows": 24812425,
+      "raw_demo_rows_by_era": {
+        "faers_early": 1534886,
+        "faers_modern": 19001338,
+        "laers": 4276201
+      },
+      "recovery_gap": {
+        "author_selected": {
+          "median_event_rate_among_coreports": 0.2921,
+          "n": 16,
+          "top_decile_by_coreporting_median": 0.2234,
+          "top_decile_vs_baseline": 108.14,
+          "vs_baseline": 141.4
+        },
+        "baseline_event_rate": 0.002066,
+        "label_selected": {
+          "median_event_rate_among_coreports": 0.0072,
+          "n": 349,
+          "top_decile_by_coreporting_median": 0.0012,
+          "top_decile_vs_baseline": 0.57,
+          "vs_baseline": 3.5
+        }
+      },
+      "simvastatin_amiodarone": {
+        "expected_multiplicative": 189.54,
+        "n_ab": 649,
+        "n_abz": 145,
+        "omega": -0.385,
+        "omega_lower": -0.63,
+        "source": "results/tables/tier_a_results.csv"
+      }
+    },
+    "reference_coverage": {
+      "cited_but_not_screened": [
+        "BEZAFIBRATE",
+        "CERIVASTATIN",
+        "CIPROFIBRATE",
+        "TELITHROMYCIN"
+      ],
+      "documented_signalled": 10,
+      "documented_tested": 142,
+      "endpoint_relevant_without_label": [
+        "BEZAFIBRATE",
+        "CERIVASTATIN",
+        "CIPROFIBRATE",
+        "TELITHROMYCIN"
+      ],
+      "enrichment": 1.24,
+      "enrichment_ci_pairwise_ANTICONSERVATIVE": [
+        0.68,
+        2.26
+      ],
+      "ingredients_cached": 800,
+      "ingredients_without_any_label": 138,
+      "note": "restricted to non-control pairs where BOTH drugs have an FDA label, so 'undocumented' means the label is silent, not absent",
+      "pairs_total": 17375,
+      "pairs_touching_an_unlabelled_drug": 1712,
+      "screened_ingredients": 200,
+      "screened_share_without_label": 0.055,
+      "screened_without_label": 11,
+      "screened_without_label_names": [
+        "BROMAZEPAM",
+        "CANNABIS SATIVA SUBSP INDICA TOP",
+        "CYAMEMAZINE",
+        "FLUNITRAZEPAM",
+        "FUSIDIC ACID",
+        "HERBALS",
+        "INFLUENZA VIRUS VACCINE",
+        "INSULIN NOS",
+        "TRIMEPRAZINE",
+        "UNSPECIFIED INGREDIENT",
+        "ZOPICLONE"
+      ],
+      "share_of_pairs_structurally_undocumentable": 0.0985,
+      "share_without_label": 0.1725,
+      "stratified": 1.067,
+      "stratified_ci_cluster_bootstrap": [
+        0.292,
+        1.972
+      ],
+      "stratified_excludes_unity": false,
+      "undocumented_signalled": 773,
+      "undocumented_tested": 13575
+    },
+    "top_ranked": {
+      "best_positive_control": {
+        "band": "positive_control",
+        "eras_with_signal": 3,
+        "event_rate": 0.7105,
+        "n_ab": 456,
+        "n_abz": 324,
+        "omega_add_lower": 2.577,
+        "pair": "CYCLOSPORINE+SIMVASTATIN"
+      },
+      "min_pair": 150,
+      "n_non_control_above_best_control": 3,
+      "n_ranked": 6046,
+      "top": [
+        {
+          "band": "plausible",
+          "eras_with_signal": 3,
+          "event_rate": 0.8378,
+          "n_ab": 185,
+          "n_abz": 155,
+          "omega_add_lower": 1.024,
+          "pair": "ATORVASTATIN+FUSIDIC ACID"
+        },
+        {
+          "band": "plausible",
+          "eras_with_signal": 2,
+          "event_rate": 0.8269,
+          "n_ab": 283,
+          "n_abz": 234,
+          "omega_add_lower": 3.414,
+          "pair": "ABIRATERONE+ROSUVASTATIN"
+        },
+        {
+          "band": "plausible",
+          "eras_with_signal": 2,
+          "event_rate": 0.7816,
+          "n_ab": 174,
+          "n_abz": 136,
+          "omega_add_lower": 2.166,
+          "pair": "INFLUENZA VIRUS VACCINE+SIMVASTATIN"
+        },
+        {
+          "band": "positive_control",
+          "eras_with_signal": 3,
+          "event_rate": 0.7105,
+          "n_ab": 456,
+          "n_abz": 324,
+          "omega_add_lower": 2.577,
+          "pair": "CYCLOSPORINE+SIMVASTATIN"
+        },
+        {
+          "band": "known_pair",
+          "eras_with_signal": 3,
+          "event_rate": 0.5855,
+          "n_ab": 234,
+          "n_abz": 137,
+          "omega_add_lower": 2.115,
+          "pair": "FLUCONAZOLE+SIMVASTATIN"
+        },
+        {
+          "band": "positive_control",
+          "eras_with_signal": 1,
+          "event_rate": 0.5616,
+          "n_ab": 511,
+          "n_abz": 287,
+          "omega_add_lower": 0.816,
+          "pair": "GEMFIBROZIL+SIMVASTATIN"
+        },
+        {
+          "band": "positive_control",
+          "eras_with_signal": 3,
+          "event_rate": 0.4729,
+          "n_ab": 499,
+          "n_abz": 236,
+          "omega_add_lower": 1.791,
+          "pair": "CLARITHROMYCIN+SIMVASTATIN"
+        },
+        {
+          "band": "known_pair",
+          "eras_with_signal": 2,
+          "event_rate": 0.4581,
+          "n_ab": 155,
+          "n_abz": 71,
+          "omega_add_lower": 1.648,
+          "pair": "ERYTHROMYCIN+SIMVASTATIN"
+        },
+        {
+          "band": "positive_control",
+          "eras_with_signal": 2,
+          "event_rate": 0.4451,
+          "n_ab": 182,
+          "n_abz": 81,
+          "omega_add_lower": 1.573,
+          "pair": "ITRACONAZOLE+SIMVASTATIN"
+        },
+        {
+          "band": "plausible",
+          "eras_with_signal": 3,
+          "event_rate": 0.4032,
+          "n_ab": 377,
+          "n_abz": 152,
+          "omega_add_lower": 1.663,
+          "pair": "CIPROFLOXACIN+SIMVASTATIN"
+        }
+      ]
+    },
+    "vocabulary_hygiene": {
+      "as_specified": {
+        "known_pair": {
+          "enrichment": 2.015,
+          "rate": 0.1215,
+          "signalled": 66,
+          "tested": 543
+        },
+        "plausible": {
+          "enrichment": 0.766,
+          "rate": 0.0462,
+          "signalled": 228,
+          "tested": 4930
+        },
+        "positive_control": {
+          "enrichment": 12.161,
+          "rate": 0.7333,
+          "signalled": 11,
+          "tested": 15
+        },
+        "unsupported": {
+          "enrichment": 1.0,
+          "rate": 0.0603,
+          "signalled": 717,
+          "tested": 11887
+        }
+      },
+      "excluding_invalid_pairs": {
+        "known_pair": {
+          "enrichment": 1.995,
+          "rate": 0.1215,
+          "signalled": 66,
+          "tested": 543
+        },
+        "plausible": {
+          "enrichment": 0.752,
+          "rate": 0.0458,
+          "signalled": 220,
+          "tested": 4808
+        },
+        "positive_control": {
+          "enrichment": 12.041,
+          "rate": 0.7333,
+          "signalled": 11,
+          "tested": 15
+        },
+        "unsupported": {
+          "enrichment": 1.0,
+          "rate": 0.0609,
+          "signalled": 687,
+          "tested": 11290
+        }
+      },
+      "invalid_pairs": 719,
+      "invalid_pairs_in_plausible_band": 122,
+      "invalid_pairs_share": 0.0414,
+      "invalid_pairs_signalled": 38,
+      "non_specific_ingredients": [
+        "CANNABIS SATIVA SUBSP INDICA TOP",
+        "HERBALS",
+        "INSULIN NOS",
+        "UNSPECIFIED INGREDIENT"
+      ],
+      "note": "the screened set is chosen mechanically by co-reporting; these terms are reported as a sensitivity, not removed from the primary analysis",
+      "same_moiety_groups": [
+        [
+          "DIVALPROEX",
+          "VALPROATE",
+          "VALPROIC ACID"
+        ]
+      ]
+    }
+  },
+  "endpoint_specific_reference": {
+    "all_pairs": {
+      "crude_enrichment": 3.52,
+      "crude_enrichment_ci": [
+        2.71,
+        4.56
+      ],
+      "documented_signalled": 48,
+      "documented_tested": 240,
+      "stratified_ci_cluster_bootstrap": [
+        1.317,
+        4.676
+      ],
+      "stratified_enrichment": 3.08,
+      "stratified_excludes_unity": true,
+      "undocumented_signalled": 974,
+      "undocumented_tested": 17135
+    },
+    "era_stable": {
+      "crude_enrichment": 51.92,
+      "crude_enrichment_ci": [
+        21.07,
+        127.94
+      ],
+      "documented_signalled": 8,
+      "documented_tested": 240,
+      "stratified_ci_cluster_bootstrap": [
+        0.0,
+        173.757
+      ],
+      "stratified_enrichment": 32.611,
+      "stratified_excludes_unity": false,
+      "undocumented_signalled": 11,
+      "undocumented_tested": 17135
+    },
+    "era_stable_excluding_control_drugs": {
+      "crude_enrichment": null,
+      "crude_enrichment_ci": null,
+      "documented_signalled": 0,
+      "documented_tested": 142,
+      "stratified_enrichment": 0.0,
+      "undocumented_signalled": 8,
+      "undocumented_tested": 15184
+    },
+    "excluding_control_drugs": {
+      "crude_enrichment": 1.23,
+      "crude_enrichment_ci": [
+        0.67,
+        2.24
+      ],
+      "documented_signalled": 10,
+      "documented_tested": 142,
+      "stratified_ci_cluster_bootstrap": [
+        0.32,
+        2.034
+      ],
+      "stratified_enrichment": 1.045,
+      "stratified_excludes_unity": false,
+      "undocumented_signalled": 872,
+      "undocumented_tested": 15184
+    },
+    "n_pairs": 709,
+    "positive_controls_captured": 16
+  },
+  "era_stability_validation": {
+    "era_stable_fpr": 0.000927,
+    "era_stable_fpr_ci": [
+      0.000387,
+      0.00191
+    ],
+    "expected_era_stable_by_chance": 33.2,
+    "n_negative_controls_screened": 6471,
+    "note": "the era-stability filter applied to the negative controls; omitted from the first version of this analysis",
+    "observed_era_stable": 19,
+    "pass_era_stability": 6,
+    "pass_pooled_threshold": 529,
+    "upper_bound_used": 0.00191
+  },
+  "event_rate": 0.0020661014354248232,
+  "generalization": {
+    "anaphylaxis": {
+      "design_note": "co-exposures among independently anaphylactogenic agents, not interaction pairs; cannot test the conditional claim at any sample size",
+      "design_valid": false,
+      "event": "anaphylaxis",
+      "event_rate": 0.004097,
+      "expected": "drug-caused but marginals diffuse across many agents",
+      "label": "anaphylaxis",
+      "median_marginal_rr": 5.2,
+      "n_cases": 20274416,
+      "n_controls": 4,
+      "n_event_cases": 83055,
+      "n_powered": 4,
+      "observed_rate_vs_marginal_product": {
+        "ci_high": 0.9412702264013371,
+        "ci_low": -0.9743057523834537,
+        "n": 4,
+        "p_value": 0.7921832206614035,
+        "r": -0.20781677933859663,
+        "significant": false
+      },
+      "omega_add_vs_marginal_product": {
+        "ci_high": 0.8438734754550461,
+        "ci_low": -0.9907431445789977,
+        "n": 4,
+        "p_value": 0.37970437251647216,
+        "r": -0.620295627483528,
+        "significant": false
+      },
+      "omega_vs_marginal_product": {
+        "ci_high": 0.7119953374205565,
+        "ci_low": -0.9953300564536907,
+        "n": 4,
+        "p_value": 0.21101210693824335,
+        "r": -0.7889878930617567,
+        "significant": false
+      },
+      "pairs": [
+        {
+          "n_ab": 2399,
+          "n_abz": 127,
+          "omega": -1.717,
+          "omega_add": -0.433,
+          "omega_add_lower": -0.695,
+          "omega_lower": -1.979,
+          "pair": "IBUPROFEN+AMOXICILLIN",
+          "rr_a": 4.2,
+          "rr_b": 14.3,
+          "signal_additive": false,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 5802,
+          "n_abz": 32,
+          "omega": -3.253,
+          "omega_add": -2.859,
+          "omega_add_lower": -3.402,
+          "omega_lower": -3.796,
+          "pair": "VANCOMYCIN+PIPERACILLIN",
+          "rr_a": 5.2,
+          "rr_b": 5.7,
+          "signal_additive": false,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 6922,
+          "n_abz": 219,
+          "omega": 0.484,
+          "omega_add": 0.715,
+          "omega_add_lower": 0.518,
+          "omega_lower": 0.287,
+          "pair": "ASPIRIN+IBUPROFEN",
+          "rr_a": 1.5,
+          "rr_b": 4.2,
+          "signal_additive": true,
+          "signal_multiplicative": true
+        },
+        {
+          "n_ab": 3287,
+          "n_abz": 22,
+          "omega": -3.945,
+          "omega_add": -3.118,
+          "omega_add_lower": -3.784,
+          "omega_lower": -4.61,
+          "pair": "CEFTRIAXONE+VANCOMYCIN",
+          "rr_a": 10.3,
+          "rr_b": 5.2,
+          "signal_additive": false,
+          "signal_multiplicative": false
+        }
+      ],
+      "pts_used": [
+        "ANAPHYLACTIC REACTION",
+        "ANAPHYLACTIC SHOCK",
+        "ANAPHYLACTOID REACTION",
+        "ANAPHYLACTOID SHOCK",
+        "TYPE I HYPERSENSITIVITY"
+      ],
+      "recovered_additive": 1,
+      "recovered_additive_powered": 1,
+      "recovered_multiplicative": 1,
+      "recovered_multiplicative_powered": 1
+    },
+    "rhabdomyolysis_primary": {
+      "label": "rhabdomyolysis (primary event)",
+      "n_controls": 16,
+      "omega_vs_marginal_product": {
+        "ci_high": -0.19225171345789638,
+        "ci_low": -0.8569814625623382,
+        "n": 16,
+        "p_value": 0.009176244550507527,
+        "r": -0.6280990763002291,
+        "significant": true
+      },
+      "recovered_additive": 12,
+      "recovered_multiplicative": 4
+    },
+    "torsade_qt": {
+      "design_note": null,
+      "design_valid": true,
+      "event": "torsade_qt",
+      "event_rate": 0.001993,
+      "expected": "drug-dominant, like rhabdomyolysis",
+      "label": "torsade de pointes / QT prolongation",
+      "median_marginal_rr": 19.3,
+      "n_cases": 20274416,
+      "n_controls": 10,
+      "n_event_cases": 40412,
+      "n_powered": 10,
+      "observed_rate_vs_marginal_product": {
+        "ci_high": 0.4855863136075711,
+        "ci_low": -0.7403823188717532,
+        "n": 10,
+        "p_value": 0.5651911004166743,
+        "r": -0.2074720623777688,
+        "significant": false
+      },
+      "omega_add_vs_marginal_product": {
+        "ci_high": -0.32528311899926854,
+        "ci_low": -0.9487523688828424,
+        "n": 10,
+        "p_value": 0.0062511145740909045,
+        "r": -0.7925830216118983,
+        "significant": true
+      },
+      "omega_vs_marginal_product": {
+        "ci_high": -0.36764526379167817,
+        "ci_low": -0.9533479061780405,
+        "n": 10,
+        "p_value": 0.004518098522895795,
+        "r": -0.8098160513441988,
+        "significant": true
+      },
+      "pairs": [
+        {
+          "n_ab": 418,
+          "n_abz": 57,
+          "omega": -2.391,
+          "omega_add": -0.488,
+          "omega_add_lower": -0.887,
+          "omega_lower": -2.79,
+          "pair": "AMIODARONE+SOTALOL",
+          "rr_a": 29.0,
+          "rr_b": 68.2,
+          "signal_additive": false,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 154,
+          "n_abz": 61,
+          "omega": 0.083,
+          "omega_add": 2.324,
+          "omega_add_lower": 1.939,
+          "omega_lower": -0.302,
+          "pair": "AMIODARONE+CLARITHROMYCIN",
+          "rr_a": 29.0,
+          "rr_b": 10.4,
+          "signal_additive": true,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 56,
+          "n_abz": 15,
+          "omega": -0.105,
+          "omega_add": 2.1,
+          "omega_add_lower": 1.279,
+          "omega_lower": -0.927,
+          "pair": "METHADONE+CLARITHROMYCIN",
+          "rr_a": 18.6,
+          "rr_b": 10.4,
+          "signal_additive": true,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 58,
+          "n_abz": 12,
+          "omega": -0.349,
+          "omega_add": 1.823,
+          "omega_add_lower": 0.893,
+          "omega_lower": -1.279,
+          "pair": "HALOPERIDOL+CLARITHROMYCIN",
+          "rr_a": 16.9,
+          "rr_b": 10.4,
+          "signal_additive": true,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 98,
+          "n_abz": 13,
+          "omega": -1.153,
+          "omega_add": 1.113,
+          "omega_add_lower": 0.223,
+          "omega_lower": -2.043,
+          "pair": "CITALOPRAM+CLARITHROMYCIN",
+          "rr_a": 20.0,
+          "rr_b": 10.4,
+          "signal_additive": true,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 94,
+          "n_abz": 16,
+          "omega": -1.127,
+          "omega_add": 1.285,
+          "omega_add_lower": 0.492,
+          "omega_lower": -1.92,
+          "pair": "METHADONE+FLUCONAZOLE",
+          "rr_a": 18.6,
+          "rr_b": 15.9,
+          "signal_additive": true,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 241,
+          "n_abz": 64,
+          "omega": -0.777,
+          "omega_add": 1.578,
+          "omega_add_lower": 1.203,
+          "omega_lower": -1.152,
+          "pair": "AMIODARONE+FLUCONAZOLE",
+          "rr_a": 29.0,
+          "rr_b": 15.9,
+          "signal_additive": true,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 201,
+          "n_abz": 45,
+          "omega": -1.523,
+          "omega_add": 0.933,
+          "omega_add_lower": 0.48,
+          "omega_lower": -1.976,
+          "pair": "ONDANSETRON+AMIODARONE",
+          "rr_a": 30.2,
+          "rr_b": 29.0,
+          "signal_additive": true,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 93,
+          "n_abz": 28,
+          "omega": -0.762,
+          "omega_add": 1.691,
+          "omega_add_lower": 1.107,
+          "omega_lower": -1.346,
+          "pair": "HALOPERIDOL+AMIODARONE",
+          "rr_a": 16.9,
+          "rr_b": 29.0,
+          "signal_additive": true,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 188,
+          "n_abz": 44,
+          "omega": -1.239,
+          "omega_add": 1.265,
+          "omega_add_lower": 0.807,
+          "omega_lower": -1.697,
+          "pair": "CITALOPRAM+AMIODARONE",
+          "rr_a": 20.0,
+          "rr_b": 29.0,
+          "signal_additive": true,
+          "signal_multiplicative": false
+        }
+      ],
+      "pts_used": [
+        "TORSADE DE POINTES",
+        "ELECTROCARDIOGRAM QT PROLONGED",
+        "LONG QT SYNDROME",
+        "ELECTROCARDIOGRAM QT INTERVAL ABNORMAL",
+        "VENTRICULAR TACHYARRHYTHMIA"
+      ],
+      "recovered_additive": 9,
+      "recovered_additive_powered": 9,
+      "recovered_multiplicative": 0,
+      "recovered_multiplicative_powered": 0
+    },
+    "torsade_qt_broad_pts": {
+      "design_note": null,
+      "design_valid": true,
+      "event": "torsade_qt_broad_pts",
+      "event_rate": 0.006595,
+      "expected": "drug-dominant, like rhabdomyolysis",
+      "label": "torsade/QT, broad PT list (non-specific terms retained)",
+      "median_marginal_rr": 11.2,
+      "n_cases": 20274416,
+      "n_controls": 10,
+      "n_event_cases": 133718,
+      "n_powered": 10,
+      "observed_rate_vs_marginal_product": {
+        "ci_high": 0.6357605585977081,
+        "ci_low": -0.6234125173340229,
+        "n": 10,
+        "p_value": 0.9776269846182228,
+        "r": 0.01022873430918668,
+        "significant": false
+      },
+      "omega_add_vs_marginal_product": {
+        "ci_high": -0.15537629313895743,
+        "ci_low": -0.927225928357659,
+        "n": 10,
+        "p_value": 0.02010430875407576,
+        "r": -0.7150499696091148,
+        "significant": true
+      },
+      "omega_vs_marginal_product": {
+        "ci_high": -0.24651704297680882,
+        "ci_low": -0.939444066825166,
+        "n": 10,
+        "p_value": 0.011000332364129716,
+        "r": -0.7584253967709103,
+        "significant": true
+      },
+      "pairs": [
+        {
+          "n_ab": 418,
+          "n_abz": 93,
+          "omega": -1.629,
+          "omega_add": -0.242,
+          "omega_add_lower": -0.551,
+          "omega_lower": -1.938,
+          "pair": "AMIODARONE+SOTALOL",
+          "rr_a": 14.7,
+          "rr_b": 26.2,
+          "signal_additive": false,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 154,
+          "n_abz": 66,
+          "omega": 0.44,
+          "omega_add": 1.817,
+          "omega_add_lower": 1.448,
+          "omega_lower": 0.071,
+          "pair": "AMIODARONE+CLARITHROMYCIN",
+          "rr_a": 14.7,
+          "rr_b": 4.4,
+          "signal_additive": true,
+          "signal_multiplicative": true
+        },
+        {
+          "n_ab": 56,
+          "n_abz": 18,
+          "omega": 0.162,
+          "omega_add": 1.546,
+          "omega_add_lower": 0.803,
+          "omega_lower": -0.581,
+          "pair": "METHADONE+CLARITHROMYCIN",
+          "rr_a": 12.4,
+          "rr_b": 4.4,
+          "signal_additive": true,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 58,
+          "n_abz": 18,
+          "omega": 0.712,
+          "omega_add": 2.0,
+          "omega_add_lower": 1.257,
+          "omega_lower": -0.031,
+          "pair": "HALOPERIDOL+CLARITHROMYCIN",
+          "rr_a": 7.4,
+          "rr_b": 4.4,
+          "signal_additive": true,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 98,
+          "n_abz": 13,
+          "omega": -0.828,
+          "omega_add": 0.557,
+          "omega_add_lower": -0.333,
+          "omega_lower": -1.718,
+          "pair": "CITALOPRAM+CLARITHROMYCIN",
+          "rr_a": 10.0,
+          "rr_b": 4.4,
+          "signal_additive": false,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 94,
+          "n_abz": 16,
+          "omega": -1.076,
+          "omega_add": 0.519,
+          "omega_add_lower": -0.274,
+          "omega_lower": -1.869,
+          "pair": "METHADONE+FLUCONAZOLE",
+          "rr_a": 12.4,
+          "rr_b": 6.4,
+          "signal_additive": false,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 241,
+          "n_abz": 77,
+          "omega": -0.28,
+          "omega_add": 1.259,
+          "omega_add_lower": 0.919,
+          "omega_lower": -0.62,
+          "pair": "AMIODARONE+FLUCONAZOLE",
+          "rr_a": 14.7,
+          "rr_b": 6.4,
+          "signal_additive": true,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 201,
+          "n_abz": 66,
+          "omega": -0.826,
+          "omega_add": 0.908,
+          "omega_add_lower": 0.539,
+          "omega_lower": -1.195,
+          "pair": "ONDANSETRON+AMIODARONE",
+          "rr_a": 12.7,
+          "rr_b": 14.7,
+          "signal_additive": true,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 93,
+          "n_abz": 29,
+          "omega": -0.52,
+          "omega_add": 1.136,
+          "omega_add_lower": 0.563,
+          "omega_lower": -1.093,
+          "pair": "HALOPERIDOL+AMIODARONE",
+          "rr_a": 7.4,
+          "rr_b": 14.7,
+          "signal_additive": true,
+          "signal_multiplicative": false
+        },
+        {
+          "n_ab": 188,
+          "n_abz": 45,
+          "omega": -1.136,
+          "omega_add": 0.606,
+          "omega_add_lower": 0.153,
+          "omega_lower": -1.588,
+          "pair": "CITALOPRAM+AMIODARONE",
+          "rr_a": 10.0,
+          "rr_b": 14.7,
+          "signal_additive": true,
+          "signal_multiplicative": false
+        }
+      ],
+      "pts_used": [
+        "TORSADE DE POINTES",
+        "ELECTROCARDIOGRAM QT PROLONGED",
+        "LONG QT SYNDROME",
+        "ELECTROCARDIOGRAM QT INTERVAL ABNORMAL",
+        "VENTRICULAR TACHYARRHYTHMIA",
+        "VENTRICULAR TACHYCARDIA",
+        "VENTRICULAR FIBRILLATION",
+        "CARDIAC ARREST"
+      ],
+      "recovered_additive": 7,
+      "recovered_additive_powered": 7,
+      "recovered_multiplicative": 1,
+      "recovered_multiplicative_powered": 1
+    }
+  },
+  "independent_annotation": {
+    "enrichment": 1.12,
+    "enrichment_ci": [
+      0.69,
+      1.81
+    ],
+    "known_pair_signalled": 16,
+    "known_pair_tested": 237,
+    "note": "pairs containing no positive-control drug; removes the circularity in the support annotation",
+    "unsupported_signalled": 717,
+    "unsupported_tested": 11887
+  },
+  "label_reference": {
+    "era_stable": {
+      "documented_signalled": 10,
+      "documented_tested": 1339,
+      "enrichment": 13.31,
+      "enrichment_ci": [
+        5.42,
+        32.69
+      ],
+      "undocumented_signalled": 9,
+      "undocumented_tested": 16036
+    },
+    "era_stable_excluding_control_drugs": {
+      "documented_signalled": 2,
+      "documented_tested": 1069,
+      "enrichment": 4.45,
+      "enrichment_ci": [
+        0.9,
+        22.0
+      ],
+      "undocumented_signalled": 6,
+      "undocumented_tested": 14257
+    },
+    "excluding_control_drugs": {
+      "documented_signalled": 57,
+      "documented_tested": 1069,
+      "enrichment": 0.92,
+      "enrichment_ci": [
+        0.71,
+        1.2
+      ],
+      "undocumented_signalled": 825,
+      "undocumented_tested": 14257
+    },
+    "n_documented_pairs": 6106,
+    "n_positive_controls": 16,
+    "note": "FDA product labelling via openFDA; independent of the authors' curation but not of FAERS",
+    "permutation": {
+      "n_drugs": 200,
+      "n_implicated_drugs": 188,
+      "n_permutations": 9423,
+      "null_median": 1.0659607180753157,
+      "null_p95": 3.504538117534423,
+      "observed_enrichment": 2.8037527310114383,
+      "p_value": 0.1400679117147708
+    },
+    "pooled": {
+      "documented_signalled": 110,
+      "documented_tested": 1339,
+      "enrichment": 1.44,
+      "enrichment_ci": [
+        1.19,
+        1.75
+      ],
+      "undocumented_signalled": 912,
+      "undocumented_tested": 16036
+    },
+    "positive_controls_captured": 16
+  },
+  "n_cases": 20274416,
+  "n_event_cases": 41889,
+  "permutation_test": {
+    "era_stable": {
+      "n_drugs": 200,
+      "n_implicated_drugs": 36,
+      "n_permutations": 10000,
+      "null_median": 0.0,
+      "null_p95": 5.845850890234615,
+      "observed_enrichment": 23.965725806451612,
+      "p_value": 0.0006999300069993001
+    },
+    "pooled": {
+      "n_drugs": 200,
+      "n_implicated_drugs": 36,
+      "n_permutations": 10000,
+      "null_median": 0.9775143589057741,
+      "null_p95": 1.5495348491516545,
+      "observed_enrichment": 2.287755632539004,
+      "p_value": 0.0011998800119988001
+    }
+  },
+  "policy": "primary",
+  "positive_control_verification": {
+    "controls": [
+      {
+        "contraindicated_or_dose_limited": true,
+        "direction": [
+          "AMIODARONE label names SIMVASTATIN",
+          "SIMVASTATIN label names AMIODARONE"
+        ],
+        "endpoint_relevant": true,
+        "expected_strength": "established",
+        "labels_available": 2,
+        "named": true,
+        "pair": "SIMVASTATIN+AMIODARONE",
+        "source": "fda_label",
+        "status": "verified_label_restriction"
+      },
+      {
+        "contraindicated_or_dose_limited": true,
+        "direction": [
+          "CLARITHROMYCIN label names SIMVASTATIN",
+          "SIMVASTATIN label names CLARITHROMYCIN"
+        ],
+        "endpoint_relevant": true,
+        "expected_strength": "established",
+        "labels_available": 2,
+        "named": true,
+        "pair": "SIMVASTATIN+CLARITHROMYCIN",
+        "source": "fda_label",
+        "status": "verified_label_restriction"
+      },
+      {
+        "contraindicated_or_dose_limited": true,
+        "direction": [
+          "ITRACONAZOLE label names SIMVASTATIN",
+          "SIMVASTATIN label names ITRACONAZOLE"
+        ],
+        "endpoint_relevant": true,
+        "expected_strength": "established",
+        "labels_available": 2,
+        "named": true,
+        "pair": "SIMVASTATIN+ITRACONAZOLE",
+        "source": "fda_label",
+        "status": "verified_label_restriction"
+      },
+      {
+        "contraindicated_or_dose_limited": true,
+        "direction": [
+          "GEMFIBROZIL label names SIMVASTATIN",
+          "SIMVASTATIN label names GEMFIBROZIL"
+        ],
+        "endpoint_relevant": true,
+        "expected_strength": "established",
+        "labels_available": 2,
+        "named": true,
+        "pair": "SIMVASTATIN+GEMFIBROZIL",
+        "source": "fda_label",
+        "status": "verified_label_restriction"
+      },
+      {
+        "contraindicated_or_dose_limited": true,
+        "direction": [
+          "SIMVASTATIN label names CYCLOSPORINE"
+        ],
+        "endpoint_relevant": true,
+        "expected_strength": "established",
+        "labels_available": 2,
+        "named": true,
+        "pair": "SIMVASTATIN+CYCLOSPORINE",
+        "source": "fda_label",
+        "status": "verified_label_restriction"
+      },
+      {
+        "contraindicated_or_dose_limited": true,
+        "direction": [
+          "DILTIAZEM label names SIMVASTATIN",
+          "SIMVASTATIN label names DILTIAZEM"
+        ],
+        "endpoint_relevant": true,
+        "expected_strength": "established",
+        "labels_available": 2,
+        "named": true,
+        "pair": "SIMVASTATIN+DILTIAZEM",
+        "source": "fda_label",
+        "status": "verified_label_restriction"
+      },
+      {
+        "contraindicated_or_dose_limited": true,
+        "direction": [
+          "SIMVASTATIN label names VERAPAMIL",
+          "VERAPAMIL label names SIMVASTATIN"
+        ],
+        "endpoint_relevant": true,
+        "expected_strength": "established",
+        "labels_available": 2,
+        "named": true,
+        "pair": "SIMVASTATIN+VERAPAMIL",
+        "source": "fda_label",
+        "status": "verified_label_restriction"
+      },
+      {
+        "contraindicated_or_dose_limited": true,
+        "direction": [
+          "CLARITHROMYCIN label names LOVASTATIN",
+          "LOVASTATIN label names CLARITHROMYCIN"
+        ],
+        "endpoint_relevant": true,
+        "expected_strength": "established",
+        "labels_available": 2,
+        "named": true,
+        "pair": "LOVASTATIN+CLARITHROMYCIN",
+        "source": "fda_label",
+        "status": "verified_label_restriction"
+      },
+      {
+        "contraindicated_or_dose_limited": true,
+        "direction": [
+          "ITRACONAZOLE label names LOVASTATIN",
+          "LOVASTATIN label names ITRACONAZOLE"
+        ],
+        "endpoint_relevant": true,
+        "expected_strength": "established",
+        "labels_available": 2,
+        "named": true,
+        "pair": "LOVASTATIN+ITRACONAZOLE",
+        "source": "fda_label",
+        "status": "verified_label_restriction"
+      },
+      {
+        "contraindicated_or_dose_limited": true,
+        "direction": [
+          "ATORVASTATIN label names CLARITHROMYCIN",
+          "CLARITHROMYCIN label names ATORVASTATIN"
+        ],
+        "endpoint_relevant": true,
+        "expected_strength": "established",
+        "labels_available": 2,
+        "named": true,
+        "pair": "ATORVASTATIN+CLARITHROMYCIN",
+        "source": "fda_label",
+        "status": "verified_label_restriction"
+      },
+      {
+        "contraindicated_or_dose_limited": true,
+        "direction": [
+          "ATORVASTATIN label names GEMFIBROZIL"
+        ],
+        "endpoint_relevant": true,
+        "expected_strength": "probable",
+        "labels_available": 2,
+        "named": true,
+        "pair": "ATORVASTATIN+GEMFIBROZIL",
+        "source": "fda_label",
+        "status": "verified_label_restriction"
+      },
+      {
+        "contraindicated_or_dose_limited": true,
+        "direction": [
+          "ROSUVASTATIN label names GEMFIBROZIL"
+        ],
+        "endpoint_relevant": true,
+        "expected_strength": "established",
+        "labels_available": 2,
+        "named": true,
+        "pair": "ROSUVASTATIN+GEMFIBROZIL",
+        "source": "fda_label",
+        "status": "verified_label_restriction"
+      },
+      {
+        "contraindicated_or_dose_limited": true,
+        "direction": [
+          "ROSUVASTATIN label names CYCLOSPORINE"
+        ],
+        "endpoint_relevant": true,
+        "expected_strength": "established",
+        "labels_available": 2,
+        "named": true,
+        "pair": "ROSUVASTATIN+CYCLOSPORINE",
+        "source": "fda_label",
+        "status": "verified_label_restriction"
+      },
+      {
+        "contraindicated_or_dose_limited": true,
+        "direction": [
+          "CLARITHROMYCIN label names COLCHICINE",
+          "COLCHICINE label names CLARITHROMYCIN"
+        ],
+        "endpoint_relevant": true,
+        "expected_strength": "established",
+        "labels_available": 2,
+        "named": true,
+        "pair": "COLCHICINE+CLARITHROMYCIN",
+        "source": "fda_label",
+        "status": "verified_label_restriction"
+      },
+      {
+        "contraindicated_or_dose_limited": false,
+        "direction": [
+          "COLCHICINE label names CYCLOSPORINE"
+        ],
+        "endpoint_relevant": true,
+        "expected_strength": "established",
+        "labels_available": 2,
+        "named": true,
+        "pair": "COLCHICINE+CYCLOSPORINE",
+        "source": "fda_label",
+        "status": "verified_label_myotoxicity"
+      },
+      {
+        "contraindicated_or_dose_limited": false,
+        "direction": [
+          "ATORVASTATIN label names COLCHICINE",
+          "COLCHICINE label names ATORVASTATIN"
+        ],
+        "endpoint_relevant": true,
+        "expected_strength": "probable",
+        "labels_available": 2,
+        "named": true,
+        "pair": "COLCHICINE+ATORVASTATIN",
+        "source": "case_reports",
+        "status": "verified_label_myotoxicity"
+      }
+    ],
+    "n_controls": 16,
+    "n_endpoint_relevant": 16,
+    "n_named": 16,
+    "n_no_us_label": 0,
+    "note": "each control checked against the cached FDA label text; citation_status in config/positive_controls.csv was 'to_verify' for all 16 and had never been checked",
+    "summary": {
+      "verified_label_myotoxicity": 2,
+      "verified_label_restriction": 14
+    }
+  },
+  "regime": {
+    "high_marginal_pool": {
+      "at_positive_control_strength": {
+        "fpr_additive": 0.0934,
+        "fpr_multiplicative": 0.0222,
+        "n": 2345
+      },
+      "fpr_additive": 0.0725,
+      "fpr_multiplicative": 0.037,
+      "min_pair": 20,
+      "min_rr": 2.0,
+      "n_pairs": 19826,
+      "n_strong_drugs": 1577,
+      "note": "pairs whose two drugs are each associated with the event (RR >= 2.0) but which are not documented interactions; excludes both-implicated pairs as too likely to be undocumented true positives",
+      "strength_median": 4.31
+    },
+    "in_regime": {
+      "in_regime_cut": 6.41,
+      "in_regime_fpr_additive": 0.0904,
+      "in_regime_fpr_multiplicative": 0.012,
+      "in_regime_n": 166,
+      "negative_strength_median": 0.56,
+      "negatives_reaching_positive_iqr": 11,
+      "negatives_total": 16078,
+      "note": "the negative pool spans a far weaker range than the positive controls; a pooled false-positive rate is not the rate in the regime where recovery is measured",
+      "positive_strength_median": 8.23,
+      "positive_strength_min": 6.41,
+      "quintiles": [
+        {
+          "fpr_additive": 0.0093,
+          "fpr_multiplicative": 0.0162,
+          "n": 3216,
+          "quintile": 1,
+          "strength_range": [
+            -12.87,
+            -2.02
+          ]
+        },
+        {
+          "fpr_additive": 0.0355,
+          "fpr_multiplicative": 0.0572,
+          "n": 3215,
+          "quintile": 2,
+          "strength_range": [
+            -2.02,
+            -0.23
+          ]
+        },
+        {
+          "fpr_additive": 0.0721,
+          "fpr_multiplicative": 0.0864,
+          "n": 3216,
+          "quintile": 3,
+          "strength_range": [
+            -0.23,
+            1.34
+          ]
+        },
+        {
+          "fpr_additive": 0.1086,
+          "fpr_multiplicative": 0.1039,
+          "n": 3215,
+          "quintile": 4,
+          "strength_range": [
+            1.34,
+            2.8
+          ]
+        },
+        {
+          "fpr_additive": 0.1091,
+          "fpr_multiplicative": 0.0597,
+          "n": 3216,
+          "quintile": 5,
+          "strength_range": [
+            2.8,
+            8.95
+          ]
+        }
+      ]
+    },
+    "matched_recovery": {
+      "additive_wins_at_every_matched_rate": true,
+      "caveat": "calibrating a tail quantile on this many negatives is noisy; the 5%/10%/20% points rest on roughly 5%/10%/20% of them",
+      "gap_as_published": 8,
+      "gap_matched_max": 2,
+      "gap_matched_min": 1,
+      "n_in_regime_negatives": 167,
+      "n_positive_controls": 16,
+      "rows": [
+        {
+          "in_regime_fpr_additive": 0.0898,
+          "in_regime_fpr_multiplicative": 0.012,
+          "operating_point": "Omega_025 > 0 (as published)",
+          "recovered_additive": 12,
+          "recovered_multiplicative": 4,
+          "threshold_additive": 0.0,
+          "threshold_multiplicative": 0.0
+        },
+        {
+          "in_regime_fpr_additive": 0.05,
+          "in_regime_fpr_multiplicative": 0.05,
+          "operating_point": "matched at 5% in-regime FPR",
+          "recovered_additive": 12,
+          "recovered_multiplicative": 10,
+          "threshold_additive": 0.335,
+          "threshold_multiplicative": -0.936
+        },
+        {
+          "in_regime_fpr_additive": 0.1,
+          "in_regime_fpr_multiplicative": 0.1,
+          "operating_point": "matched at 10% in-regime FPR",
+          "recovered_additive": 12,
+          "recovered_multiplicative": 11,
+          "threshold_additive": -0.144,
+          "threshold_multiplicative": -1.468
+        },
+        {
+          "in_regime_fpr_additive": 0.2,
+          "in_regime_fpr_multiplicative": 0.2,
+          "operating_point": "matched at 20% in-regime FPR",
+          "recovered_additive": 14,
+          "recovered_multiplicative": 12,
+          "threshold_additive": -0.82,
+          "threshold_multiplicative": -1.938
+        }
+      ]
+    },
+    "strength_matched_chance": {
+      "bands": {
+        "known_pair": {
+          "expected_matched": 39,
+          "expected_pooled": 27,
+          "observed": 66,
+          "tested": 543
+        },
+        "plausible": {
+          "expected_matched": 348,
+          "expected_pooled": 247,
+          "observed": 228,
+          "tested": 4930
+        },
+        "positive_control": {
+          "expected_matched": 1,
+          "expected_pooled": 1,
+          "observed": 11,
+          "tested": 15
+        },
+        "unsupported": {
+          "expected_matched": 824,
+          "expected_pooled": 597,
+          "observed": 717,
+          "tested": 11887
+        }
+      },
+      "note": "the pooled rate assumes the false-positive rate is constant across the marginal-strength range; it varies by an order of magnitude, and the bands differ systematically on it",
+      "pooled_rate": 0.0502,
+      "rate_by_quintile": [
+        0.0078,
+        0.0283,
+        0.0572,
+        0.0871,
+        0.0706
+      ],
+      "screen_below_chance_when_matched": true,
+      "total": {
+        "expected_matched": 1212,
+        "expected_pooled": 872,
+        "observed": 1022,
+        "tested": 17375
+      }
+    },
+    "torsade_matched": {
+      "in_regime": {
+        "in_regime_cut": 7.45,
+        "in_regime_fpr_additive": 0.4276,
+        "in_regime_fpr_multiplicative": 0.0197,
+        "in_regime_n": 152,
+        "negative_strength_median": 0.54,
+        "negatives_reaching_positive_iqr": 94,
+        "negatives_total": 16087,
+        "note": "the negative pool spans a far weaker range than the positive controls; a pooled false-positive rate is not the rate in the regime where recovery is measured",
+        "positive_strength_median": 8.54,
+        "positive_strength_min": 7.45,
+        "quintiles": [
+          {
+            "fpr_additive": 0.0155,
+            "fpr_multiplicative": 0.019,
+            "n": 3218,
+            "quintile": 1,
+            "strength_range": [
+              -14.75,
+              -2.32
+            ]
+          },
+          {
+            "fpr_additive": 0.0553,
+            "fpr_multiplicative": 0.0712,
+            "n": 3217,
+            "quintile": 2,
+            "strength_range": [
+              -2.32,
+              -0.32
+            ]
+          },
+          {
+            "fpr_additive": 0.0721,
+            "fpr_multiplicative": 0.0917,
+            "n": 3217,
+            "quintile": 3,
+            "strength_range": [
+              -0.32,
+              1.45
+            ]
+          },
+          {
+            "fpr_additive": 0.0951,
+            "fpr_multiplicative": 0.0985,
+            "n": 3217,
+            "quintile": 4,
+            "strength_range": [
+              1.45,
+              3.39
+            ]
+          },
+          {
+            "fpr_additive": 0.1628,
+            "fpr_multiplicative": 0.0566,
+            "n": 3218,
+            "quintile": 5,
+            "strength_range": [
+              3.39,
+              9.78
+            ]
+          }
+        ]
+      },
+      "matched_recovery": {
+        "additive_wins_at_every_matched_rate": false,
+        "caveat": "calibrating a tail quantile on this many negatives is noisy; the 5%/10%/20% points rest on roughly 5%/10%/20% of them",
+        "gap_as_published": 9,
+        "gap_matched_max": 1,
+        "gap_matched_min": 0,
+        "n_in_regime_negatives": 151,
+        "n_positive_controls": 10,
+        "rows": [
+          {
+            "in_regime_fpr_additive": 0.4238,
+            "in_regime_fpr_multiplicative": 0.0199,
+            "operating_point": "Omega_025 > 0 (as published)",
+            "recovered_additive": 9,
+            "recovered_multiplicative": 0,
+            "threshold_additive": 0.0,
+            "threshold_multiplicative": 0.0
+          },
+          {
+            "in_regime_fpr_additive": 0.05,
+            "in_regime_fpr_multiplicative": 0.05,
+            "operating_point": "matched at 5% in-regime FPR",
+            "recovered_additive": 0,
+            "recovered_multiplicative": 0,
+            "threshold_additive": 2.073,
+            "threshold_multiplicative": -0.201
+          },
+          {
+            "in_regime_fpr_additive": 0.1,
+            "in_regime_fpr_multiplicative": 0.1,
+            "operating_point": "matched at 10% in-regime FPR",
+            "recovered_additive": 1,
+            "recovered_multiplicative": 1,
+            "threshold_additive": 1.548,
+            "threshold_multiplicative": -0.744
+          },
+          {
+            "in_regime_fpr_additive": 0.2,
+            "in_regime_fpr_multiplicative": 0.2,
+            "operating_point": "matched at 20% in-regime FPR",
+            "recovered_additive": 4,
+            "recovered_multiplicative": 3,
+            "threshold_additive": 1.036,
+            "threshold_multiplicative": -1.157
+          }
+        ]
+      }
+    }
+  },
+  "sensitivity": {
+    "demographic_strata": [
+      {
+        "documented_signalled": 11,
+        "documented_tested": 130,
+        "enrichment": 2.13,
+        "enrichment_ci_pairwise_ANTICONSERVATIVE": [
+          1.2,
+          3.78
+        ],
+        "event_rate": 0.00136,
+        "n_cases": 10686771,
+        "n_event_cases": 14542,
+        "n_pairs": 15471,
+        "stratified": 1.723,
+        "stratified_ci_cluster_bootstrap": [
+          0.534,
+          3.447
+        ],
+        "stratified_excludes_unity": false,
+        "stratum": "female",
+        "undocumented_signalled": 536,
+        "undocumented_tested": 13511
+      },
+      {
+        "documented_signalled": 4,
+        "documented_tested": 133,
+        "enrichment": 0.69,
+        "enrichment_ci_pairwise_ANTICONSERVATIVE": [
+          0.26,
+          1.82
+        ],
+        "event_rate": 0.00327,
+        "n_cases": 6998836,
+        "n_event_cases": 22900,
+        "n_pairs": 15572,
+        "stratified": 0.542,
+        "stratified_ci_cluster_bootstrap": [
+          0.0,
+          1.459
+        ],
+        "stratified_excludes_unity": false,
+        "stratum": "male",
+        "undocumented_signalled": 595,
+        "undocumented_tested": 13635
+      }
+    ],
+    "drug_selection": {
+      "by_event_coreporting": {
+        "documented_signalled": 10,
+        "documented_tested": 142,
+        "enrichment": 1.23,
+        "enrichment_ci_pairwise_ANTICONSERVATIVE": [
+          0.67,
+          2.24
+        ],
+        "n_pairs": 17375,
+        "stratified": 1.045,
+        "stratified_ci_cluster_bootstrap": [
+          0.32,
+          2.034
+        ],
+        "stratified_excludes_unity": false,
+        "undocumented_signalled": 872,
+        "undocumented_tested": 15184
+      },
+      "by_total_volume": {
+        "documented_signalled": 1,
+        "documented_tested": 38,
+        "enrichment": 0.94,
+        "enrichment_ci_pairwise_ANTICONSERVATIVE": [
+          0.14,
+          6.49
+        ],
+        "n_pairs": 14843,
+        "stratified": 0.368,
+        "stratified_ci_cluster_bootstrap": [
+          0.0,
+          1.839
+        ],
+        "stratified_excludes_unity": false,
+        "undocumented_signalled": 395,
+        "undocumented_tested": 14055
+      },
+      "note": "selection by event co-reporting is selection on the dependent variable; selection by total volume is not"
+    },
+    "era_bins": [
+      {
+        "definition": "3 bins (primary)",
+        "n_bins": 3,
+        "n_stable": 19
+      },
+      {
+        "definition": "2 bins",
+        "n_bins": 2,
+        "n_stable": 84
+      },
+      {
+        "definition": "4 bins",
+        "n_bins": 4,
+        "n_stable": 6
+      },
+      {
+        "definition": "5 bins",
+        "n_bins": 5,
+        "n_stable": 3
+      }
+    ],
+    "independent_positive_controls": {
+      "at_calibrated_threshold": {
+        "additive": 42,
+        "multiplicative": 15
+      },
+      "at_threshold_zero": {
+        "additive": 55,
+        "multiplicative": 29
+      },
+      "examples": [
+        {
+          "n_ab": 129479,
+          "n_abz": 90,
+          "omega": -0.21,
+          "omega_add_lower": -2.39,
+          "pair": "ACETAMINOPHEN+HYDROCODONE"
+        },
+        {
+          "n_ab": 71765,
+          "n_abz": 40,
+          "omega": -0.18,
+          "omega_add_lower": -1.25,
+          "pair": "CYCLOPHOSPHAMIDE+DOXORUBICIN"
+        },
+        {
+          "n_ab": 53039,
+          "n_abz": 37,
+          "omega": 0.0,
+          "omega_add_lower": -2.69,
+          "pair": "NIRMATRELVIR+RITONAVIR"
+        },
+        {
+          "n_ab": 43175,
+          "n_abz": 16,
+          "omega": -2.46,
+          "omega_add_lower": -3.5,
+          "pair": "BUPRENORPHINE+OXYCODONE"
+        },
+        {
+          "n_ab": 38445,
+          "n_abz": 51,
+          "omega": -0.28,
+          "omega_add_lower": -0.98,
+          "pair": "PEGINTERFERON ALFA 2A+RIBAVIRIN"
+        },
+        {
+          "n_ab": 34658,
+          "n_abz": 10,
+          "omega": -3.27,
+          "omega_add_lower": -4.39,
+          "pair": "BUPRENORPHINE+MORPHINE"
+        },
+        {
+          "n_ab": 33088,
+          "n_abz": 3,
+          "omega": -3.27,
+          "omega_add_lower": -6.61,
+          "pair": "BUPRENORPHINE+HYDROMORPHONE"
+        },
+        {
+          "n_ab": 32721,
+          "n_abz": 19,
+          "omega": 0.3,
+          "omega_add_lower": -1.65,
+          "pair": "FLUOROURACIL+OXALIPLATIN"
+        },
+        {
+          "n_ab": 29120,
+          "n_abz": 82,
+          "omega": -0.31,
+          "omega_add_lower": -0.79,
+          "pair": "BUPRENORPHINE+NALOXONE"
+        },
+        {
+          "n_ab": 28804,
+          "n_abz": 29,
+          "omega": -2.12,
+          "omega_add_lower": -3.13,
+          "pair": "OXYCODONE+TRAMADOL"
+        }
+      ],
+      "n_pairs": 349,
+      "note": "label-documented myotoxicity pairs excluding the 16 author-chosen controls; selected by FDA labelling, not by the authors. Both nulls reported at both thresholds -- Tier A uses 0, the screen uses the calibrated threshold.",
+      "recovered_additive": 55,
+      "recovered_additive_ci": [
+        0.122,
+        0.199
+      ],
+      "recovered_multiplicative": 29,
+      "recovered_multiplicative_ci": [
+        0.058,
+        0.116
+      ],
+      "threshold_calibrated": 0.436
+    },
+    "ingredient_accuracy": {
+      "fraction_unanimous": 0.9586,
+      "modal_agreement": 0.9899,
+      "names_examined": 32655,
+      "names_unanimous": 31302,
+      "note": "upper bound on level-2 backfill accuracy; FDA's own annotation of one verbatim string is this consistent",
+      "rows_examined": 77473062
+    },
+    "pt_second_annotation": {
+      "agreed": 21,
+      "curated_only": [
+        "CREATINE KINASE ABNORMAL",
+        "MUSCULAR WEAKNESS"
+      ],
+      "curated_recall_of_mechanical": 0.176,
+      "curated_terms": 23,
+      "jaccard": 0.174,
+      "mechanical_only_top": [
+        "MUSCLE SPASMS",
+        "FIBROMYALGIA",
+        "MUSCLE TWITCHING",
+        "MUSCLE TIGHTNESS",
+        "CARDIOMYOPATHY",
+        "MUSCLE ATROPHY",
+        "MUSCLE SPASTICITY",
+        "MUSCLE RIGIDITY",
+        "MUSCLE STRAIN",
+        "MUSCLE INJURY",
+        "STRESS CARDIOMYOPATHY",
+        "MUSCLE FATIGUE",
+        "CONGESTIVE CARDIOMYOPATHY",
+        "MUSCLE HAEMORRHAGE",
+        "MUSCLE RUPTURE"
+      ],
+      "mechanical_terms": 119,
+      "note": "mechanical second annotation, not a second human reader"
+    },
+    "residual_near_duplicates": {
+      "additional_jaccard_0_8_matches": 421,
+      "cases_removable_by_fuzzy_rule": 226,
+      "event_cases_examined": 19309,
+      "exact_drug_set_matches": 5278,
+      "note": "event cases with a populated event date and age; blocked on event date, age, sex and country",
+      "share_of_event_cases": 0.0117,
+      "within_block_pairs_compared": 6801
+    },
+    "screen_size": [
+      {
+        "documented_signalled": 10,
+        "documented_tested": 142,
+        "enrichment": 1.23,
+        "enrichment_ci_pairwise_ANTICONSERVATIVE": [
+          0.67,
+          2.24
+        ],
+        "n_drugs": 200,
+        "n_pairs": 17375,
+        "stratified": 1.045,
+        "stratified_ci_cluster_bootstrap": [
+          0.32,
+          2.034
+        ],
+        "stratified_excludes_unity": false,
+        "undocumented_signalled": 872,
+        "undocumented_tested": 15184
+      },
+      {
+        "documented_signalled": 22,
+        "documented_tested": 321,
+        "enrichment": 1.77,
+        "enrichment_ci_pairwise_ANTICONSERVATIVE": [
+          1.18,
+          2.65
+        ],
+        "n_drugs": 400,
+        "n_pairs": 53229,
+        "stratified": 1.311,
+        "stratified_ci_cluster_bootstrap": [
+          0.599,
+          2.117
+        ],
+        "stratified_excludes_unity": false,
+        "undocumented_signalled": 1909,
+        "undocumented_tested": 49215
+      },
+      {
+        "documented_signalled": 24,
+        "documented_tested": 444,
+        "enrichment": 2.05,
+        "enrichment_ci_pairwise_ANTICONSERVATIVE": [
+          1.39,
+          3.04
+        ],
+        "n_drugs": 800,
+        "n_pairs": 131888,
+        "stratified": 1.265,
+        "stratified_ci_cluster_bootstrap": [
+          0.601,
+          1.988
+        ],
+        "stratified_excludes_unity": false,
+        "undocumented_signalled": 3294,
+        "undocumented_tested": 125155
+      }
+    ]
+  },
+  "specification_grid": {
+    "arms": [
+      {
+        "additive_advantage": 8,
+        "n_controls": 16,
+        "n_powered": 14,
+        "policy": "primary",
+        "pre_specified": true,
+        "recovered_additive": 12,
+        "recovered_multiplicative": 4,
+        "recovered_powered": 12,
+        "tier": "core"
+      },
+      {
+        "additive_advantage": 8,
+        "n_controls": 16,
+        "n_powered": 15,
+        "policy": "sensitivity",
+        "pre_specified": false,
+        "recovered_additive": 12,
+        "recovered_multiplicative": 4,
+        "recovered_powered": 12,
+        "tier": "core"
+      },
+      {
+        "additive_advantage": 7,
+        "n_controls": 16,
+        "n_powered": 14,
+        "policy": "primary",
+        "pre_specified": false,
+        "recovered_additive": 11,
+        "recovered_multiplicative": 4,
+        "recovered_powered": 11,
+        "tier": "broad"
+      },
+      {
+        "additive_advantage": 0,
+        "n_controls": 16,
+        "n_powered": 15,
+        "policy": "sensitivity",
+        "pre_specified": false,
+        "recovered_additive": 6,
+        "recovered_multiplicative": 6,
+        "recovered_powered": 6,
+        "tier": "broad"
+      }
+    ],
+    "min_additive_advantage": 0,
+    "n_arms": 4,
+    "n_arms_where_additive_wins": 3,
+    "note": "all four tier x role-policy arms; core/primary is pre-specified in config as event.primary_tier"
+  },
+  "stages": [
+    "audit",
+    "generalization",
+    "regime",
+    "run_analysis",
+    "sensitivity"
+  ],
+  "tier": "core",
+  "tier_a": {
+    "correlation_points": [
+      [
+        8.1539,
+        -0.385
+      ],
+      [
+        8.9306,
+        0.127
+      ],
+      [
+        8.7696,
+        0.263
+      ],
+      [
+        12.082,
+        -0.396
+      ],
+      [
+        7.4118,
+        1.382
+      ],
+      [
+        8.094,
+        0.247
+      ],
+      [
+        8.1122,
+        -0.471
+      ],
+      [
+        8.4593,
+        -0.466
+      ],
+      [
+        8.2983,
+        0.71
+      ],
+      [
+        7.8744,
+        -0.597
+      ],
+      [
+        11.0258,
+        -2.277
+      ],
+      [
+        11.323,
+        -1.462
+      ],
+      [
+        6.6529,
+        0.544
+      ],
+      [
+        7.9313,
+        -1.094
+      ],
+      [
+        6.4125,
+        0.52
+      ],
+      [
+        9.1493,
+        -0.597
+      ]
+    ],
+    "leave_one_out": {
+      "folds_selecting_additive": 16,
+      "in_sample_recovered": 12,
+      "loo_recovered": 12,
+      "loo_recovery_rate": 0.75,
+      "n_folds": 16,
+      "optimism": 0.0,
+      "selection_is_stable": true
+    },
+    "n_controls": 16,
+    "n_powered": 14,
+    "observed_rate_vs_marginal_product": {
+      "ci_high": 0.5792371330267938,
+      "ci_low": -0.40187118566868874,
+      "n": 16,
+      "p_value": 0.665609628478563,
+      "r": 0.1171769223772378,
+      "significant": false
+    },
+    "omega_add_vs_marginal_product": {
+      "ci_high": -0.22077901520857146,
+      "ci_low": -0.8646966791970342,
+      "n": 16,
+      "p_value": 0.006884998478201988,
+      "r": -0.6458064277201121,
+      "significant": true
+    },
+    "omega_vs_marginal_product": {
+      "ci_high": -0.19225171345789638,
+      "ci_low": -0.8569814625623382,
+      "n": 16,
+      "p_value": 0.009176244550507527,
+      "r": -0.6280990763002291,
+      "significant": true
+    },
+    "powered_min_pair": 50,
+    "recovered_additive": 12,
+    "recovered_additive_ci": [
+      0.5093,
+      0.9092
+    ],
+    "recovered_all_clustered": {
+      "cluster_ci": [
+        0.3,
+        0.9615
+      ],
+      "largest_cluster_share": 0.4375,
+      "n": 16,
+      "n_clusters": 5,
+      "naive_binomial_ci_ANTICONSERVATIVE": [
+        0.5093,
+        0.9092
+      ],
+      "rate": 0.75,
+      "recovered": 12
+    },
+    "recovered_at_calibrated": 11,
+    "recovered_multiplicative": 4,
+    "recovered_powered": 12,
+    "recovered_powered_at_calibrated": 11,
+    "recovered_powered_ci": [
+      0.6151,
+      0.9691
+    ],
+    "recovered_powered_clustered": {
+      "cluster_ci": [
+        0.5,
+        1.0
+      ],
+      "largest_cluster_share": 0.5,
+      "n": 14,
+      "n_clusters": 4,
+      "naive_binomial_ci_ANTICONSERVATIVE": [
+        0.6151,
+        0.9691
+      ],
+      "rate": 0.8571,
+      "recovered": 12
+    }
+  },
+  "tier_b": {
+    "calibrated_threshold": 0.436,
+    "n_pairs": 16138,
+    "strata": {
+      "all": {
+        "fpr_additive": 0.06667492873962078,
+        "fpr_additive_ci": [
+          0.0629,
+          0.0706
+        ],
+        "fpr_multiplicative": 0.06444416904201264,
+        "n": 16138
+      },
+      "easy": {
+        "fpr_additive": 0.04015582858855259,
+        "fpr_additive_ci": [
+          0.03564,
+          0.04507
+        ],
+        "fpr_multiplicative": 0.04944560982918789,
+        "n": 6674
+      },
+      "hard": {
+        "fpr_additive": 0.08537616229923922,
+        "fpr_additive_ci": [
+          0.07987,
+          0.09113
+        ],
+        "fpr_multiplicative": 0.07502113271344041,
+        "n": 9464
+      }
+    },
+    "target_fpr": 0.05,
+    "used_full_pool": true
+  },
+  "tier_c": {
+    "bands_pooled": {
+      "known_pair": {
+        "enrichment": 2.02,
+        "enrichment_ci": [
+          1.59,
+          2.55
+        ],
+        "rate": 0.1215,
+        "rate_ci": [
+          0.09609,
+          0.15102
+        ],
+        "signalled": 66,
+        "tested": 543
+      },
+      "plausible": {
+        "enrichment": 0.77,
+        "enrichment_ci": [
+          0.66,
+          0.89
+        ],
+        "rate": 0.0462,
+        "rate_ci": [
+          0.04065,
+          0.05238
+        ],
+        "signalled": 228,
+        "tested": 4930
+      },
+      "positive_control": {
+        "enrichment": 12.16,
+        "enrichment_ci": [
+          8.89,
+          16.63
+        ],
+        "rate": 0.7333,
+        "rate_ci": [
+          0.48338,
+          0.90259
+        ],
+        "signalled": 11,
+        "tested": 15
+      },
+      "reference_unsupported_rate": 0.06032,
+      "unsupported": {
+        "enrichment": 1.0,
+        "enrichment_ci": [
+          0.9,
+          1.11
+        ],
+        "rate": 0.0603,
+        "rate_ci": [
+          0.05614,
+          0.06471
+        ],
+        "signalled": 717,
+        "tested": 11887
+      }
+    },
+    "by_era_count": {
+      "0": 55,
+      "1": 778,
+      "2": 170,
+      "3": 19
+    },
+    "era_stable": {
+      "bands": {
+        "known_pair": {
+          "enrichment": 10.95,
+          "enrichment_ci": [
+            3.31,
+            36.24
+          ],
+          "rate": 0.0074,
+          "rate_ci": [
+            0.00249,
+            0.01742
+          ],
+          "signalled": 4,
+          "tested": 543
+        },
+        "plausible": {
+          "enrichment": 0.6,
+          "enrichment_ci": [
+            0.13,
+            2.84
+          ],
+          "rate": 0.0004,
+          "rate_ci": [
+            8e-05,
+            0.0013
+          ],
+          "signalled": 2,
+          "tested": 4930
+        },
+        "positive_control": {
+          "enrichment": 495.29,
+          "enrichment_ci": [
+            182.93,
+            1340.99
+          ],
+          "rate": 0.3333,
+          "rate_ci": [
+            0.14025,
+            0.58416
+          ],
+          "signalled": 5,
+          "tested": 15
+        },
+        "reference_unsupported_rate": 0.00067,
+        "unsupported": {
+          "enrichment": 1.0,
+          "enrichment_ci": [
+            0.38,
+            2.66
+          ],
+          "rate": 0.0007,
+          "rate_ci": [
+            0.00032,
+            0.00127
+          ],
+          "signalled": 8,
+          "tested": 11887
+        }
+      },
+      "n_pairs": 19,
+      "with_prior_support": 9
+    },
+    "expected_by_chance": 869,
+    "n_drugs": 200,
+    "n_pairs_tested": 17375,
+    "n_signalled": 1022,
+    "signalled_fraction": 0.0588
+  }
+}

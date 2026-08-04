@@ -1,0 +1,34 @@
+# Myotoxicity MedDRA Preferred Terms -- SEED LIST
+#
+# STATUS: seed only. Phase 5 (04_define_event.py) replaces this file with a
+# curated list built from the PT strings that actually occur in REAC across all
+# 90 quarters. That matters because ~40 MedDRA versions span 2004-2026 and terms
+# are added, renamed, and demoted over that window; a list written from the
+# current MedDRA version alone will silently under-capture early reports.
+#
+# Two tiers. The CORE tier is the primary analysis: terms that are specific to
+# rhabdomyolysis and hard to report for any other reason. The BROAD tier adds
+# general myotoxicity and is run as a sensitivity analysis -- it has more power
+# but is far more vulnerable to confounding, since myalgia in particular is
+# reported for almost everything.
+#
+# Format: one PT per line under a [tier] header. Case-insensitive match.
+
+[core]
+Rhabdomyolysis
+Myoglobinuria
+Myoglobinaemia
+Muscle necrosis
+Necrotising myositis
+Immune-mediated necrotising myopathy
+
+[broad]
+Myopathy
+Toxic myopathy
+Myositis
+Muscle disorder
+Muscular weakness
+Myalgia
+Blood creatine phosphokinase increased
+Blood creatine phosphokinase abnormal
+Blood creatine phosphokinase MM increased

@@ -1,0 +1,76 @@
+% Two-column conference preamble: an 8-page body cap, references after.
+%
+% The body is single-spaced two-column 10pt. References are pushed onto a fresh
+% page by \clearpage so the body page count is unambiguous and machine-checkable
+% -- paper/build.py reads the page number of the references label and reports
+% it, and the test suite fails if it exceeds the cap.
+%
+% Generated from the corresponding .md by paper/build.py. Do not edit.
+
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage[margin=0.75in,columnsep=0.28in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{calc}
+\usepackage{caption}
+\usepackage{microtype}
+\usepackage{balance}
+\usepackage[hidelinks]{hyperref}
+\usepackage{newunicodechar}
+
+\graphicspath{{../results/figures/}}
+
+\captionsetup{font=small,labelfont=bf,skip=4pt}
+\setlength{\tabcolsep}{4pt}
+\renewcommand{\arraystretch}{1.08}
+\setlength{\emergencystretch}{3em}
+\setlength{\parskip}{0pt}
+\setcounter{secnumdepth}{0}
+\urlstyle{same}
+
+% Tighter section spacing than the article default; two columns at 10pt leave
+% no room for the default 3.5ex gaps.
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{1.6ex plus .2ex}{0.7ex}
+\titlespacing*{\subsection}{0pt}{1.2ex plus .2ex}{0.5ex}
+\titleformat*{\section}{\large\bfseries}
+\titleformat*{\subsection}{\normalsize\bfseries}
+
+% pandoc emits these
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\providecommand{\pandocbounded}[1]{#1}
+\newcounter{none}
+
+\newunicodechar{Ω}{\ensuremath{\Omega}}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{×}{\ensuremath{\times}}
+\newunicodechar{−}{\ensuremath{-}}
+\newunicodechar{≥}{\ensuremath{\ge}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{↔}{\ensuremath{\leftrightarrow}}
+\newunicodechar{₀}{\ensuremath{_0}}
+\newunicodechar{₂}{\ensuremath{_2}}
+\newunicodechar{₅}{\ensuremath{_5}}
+\newunicodechar{⁻}{\ensuremath{^-}}
+\newunicodechar{⁵}{\ensuremath{^5}}
+\newunicodechar{⁷}{\ensuremath{^7}}
+\newunicodechar{é}{\'e}
+
+\title{\vspace{-3ex}%%TITLE%%\vspace{-1ex}}
+\author{%%AUTHORS%%}
+\date{}
+
+\begin{document}
+\twocolumn[\begin{@twocolumnfalse}
+\maketitle
+\begin{abstract}
+\noindent %%ABSTRACT%%
+\end{abstract}
+\vspace{2ex}
+\end{@twocolumnfalse}]

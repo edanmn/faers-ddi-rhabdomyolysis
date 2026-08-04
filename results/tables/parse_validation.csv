@@ -1,0 +1,17 @@
+check,scope,status,value,denominator,rate,detail
+demo_report_id_unique,all,PASS,0,0,0.0,report_id unique within every quarter
+child_resolves_to_demo,drug,PASS,0,100511908,0.0,"0/100,511,908 rows have no DEMO row in their quarter"
+child_resolves_to_demo,reac,PASS,0,82257716,0.0,"0/82,257,716 rows have no DEMO row in their quarter"
+child_resolves_to_demo,indi,PASS,0,63213861,0.0,"0/63,213,861 rows have no DEMO row in their quarter"
+child_resolves_to_demo,ther,PASS,0,35772081,0.0,"0/35,772,081 rows have no DEMO row in their quarter"
+child_resolves_to_demo,outc,PASS,0,19191409,0.0,"0/19,191,409 rows have no DEMO row in their quarter"
+child_resolves_to_demo,rpsr,PASS,0,2716858,0.0,"0/2,716,858 rows have no DEMO row in their quarter"
+rowcount_matches_manifest,demo,PASS,0,24812425,0.0,"parquet 24,812,425 vs manifest 24,812,425"
+rowcount_matches_manifest,drug,PASS,0,100511908,0.0,"parquet 100,511,908 vs manifest 100,511,908"
+rowcount_matches_manifest,indi,PASS,0,63213861,0.0,"parquet 63,213,861 vs manifest 63,213,861"
+rowcount_matches_manifest,outc,PASS,0,19191409,0.0,"parquet 19,191,409 vs manifest 19,191,409"
+rowcount_matches_manifest,reac,PASS,0,82257716,0.0,"parquet 82,257,716 vs manifest 82,257,716"
+rowcount_matches_manifest,rpsr,PASS,0,2716858,0.0,"parquet 2,716,858 vs manifest 2,716,858"
+rowcount_matches_manifest,ther,PASS,0,35772081,0.0,"parquet 35,772,081 vs manifest 35,772,081"
+deleted_cases_loaded,all,PASS,229233,229233,0.0,"229,233 unique case ids, range 1,000,000-26,977,487"
+deleted_cases_match_demo,all,PASS,98102,229233,0.42795758027858116,"98,102/229,233 deleted case ids appear in DEMO"

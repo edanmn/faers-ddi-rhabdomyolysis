@@ -1,0 +1,9 @@
+stage,cases_remaining,removed,note
+0_demo_rows,24812425,0,raw DEMO rows across 90 quarters
+1_within_laers,3091161,1185033,kept highest isr per case
+2_within_faers,17683864,2852360,kept highest caseversion per caseid
+3_cross_era_bridge,20692683,82342,ids present in both eras collapsed; FAERS record kept
+4_deleted_cases,20588497,104186,FDA-withdrawn case ids removed
+5_near_duplicates,20294190,294307,"fingerprint match, requires event_dt+age_years+drug_set+pt_set"
+6_one_case_per_report,20293421,769,reports appearing under two case numbers; later quarter kept
+5b_near_duplicates_sensitivity,20102124,486373,"SENSITIVITY ONLY, not applied: requires event_dt+drug_set+pt_set; largest group 775"

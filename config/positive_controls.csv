@@ -1,0 +1,17 @@
+drug_a,drug_b,mechanism,expected_strength,source,citation_status,notes
+simvastatin,amiodarone,CYP3A4 inhibition,established,fda_label,verified_label_restriction,Label caps simvastatin at 20 mg with amiodarone
+simvastatin,clarithromycin,CYP3A4 inhibition,established,fda_label,verified_label_restriction,Combination contraindicated on label
+simvastatin,itraconazole,CYP3A4 inhibition,established,fda_label,verified_label_restriction,Combination contraindicated on label
+simvastatin,gemfibrozil,glucuronidation + OATP1B1,established,fda_label,verified_label_restriction,Combination contraindicated on label
+simvastatin,cyclosporine,OATP1B1 + CYP3A4,established,fda_label,verified_label_restriction,Combination contraindicated on label
+simvastatin,diltiazem,CYP3A4 inhibition,established,fda_label,verified_label_restriction,Label caps simvastatin at 10 mg
+simvastatin,verapamil,CYP3A4 inhibition,established,fda_label,verified_label_restriction,Label caps simvastatin at 10 mg
+lovastatin,clarithromycin,CYP3A4 inhibition,established,fda_label,verified_label_restriction,Combination contraindicated on label
+lovastatin,itraconazole,CYP3A4 inhibition,established,fda_label,verified_label_restriction,Combination contraindicated on label
+atorvastatin,clarithromycin,CYP3A4 inhibition,established,fda_label,verified_label_restriction,Dose limitation advised
+atorvastatin,gemfibrozil,OATP1B1 + glucuronidation,probable,fda_label,verified_label_restriction,Concomitant use discouraged
+rosuvastatin,gemfibrozil,OATP1B1 inhibition,established,fda_label,verified_label_restriction,Label caps rosuvastatin at 10 mg
+rosuvastatin,cyclosporine,OATP1B1 + BCRP,established,fda_label,verified_label_restriction,Label caps rosuvastatin at 5 mg
+colchicine,clarithromycin,CYP3A4 + P-gp,established,fda_label,verified_label_restriction,Fatal colchicine toxicity reported; contraindicated in renal impairment
+colchicine,cyclosporine,P-gp inhibition,established,fda_label,verified_label_myotoxicity,Combination contraindicated in renal or hepatic impairment
+colchicine,atorvastatin,CYP3A4 + P-gp,probable,case_reports,verified_label_myotoxicity,Myopathy case series; weaker evidence than the statin-macrolide pairs

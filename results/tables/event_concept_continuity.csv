@@ -1,0 +1,11 @@
+concept,first_quarter,last_quarter,quarters_present,total_reports,break_quarters,status
+ck_abnormal,2004q1,2026q2,88,457,,PASS
+ck_increased,2004q1,2026q2,90,28299,,PASS
+immune_myopathy,2012q3,2026q2,54,3007,,PASS
+muscle_disorder,2004q1,2026q2,90,7910,,PASS
+muscle_necrosis,2004q1,2026q2,90,1655,,PASS
+muscle_symptom,2004q1,2026q2,90,262248,,PASS
+myoglobin_release,2004q1,2026q2,90,2266,,PASS
+myopathy,2004q1,2026q2,90,8779,,PASS
+myositis,2004q1,2026q2,90,8439,,PASS
+rhabdomyolysis,2004q1,2026q2,90,39129,,PASS
