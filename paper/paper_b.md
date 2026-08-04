@@ -236,7 +236,8 @@ Every stochastic procedure is seeded and the seeds are in the shipped configurat
 
 ## Data and code availability
 
-All code, configuration and result tables are available at [TODO: repository URL / DOI]. Every figure quoted in the Abstract and Results is generated into `results/canonical_numbers.json` by a single deterministic run and asserted against this text by `tests/test_canonical_numbers.py`; pipeline statistics quoted in Methods are persisted under `audit.provenance` in the same file and asserted alongside them. Figures drawn from cited work are attributed and not regenerated. The pipeline is deterministic: two full runs produce byte-identical output.
+All code, configuration and result tables are available at
+<https://github.com/edanmn/faers-ddi-rhabdomyolysis>. Every figure quoted in the Abstract and Results is generated into `results/canonical_numbers.json` by a single deterministic run and asserted against this text by `tests/test_canonical_numbers.py`; pipeline statistics quoted in Methods are persisted under `audit.provenance` in the same file and asserted alongside them. Figures drawn from cited work are attributed and not regenerated. The pipeline is deterministic: two full runs produce byte-identical output.
 
 **This is research code and a research result. It is not clinical guidance.**
 

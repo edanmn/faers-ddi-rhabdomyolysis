@@ -1418,7 +1418,8 @@ irreducible source archive set.
 
 ## Data and code availability
 
-All code, configuration and result tables are in this repository. Every figure quoted in the Abstract and Results is generated into `results/canonical_numbers.json` by a single deterministic run and asserted against this text by `tests/test_canonical_numbers.py`; pipeline statistics quoted in Methods are persisted under `audit.provenance` in the same file and asserted alongside them. Figures drawn from cited work are attributed and not regenerated. The pipeline is deterministic: two full runs
+All code, configuration and result tables are available at
+<https://github.com/edanmn/faers-ddi-rhabdomyolysis>. Every figure quoted in the Abstract and Results is generated into `results/canonical_numbers.json` by a single deterministic run and asserted against this text by `tests/test_canonical_numbers.py`; pipeline statistics quoted in Methods are persisted under `audit.provenance` in the same file and asserted alongside them. Figures drawn from cited work are attributed and not regenerated. The pipeline is deterministic: two full runs
 produce byte-identical output. `results/tables/download_manifest.csv` records a
 SHA-256 for each of the 90 archives. Per-phase development records, including
 errors made and corrected, are in `results/PHASE*_FINDINGS.md`.

@@ -79,6 +79,20 @@ roughly 40 minutes. `regime` and `audit` are the slow ones.
 **Determinism is real and verified** — two full runs produce byte-identical
 output. Every stochastic step is seeded.
 
+### Version control
+
+Public at <https://github.com/edanmn/faers-ddi-rhabdomyolysis>. The repository
+root is **this project directory**, not the home directory — `/Users/ravik` is
+itself a stale `git init` with no commits, so a `git` command run from a
+directory without its own repo will resolve to it and can stage `~/.ssh`,
+`~/.claude.json` and the 159 GB `data/` tree. Check `git rev-parse
+--show-toplevel` before staging anything.
+
+`data/reference/openfda_labels/` (800 JSONs, 8.7 MB) **is** tracked, because
+openFDA drifts and `verify_controls` depends on it. Raw archives are not, and
+are reproducible from the FDA source. The instructional PDF the project started
+from is third-party and deliberately gitignored — do not commit it.
+
 ---
 
 ## 3. Architecture
@@ -185,8 +199,14 @@ screened "ingredients" are non-drug placeholders (immaterial, disclosed).
 
 ## 7. What is actually outstanding
 
-1. **Six `[TODO]` blocks** in the two conference papers — authors, affiliations,
-   funding, repository DOI. `manuscript.md` has none.
+1. **Four `[TODO]` blocks** in the two conference papers — authors/affiliations
+   and Acknowledgements, two of each. `manuscript.md` has none. The
+   availability TODO is closed: all three documents now cite
+   <https://github.com/edanmn/faers-ddi-rhabdomyolysis>.
+   `test_papers_mark_missing_information` requires `[TODO` to remain present in
+   both papers, so it will fail once the last one is filled — that is the guard
+   against submitting an incomplete paper, and it should be **deleted, not
+   weakened**, when the papers are genuinely complete.
 2. **AMIA's numeric page limit is unverified.** Their call states the limit
    *includes* references; the 8-page cap here excludes them. Paper A is 9 total
    pages, Paper B 8. Check the live CFP before final formatting.
