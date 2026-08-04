@@ -199,10 +199,17 @@ screened "ingredients" are non-drug placeholders (immaterial, disclosed).
 
 ## 7. What is actually outstanding
 
-1. **Four `[TODO]` blocks** in the two conference papers — authors/affiliations
-   and Acknowledgements, two of each. `manuscript.md` has none. The
-   availability TODO is closed: all three documents now cite
-   <https://github.com/edanmn/faers-ddi-rhabdomyolysis>.
+1. **Two `[TODO]` blocks** in the two conference papers — authors/affiliations,
+   one each. `manuscript.md` has none. The availability TODO is closed: all
+   three documents cite <https://github.com/edanmn/faers-ddi-rhabdomyolysis>.
+   The Acknowledgements sections were **removed by author decision**, not left
+   unfinished — do not reinstate them. Their removal leaves three statements
+   with no home, all of which most venues expect: **generative-AI disclosure**
+   (this project's code, prose and internal review rounds were LLM-assisted and
+   no document says so anywhere), funding, and competing interests. The natural
+   home for all three is the existing "Data and code availability" section or
+   Methods. Unresolved, and the AI disclosure is the one with real
+   consequences if a venue asks after acceptance.
    `test_papers_mark_missing_information` requires `[TODO` to remain present in
    both papers, so it will fail once the last one is filled — that is the guard
    against submitting an incomplete paper, and it should be **deleted, not

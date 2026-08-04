@@ -241,10 +241,6 @@ All code, configuration and result tables are available at
 
 **This is research code and a research result. It is not clinical guidance.**
 
-## Acknowledgements
-
-[TODO]
-
 ## References
 
 1. Bate A, Lindquist M, Edwards IR, Olsson S, Orre R, et al. A Bayesian neural network method for adverse drug reaction signal generation. *Eur J Clin Pharmacol.* 1998;54(4):315–321. doi:10.1007/s002280050466
