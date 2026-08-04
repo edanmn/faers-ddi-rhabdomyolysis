@@ -221,13 +221,18 @@ screened "ingredients" are non-drug placeholders (immaterial, disclosed).
    one each. `manuscript.md` has none. The availability TODO is closed: all
    three documents cite <https://github.com/edanmn/faers-ddi-rhabdomyolysis>.
    The Acknowledgements sections were **removed by author decision**, not left
-   unfinished — do not reinstate them. Their removal leaves three statements
-   with no home, all of which most venues expect: **generative-AI disclosure**
-   (this project's code, prose and internal review rounds were LLM-assisted and
-   no document says so anywhere), funding, and competing interests. The natural
-   home for all three is the existing "Data and code availability" section or
-   Methods. Unresolved, and the AI disclosure is the one with real
-   consequences if a venue asks after acceptance.
+   unfinished — do not reinstate them. Their removal left three statements with
+   no home — **generative-AI disclosure** (this project's code, prose and
+   internal review rounds were LLM-assisted and no document says so anywhere),
+   funding, and competing interests. This was raised with the author on
+   2026-08-04 with a drafted one-sentence disclosure for the existing "Data and
+   code availability" section; **the author's decision was not to pursue it**
+   ("don't worry about it, it doesn't matter"). Recorded as decided, not
+   pending — do not silently reopen it. Worth one line at submission time only
+   because AMIA and ICMJE ask for the disclosure in the manuscript and a venue
+   discovering it after acceptance treats it as an integrity matter rather than
+   a formatting one. If the author revisits it, the draft text is in the
+   2026-08-04 session log (§9).
    `test_papers_mark_missing_information` requires `[TODO` to remain present in
    both papers, so it will fail once the last one is filled — that is the guard
    against submitting an incomplete paper, and it should be **deleted, not
@@ -267,12 +272,15 @@ screened "ingredients" are non-drug placeholders (immaterial, disclosed).
    compute it in the pipeline and report it. It converts an objection into a
    strength.
 
-3. **AMIA's numeric page limit is unverified.** Their call states the limit
-   *includes* references; the 8-page cap here excludes them. Paper A is 9 total
-   pages, Paper B is now 9 too (it gained a page in r17). Both papers are at
-   **zero body-page slack** — any addition now requires a compensating cut, and
-   r17 spent four build cycles discovering this. Check the live CFP before final
-   formatting.
+3. **AMIA's numeric page limit is unverified — deprioritised by the author.**
+   Their call states the limit *includes* references; the 8-page cap here
+   excludes them. Paper A is 9 total pages, Paper B is now 9 too (it gained a
+   page in r17). Offered three times on 2026-08-04 and declined ("doesn't
+   matter"), so it is **not** an open task — but it is the item most likely to
+   force real work late, because if the limit is 8 inclusive then both papers
+   are over by a page and both are at **zero body-page slack**: any addition
+   now requires a compensating cut elsewhere. r17 spent four build cycles
+   learning that. Check the live CFP before final formatting.
 4. **Resource-gated, not effort-gated:** a curated severity-graded DDI reference
    (DrugBank licence) — the single largest limitation; a second human PT curator;
    pair-level VigiBase (UMC research agreement); a valid negative case for the
@@ -321,3 +329,106 @@ rounds *and* found a round-11 withdrawal still live in `manuscript.md`'s
 abstract. Five rounds in a row is not the signature of convergence. Treat "no
 known defects" as exactly that — not as "correct" — and assume the next round
 finds something too.
+
+---
+
+## 9. Session log — 2026-08-04
+
+The session that took this project from "no version control at all" to r17.
+Recorded because several of its decisions are not recoverable from the diff, and
+because two of them were the author's calls rather than defaults.
+
+### 9.1 Version control, from nothing
+
+The project had **no commits**. `git rev-parse --show-toplevel` resolved to
+`/Users/ravik` — the home directory is itself a `git init` with no commits, so
+committing "here" would have staged `~/.ssh`, `~/.claude.json` (holds an OAuth
+token), `~/.zsh_history` and the 159 GB `data/` tree. A project-local repo was
+created instead. **The home-directory repo still exists and was deliberately not
+touched** — deleting it is destructive and needs the author's say-so. Any other
+project folder under `~/Desktop/` is probably in the same position.
+
+Sequence, for anyone reconstructing the history:
+
+1. Project-local `git init`; 900 files / 17 MB staged; scanned for credentials
+   (the only hits were the word "SECRETIONS" in FDA label text).
+2. First commit, pushed to a **private** repo.
+3. Author confirmed the account: `gh auth status` displays **FieryKnight2010**
+   but `gh api user` returns **edanmn** — a username change, old label cached in
+   the keyring. `edanmn` is correct.
+4. Author asked for public. Before flipping: the third-party seed PDF
+   (`Using FAERS for Drug Interaction Research.pdf`) was untracked and
+   gitignored — it is someone else's instructional handout, nothing in the
+   pipeline reads it, and redistributing it publicly is a different matter from
+   keeping it privately. It was already in commit 1, so history was rebuilt as a
+   single clean commit and force-pushed rather than left reachable.
+5. Repo made public.
+
+**Residual, disclosed to the author:** GitHub retains unreachable objects for a
+period, so the force-replaced commits may persist by SHA. Reaching them requires
+the exact 40-character hash, which was never shared. Airtight would be
+delete-and-recreate; the token lacks `delete_repo` scope. Also public now: the
+commit email `rishik.kondadadi@gmail.com`, and `CLAUDE.md` plus the 17
+`PHASE*_FINDINGS.md` files — the candid internal review record. Both were
+flagged; neither was changed.
+
+### 9.2 Decisions the author made
+
+- **DOI: no Zenodo.** The bare GitHub URL goes in all three documents. Applied
+  to `paper_a`, `paper_b`, and to `manuscript.md`, which had said "in this
+  repository" — meaningless to someone reading the preprint on medRxiv.
+- **No Acknowledgements section** in either conference paper. See §7.1.
+- **Generative-AI disclosure: not pursued.** See §7.1. The drafted sentence, if
+  it is ever wanted: *"Analysis code, internal review, and portions of the
+  manuscript text were developed with assistance from a large language model
+  (Anthropic Claude); the author specified the study design and every analysis,
+  verified all reported quantities against the deterministic pipeline output,
+  and takes responsibility for the content."* It needs the author's confirmation
+  that it describes what actually happened before it goes in — it is a factual
+  claim about their process, not a boilerplate.
+- **AMIA page limit: deprioritised.** See §7.3.
+- **Authors/affiliations:** the author will supply them. This is the last
+  `[TODO]` in each paper and the only hard blocker on submission.
+
+### 9.3 What r17 actually was
+
+A full adversarial review, requested in the register of a top-tier reviewer, run
+**against the shipped pipeline rather than the prose** — which is the only
+method that has ever found anything here. Full write-up in
+`results/PHASE17_FINDINGS.md`; the corrections are in §6 and the unfixed
+remainder in §7.2.
+
+The single most useful thing it did was recompute a number the papers already
+quoted correctly, and check what that number *meant*. 2.2% against a nominal
+2.5% is not a miscalibration; it is calibration. The paper asserted the opposite
+in its title-level claim while conceding the truth in its Discussion, and 329
+tests passed throughout because every one of them verified digits rather than
+inferences.
+
+Reviewer-template note for next time: the request arrived as a generic ML-paper
+checklist (baselines, ablations, train/test splits, BLEU). Most of it does not
+apply to a disproportionality study on spontaneous reports. Mapping the parts
+that transfer — leakage, circularity, calibration, multiplicity, reproducibility
+— and saying plainly which headings are category errors was more useful than
+filling them in. Do not invent an ablation to satisfy a heading.
+
+### 9.4 State at pause
+
+- `main` at the r17 commit, pushed, working tree clean.
+- **330 tests pass**; `paper/build.py --check` clean; all three PDFs current.
+- `manuscript` 30 pages; `paper_a` 9 total (8 body, cap 8); `paper_b` 9 total
+  (8 body, cap 8). **Neither conference paper has any slack left.**
+- Pipeline was **not** re-run this session — no analysis number changed, only
+  prose, guards and documentation. `canonical_numbers.json` is untouched since
+  the last full run.
+
+### 9.5 Where to pick up
+
+In order:
+
+1. Nothing, until the author supplies authors/affiliations — or start §7.2,
+   which is independent of them.
+2. §7.2's four pipeline items. The interval on the in-regime rates is first:
+   it is the evidence for r17's central correction, it is currently absent, and
+   a reviewer who recomputes it will reach the same conclusion r17 did.
+3. Assume r18 finds something. Five consecutive rounds have.
