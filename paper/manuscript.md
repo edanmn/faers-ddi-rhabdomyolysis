@@ -341,7 +341,7 @@ under-sensitivity cannot be offered as a safeguard here. §4.5 therefore reports
 the analysis restricted to pairs whose two labels both exist, which removes the
 part of the insensitivity that is structural rather than editorial.
 
-### 3.7 Statistical measures
+### 3.8 Statistical measures
 
 The eight cells of the 2×2×2 table are recoverable from the triple count, six
 marginals and the total.
@@ -365,6 +365,14 @@ with 200 drugs each drug sits in 199 pairs, so pair outcomes are strongly
 dependent. Significance is assessed by a permutation test that holds the pair
 graph and the observed signal pattern fixed and randomises which drugs are
 annotated as implicated (10,000 permutations).
+
+**What "nominal 2.5%" does and does not mean.** Ω₀₂₅ is the 2.5th percentile of
+a gamma-Poisson posterior rather than a frequentist test statistic, so "nominal
+2.5%" is a convention of the field and not a guarantee of the estimator; a rate
+departing from it is evidence about behaviour in this regime, not a violated
+guarantee. We use the convention because it is the operating point
+practitioners use, and because the comparisons below hold the cut fixed across
+both measures.
 
 **Design.** Unit of analysis is the case; denominator is the deduplicated set
 less the polypharmacy exclusion, retaining cases with no resolved drug as
@@ -598,6 +606,14 @@ threshold.** At +0.436 recovery is 11/15 of the controls that enter the screen
 (§4.5). The two operating points are reported separately and should not be
 combined.
 
+**Fifteen of the sixteen controls enter the screen.** Itraconazole + lovastatin
+does not. Both ingredients are among the 200, but the pair is co-reported once
+in 22 years and so falls below the three-co-report floor fixed in advance.
+Recovery is therefore quoted out of 16 where the control set is the unit and
+out of 15 where the screen is, the two denominators are not interchangeable,
+and the missing pair is the least powered of the sixteen rather than a failure
+to detect.
+
 ### 4.4 Polypharmacy leverage (Figure 5)
 
 The strongest apparent false positive was alirocumab + ipratropium: 88
@@ -614,7 +630,11 @@ by the cap rather than produced by it. Nothing in the positive controls could
 have revealed the leverage problem itself — it is visible only from the
 false-positive side. **The cap value, however, was chosen by looking at control
 recovery**, and §4.9 reports the full sweep: the conclusion is flat from 15 to
-40, and a cap of 10 would have been better on both axes.
+40, and a cap of 10 would have been better on both axes. We retain 20 rather
+than the dominating value: re-tuning the cap on the same 16 controls used to
+measure performance would convert a pre-specified parameter into a fitted one,
+so the reported configuration is deliberately not the best available on our own
+numbers.
 
 ### 4.5 The screen shows no demonstrable enrichment for genuine interactions (Figures 3–4)
 
@@ -640,10 +660,22 @@ negative controls of similar marginal strength:
 chance predicts** — 1,022 against 1,212 — and only `known_pair` exceeds its own
 expectation. The apparent excess under the pooled figure is an artefact of
 averaging a rate that varies widely. This sharpens the negative result below
-rather than threatening it, but the strength-matched column extrapolates into
-the high-marginal bands from a thin slice of the negative pool, so the 1,212
-figure carries real uncertainty. That the uniform assumption is wrong does
-not.
+rather than threatening it.
+
+**But the 1,212 figure is far weaker than the 1,022 it is compared against, and
+we state how weak.** The negative pool's top quintile spans marginal strength
+2.80 to 8.95, and the median pair of *every* band in the screen — 2.85
+unsupported, 4.16 plausible, 5.32 known pair, 8.15 positive control — falls
+inside it. More than half the screen therefore collapses into a single bin and
+inherits a single rate (7.06%), which is why 17,375 × 7.06% reproduces the
+strength-matched total to within about one percent. The column is closer to one
+extrapolated number applied to the whole screen than to a genuine per-pair
+matching, and that number is estimated from negatives concentrated near the
+bottom of the bin. The rate is also non-monotone at the top — 0.78%, 2.83%,
+5.72%, 8.71%, 7.06% across quintiles — so it is not even clear that
+extrapolating upward is conservative. We report the comparison because the
+uniform assumption is demonstrably wrong and the direction of that error is not
+in doubt; nothing rests on the precise size of the shortfall.
 
 **Multiplicity.** Ω_add,025 is a shrinkage bound, not a p-value, and carries no
 family-wise or false-discovery guarantee; the calibrated threshold stands in for
@@ -1284,8 +1316,15 @@ against author-curated reference lists should be read accordingly.
   count is expected by construction. The two are consistent.
 - **The in-regime error rates rest on constructed negative controls.** The
   purpose-built pool excludes documented interactions, so any undocumented true
-  interaction it contains inflates the measured rate; every rate here is an
-  upper bound. The matched-recovery table uses the 166 in-regime pairs of the
+  interaction it retains inflates the measured rate. **But it also excludes
+  pairs whose two drugs are both on the implicated list — the configuration
+  every positive control has — as too likely to be unrecorded interactions, and
+  that exclusion removes the pairs most likely to fire, pushing the measured
+  rate down.** The two biases run in opposite directions and neither is
+  quantified, so these rates are not a clean upper bound; the pool matches the
+  positive controls on marginal strength but still not on implication status,
+  and to that extent it inherits a weaker form of the defect it was built to
+  remove. The matched-recovery table uses the 166 in-regime pairs of the
   generated pool and is noisy at the tails, and the in-regime cut is our choice
   rather than pre-specified.
 
