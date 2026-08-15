@@ -1,3 +1,13 @@
+> **ARCHIVED, and superseded.** This was the evaluation half of a two-paper split
+> of `paper/manuscript.md`, maintained through round 17. In round 18 the two
+> conference papers were merged back into the manuscript, which is once again
+> the single maintained document. Every claim below now lives there, including
+> the round-17 corrections that had landed here and nowhere else; the guards
+> that policed this file were rescoped to the manuscript rather than deleted.
+> Retained for history only. **Do not cite or build from it** — it is excluded
+> from `paper/build.py` and is not asserted against
+> `results/canonical_numbers.json`, so it will drift.
+
 # Annotation independence and reference coverage in the evaluation of drug–drug interaction screens: 17,375 drug pairs in 22 years of FAERS
 
 **Authors.** [TODO: author list and affiliations]

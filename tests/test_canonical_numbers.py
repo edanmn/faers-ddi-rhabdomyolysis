@@ -918,12 +918,10 @@ def test_inpatient_proxy_is_not_presented_as_exclusionary(manuscript):
 # Removed with the document: test_paper_headline_numbers_match_canonical, test_paper_reports_the_specification_grid, test_paper_keeps_the_clustered_interval_and_negative_findings, test_paper_marks_missing_information_rather_than_inventing_it
 
 
-# --- the two conference papers ----------------------------------------------
-# paper_a covers the estimand, paper_b the evaluation. Each is a further
-# opportunity to drift from the canonical numbers, so each is bound to them.
-
-PAPER_A = cfg.PROJECT_ROOT / "paper" / "paper_a.md"
-PAPER_B = cfg.PROJECT_ROOT / "paper" / "paper_b.md"
+# --- the conference papers, retired in round 18 ------------------------------
+# paper_a (estimand) and paper_b (evaluation) were split out of manuscript.md
+# and merged back into it. Their claims live on below, rescoped to the
+# manuscript; the documents themselves are in paper/archive/.
 
 
 def _read(path):
@@ -932,168 +930,144 @@ def _read(path):
     return path.read_text().replace("−", "-")
 
 
-@pytest.fixture(scope="module")
-def paper_a() -> str:
-    return _read(PAPER_A)
+# --- round 18: the two conference papers were merged back into the manuscript.
+# Every assertion below used to be scoped to paper_a.md or paper_b.md. The
+# documents are retired, but the CLAIMS are not -- they moved into the
+# manuscript, so the guards move with them rather than being deleted. A guard
+# deleted alongside the document it happened to be pointed at is how a
+# correction gets lost.
 
 
-@pytest.fixture(scope="module")
-def paper_b() -> str:
-    return _read(PAPER_B)
-
-
-def test_paper_a_numbers_match_canonical(paper_a, numbers):
+def test_calibration_numbers_match_canonical(manuscript, numbers):
     a, b = numbers["tier_a"], numbers["tier_b"]
     for value in (f"{numbers['n_cases']:,}", f"{numbers['n_event_cases']:,}",
                   f"{a['recovered_powered']}/{a['n_powered']}",
                   f"{100 * b['strata']['all']['fpr_additive']:.1f}%",
                   f"{b['n_pairs']:,}"):
-        assert value in paper_a, f"{value} missing from paper_a.md"
-    # both nulls at the matched threshold, and the clustered interval
-    assert f"{a['recovered_additive']} of {a['n_controls']}" in paper_a or \
-           f"{a['recovered_additive']}/{a['n_controls']}" in paper_a
+        assert value in manuscript, f"{value} missing from manuscript.md"
+    assert f"{a['recovered_additive']} of {a['n_controls']}" in manuscript or \
+           f"{a['recovered_additive']}/{a['n_controls']}" in manuscript
     lo, hi = a["recovered_powered_clustered"]["cluster_ci"]
-    assert f"{100 * lo:.0f}" in paper_a and f"{100 * hi:.0f}" in paper_a
+    assert f"{100 * lo:.0f}" in manuscript and f"{100 * hi:.0f}" in manuscript
 
 
-def test_paper_b_numbers_match_canonical(paper_b, numbers):
+def test_evaluation_numbers_match_canonical(manuscript, numbers):
     c = numbers["tier_c"]
     ind = numbers["independent_annotation"]
     for value in (f"{c['n_pairs_tested']:,}", f"{c['n_signalled']:,}",
                   f"{numbers['n_cases']:,}", f"{ind['enrichment']:.2f}"):
-        assert value in paper_b, f"{value} missing from paper_b.md"
-    assert f"{c['bands_pooled']['known_pair']['enrichment']:.2f}" in paper_b
+        assert value in manuscript, f"{value} missing from manuscript.md"
+    assert f"{c['bands_pooled']['known_pair']['enrichment']:.2f}" in manuscript
 
 
-def test_both_papers_carry_the_specification_grid_or_cite_it(paper_a, paper_b, numbers):
-    """The arm that nullifies the contrast belongs in the paper that makes it."""
-    lines = [" ".join(line.split()) for line in paper_a.splitlines()]
+def test_document_carries_the_specification_grid(manuscript, numbers):
+    """The arm that nullifies the contrast belongs in the document that makes
+    the contrast. Previously asserted separately of paper_a and paper_b."""
+    lines = [" ".join(line.split()) for line in manuscript.splitlines()]
     for arm in numbers["specification_grid"]["arms"]:
         wanted = (arm["tier"], arm["policy"],
                   f"{arm['recovered_additive']}/{arm['n_controls']}")
         assert any(all(tok in line for tok in wanted) for line in lines), (
-            f"paper_a.md omits arm {arm['tier']}/{arm['policy']}")
-    # paper_b BORROWS paper_a's headline claim, so it must carry the
-    # qualification too. The first version of this test only required the
-    # phrase "companion paper", and passed while paper_b asserted an
-    # unqualified 12/16 -- a guard that did not guard.
-    lines_b = [" ".join(line.split()) for line in paper_b.splitlines()]
-    for arm in numbers["specification_grid"]["arms"]:
-        wanted = (arm["tier"], arm["policy"],
-                  f"{arm['recovered_additive']}/{arm['n_controls']}")
-        assert any(all(tok in line for tok in wanted) for line in lines_b), (
-            f"paper_b.md borrows the recovery claim without arm "
-            f"{arm['tier']}/{arm['policy']}")
-    assert "specification-dependent" in paper_b.lower()
-    assert "companion paper" in paper_b.lower()
+            f"manuscript.md omits arm {arm['tier']}/{arm['policy']}")
 
 
-def test_papers_keep_the_findings_that_qualify_them(paper_a, paper_b):
+def test_document_keeps_the_findings_that_qualify_it(manuscript):
+    """Union of what paper_a and paper_b were each required to keep."""
+    lowered = manuscript.lower()
     for phrase in ("not robust to widening", "invalid by construction",
-                   "was incorrect", "not diagnostic"):
-        assert phrase in paper_a.lower(), f"paper_a.md drops: {phrase}"
-    for phrase in ("fusidic acid", "post-hoc", "anticonservative"):
-        assert phrase in paper_b.lower(), f"paper_b.md drops: {phrase}"
-    # The 1.4% proxy must be disowned, however the sentence is worded.
-    lowered = paper_b.lower()
+                   "was incorrect", "not diagnostic",
+                   "fusidic acid", "post-hoc", "anticonservative"):
+        assert phrase in lowered, f"manuscript.md drops: {phrase}"
     assert "1.4%" in lowered and "cannot exclude a confounder" in lowered, (
-        "paper_b.md must state that the 1.4% exclusion cannot exclude a confounder")
+        "manuscript.md must state that the 1.4% exclusion cannot exclude a "
+        "confounder")
 
 
-def test_conference_papers_respect_the_page_cap():
-    """The cap is enforced at build time; this asserts the built PDFs exist and
-    that the body/references split the build measured is still in place."""
-    import subprocess
-    for name in ("paper_a", "paper_b"):
-        tex = cfg.PROJECT_ROOT / "paper" / f"{name}.tex"
-        pdf = cfg.PROJECT_ROOT / "paper" / f"{name}.pdf"
-        if not tex.exists():
-            pytest.skip(f"{name}.tex not built")
-        assert pdf.exists(), f"{name}.pdf missing; run python paper/build.py"
-        body = tex.read_text()
-        assert "\\label{sec:endofbody}" in body, (
-            f"{name}.tex lacks the references marker the page cap is measured from")
-        assert "\\clearpage" in body
+def test_document_marks_missing_information(manuscript):
+    """The submission tripwire. It lived in the two conference papers; when they
+    were retired the manuscript had no author block at all, so one was added
+    rather than letting the guard lapse. Delete this test -- do not weaken it --
+    when the author list is genuinely supplied."""
+    assert "[TODO" in manuscript, "expected explicit TODO markers"
 
 
-def test_papers_mark_missing_information(paper_a, paper_b):
-    for text, name in ((paper_a, "paper_a"), (paper_b, "paper_b")):
-        assert "[TODO" in text, f"{name}: expected explicit TODO markers"
-
-
-# --- round 10: the corrections the two conference papers required -----------
-
-
-def test_blindness_is_reported_over_the_screened_set(paper_a, paper_b, audit):
-    """The papers reported 138/800 (17.2%) as the screen's reference blindness.
-    800 is the label CACHE, built out for the screen-size sensitivity analysis;
-    the screen covers 200. The correct figure is 11/200 = 5.5%."""
+def test_blindness_is_reported_over_the_screened_set(manuscript, audit):
+    """138/800 (17.2%) was reported as the screen's reference blindness. 800 is
+    the label CACHE; the screen covers 200, so the figure is 11/200 = 5.5%."""
     rc = audit["reference_coverage"]
     assert rc["screened_ingredients"] == 200
     correct = f"{100 * rc['screened_share_without_label']:.1f}%"
     stale = f"{100 * rc['share_without_label']:.1f}%"
-    for text, name in ((paper_a, "paper_a"), (paper_b, "paper_b")):
-        assert correct in text, f"{name} must report {correct}, the screened-set figure"
-        assert f"{100 * rc['share_of_pairs_structurally_undocumentable']:.1f}%" in text
-    # The cache figure may appear in paper_b, but only where it is labelled as
-    # the wider reference rather than as the screen's blindness.
-    assert stale not in paper_a, "paper_a must not quote the cache-wide figure"
-    if stale in paper_b:
-        assert "800 ingredients for which labels were retrieved" in paper_b
+    assert correct in manuscript, f"must report {correct}, the screened-set figure"
+    assert f"{100 * rc['share_of_pairs_structurally_undocumentable']:.1f}%" in manuscript
+    if stale in manuscript:
+        assert "800 ingredients for which labels were retrieved" in \
+            " ".join(manuscript.split()), (
+            "the cache-wide figure may appear only where it is labelled as the "
+            "wider reference, never as the screen's blindness")
 
 
-def test_drugs_cited_as_blind_were_actually_screened(paper_a, audit):
-    """Four of the five drugs cited as evidence were never in the screen."""
+def test_drugs_cited_as_blind_were_actually_screened(manuscript, audit):
+    """Four of the five drugs once cited as evidence were never in the screen."""
     rc = audit["reference_coverage"]
     assert rc["cited_but_not_screened"], "expected drugs cited but never screened"
+    flat = " ".join(manuscript.split()).lower()
     for drug in rc["cited_but_not_screened"]:
-        assert drug.lower() not in paper_a.lower(), (
-            f"paper_a cites {drug} as evidence of screen blindness, but it was "
-            f"never screened")
-    assert "fusidic acid" in paper_a.lower(), "the one valid example must remain"
+        if drug.lower() in flat:
+            assert "none of the four entered the top-200 screen" in flat, (
+                f"{drug} is cited without stating it was never screened")
+    assert "fusidic acid" in flat, "the one valid example must remain"
 
 
-def test_non_drug_vocabulary_is_disclosed(paper_b, audit):
+def test_non_drug_vocabulary_is_disclosed(manuscript, audit):
     """Four placeholder terms and one triplicated moiety enter the screen as
     drugs. Impact is small but must not be silent."""
     vh = audit["vocabulary_hygiene"]
     assert vh["invalid_pairs"] > 0
-    assert "unspecified ingredient" in paper_b.lower()
-    assert f"{vh['invalid_pairs']}" in paper_b
+    assert "unspecified ingredient" in manuscript.lower()
+    assert f"{vh['invalid_pairs']}" in manuscript
     for band in ("known_pair", "plausible"):
         for scope in ("as_specified", "excluding_invalid_pairs"):
-            assert str(vh[scope][band]["enrichment"]) in paper_b, (
-                f"paper_b must report {scope} {band} enrichment")
-    # The whole point is that it does not change the conclusion.
+            assert str(vh[scope][band]["enrichment"]) in manuscript, (
+                f"manuscript must report {scope} {band} enrichment")
     assert vh["excluding_invalid_pairs"]["plausible"]["enrichment"] < 1.0
 
 
-def test_conference_papers_state_the_environment_and_seeds(paper_a, paper_b):
-    """Both claim byte-identical reruns; neither stated a version or a seed."""
-    for text, name in ((paper_a, "paper_a"), (paper_b, "paper_b")):
-        lowered = text.lower()
-        assert "python 3" in lowered, f"{name}: no language version"
-        assert "duckdb" in lowered, f"{name}: no database version"
-        assert "seed" in lowered, f"{name}: no mention of seeds"
-        assert "byte-identical" in lowered
+def test_document_states_the_environment_and_seeds(manuscript):
+    """It claims byte-identical reruns; it must state versions and seeds."""
+    lowered = manuscript.lower()
+    assert "python 3" in lowered, "no language version"
+    assert "duckdb" in lowered, "no database version"
+    assert "seed" in lowered, "no mention of seeds"
+    assert "byte-identical" in lowered
 
 
-def test_paper_a_control_table_rows_are_self_consistent(paper_a, numbers):
+def test_control_table_rows_are_self_consistent(manuscript, numbers):
     """A row read 'n = 14 powered' while giving the multiplicative count /16."""
     a = numbers["tier_a"]
-    assert f"4/{a['n_controls']}" in paper_a and f"12/{a['n_controls']}" in paper_a
-    assert f"4/{a['n_powered']}" in paper_a and f"12/{a['n_powered']}" in paper_a
+    assert f"4/{a['n_controls']}" in manuscript and f"12/{a['n_controls']}" in manuscript
+    assert f"4/{a['n_powered']}" in manuscript and f"12/{a['n_powered']}" in manuscript
+    # The label-selected rows are the invariant, not the notation. paper_a wrote
+    # them as "55/349"; the manuscript tabulates the denominator in its own
+    # column and the count with a percentage. Assert that the count and its
+    # denominator appear on the SAME row, which is what "self-consistent"
+    # actually means, rather than pinning one document's formatting.
     ipc = numbers["sensitivity"]["independent_positive_controls"]
+    rows = [" ".join(line.split()) for line in manuscript.splitlines()]
     for arm in ("at_threshold_zero", "at_calibrated_threshold"):
         for null in ("additive", "multiplicative"):
-            assert f"{ipc[arm][null]}/{ipc['n_pairs']}" in paper_a
+            count, denom = str(ipc[arm][null]), str(ipc["n_pairs"])
+            assert any(f"{count}/{denom}" in row
+                       or (denom in row and count in row) for row in rows), (
+                f"manuscript omits the label-selected {arm}/{null} count "
+                f"{count} against its denominator {denom}")
 
 
-def test_annotation_count_is_not_asserted_without_structure(paper_b):
+def test_annotation_count_is_not_asserted_without_structure(manuscript):
     """'five progressively more independent annotation schemes' was not
-    derivable from what the paper reports."""
-    assert "five progressively more independent" not in paper_b.lower()
-    assert "three annotations" in paper_b.lower()
+    derivable from what the document reports."""
+    assert "five progressively more independent" not in manuscript.lower()
+    assert "three annotations" in manuscript.lower()
 
 
 # --- round 11: error rates in the regime the study is about -----------------
@@ -1107,7 +1081,7 @@ def regime(numbers):
     return r
 
 
-def test_in_regime_error_rates_are_reported(paper_a, regime):
+def test_in_regime_error_rates_are_reported(manuscript, regime):
     """The pooled false-positive rate was presented as though it described the
     regime where recovery is measured. The two populations barely overlap."""
     ir = regime["in_regime"]
@@ -1115,38 +1089,44 @@ def test_in_regime_error_rates_are_reported(paper_a, regime):
         "if the pools overlapped, the pooled rate would be adequate")
     for value in (f"{100 * ir['in_regime_fpr_additive']:.1f}%",
                   f"{100 * ir['in_regime_fpr_multiplicative']:.1f}%"):
-        assert value in paper_a, f"paper_a must report the in-regime rate {value}"
-    assert "essentially identical" not in paper_a.lower(), (
+        assert value in manuscript, f"must report the in-regime rate {value}"
+    # Narrowed in round 18. The bare substring "essentially identical" also
+    # matched an innocent sentence about hospitalisation strata, where two
+    # enrichments genuinely are essentially identical. The withdrawn claim is
+    # the FULL phrase, and it is policed -- in every phrasing found so far --
+    # by test_no_maintained_document_carries_a_withdrawn_claim, so nothing is
+    # lost by making this specific.
+    assert "essentially identical false-positive" not in manuscript.lower(), (
         "the matched-FPR framing was withdrawn")
 
 
-def test_matched_recovery_gap_is_reported(paper_a, regime):
+def test_matched_recovery_gap_is_reported(manuscript, regime):
     """The eight-pair gap at the conventional threshold is one to two pairs
     once the error rates are equalised."""
     mr = regime["matched_recovery"]
     assert mr["gap_as_published"] > mr["gap_matched_max"], (
         "the whole point is that the gap shrinks when rates are matched")
     for row in mr["rows"]:
-        assert (f"{row['recovered_additive']}/16" in paper_a
-                or f"{row['recovered_additive']} vs" in paper_a), (
-            f"paper_a omits the {row['operating_point']} arm")
+        assert (f"{row['recovered_additive']}/16" in manuscript
+                or f"{row['recovered_additive']} vs" in manuscript), (
+            f"manuscript omits the {row['operating_point']} arm")
     assert mr["additive_wins_at_every_matched_rate"]
 
 
-def test_purpose_built_negative_pool_exists_and_is_larger(paper_a, regime):
+def test_purpose_built_negative_pool_exists_and_is_larger(manuscript, regime):
     """The standard generator excludes the configuration every positive control
     has, so it cannot produce a negative that resembles a positive."""
     pool = regime["high_marginal_pool"]
     strong = pool["at_positive_control_strength"]
     assert strong["n"] > 10 * regime["in_regime"]["in_regime_n"], (
         "the purpose-built pool must be substantially better powered")
-    assert f"{pool['n_pairs']:,}" in paper_a
-    assert f"{strong['n']:,}" in paper_a
-    assert f"{100 * strong['fpr_additive']:.1f}%" in paper_a
-    assert f"{100 * strong['fpr_multiplicative']:.1f}%" in paper_a
+    assert f"{pool['n_pairs']:,}" in manuscript
+    assert f"{strong['n']:,}" in manuscript
+    assert f"{100 * strong['fpr_additive']:.1f}%" in manuscript
+    assert f"{100 * strong['fpr_multiplicative']:.1f}%" in manuscript
 
 
-def test_torsade_replication_is_reported_as_failing_at_matched_rates(paper_a, regime):
+def test_torsade_replication_is_reported_as_failing_at_matched_rates(manuscript, regime):
     """At Omega_025 > 0 the additive null recovers 9/10 while running at a
     42.8% in-regime false-positive rate. Matched, the advantage vanishes."""
     t = regime["torsade_matched"]
@@ -1154,40 +1134,39 @@ def test_torsade_replication_is_reported_as_failing_at_matched_rates(paper_a, re
     assert published["recovered_additive"] - published["recovered_multiplicative"] >= 5
     assert all(r["recovered_additive"] - r["recovered_multiplicative"] <= 1
                for r in matched), "expected the advantage to vanish at matched rates"
-    assert f"{100 * t['in_regime']['in_regime_fpr_additive']:.1f}%" in paper_a
-    lowered = paper_a.lower()
+    assert f"{100 * t['in_regime']['in_regime_fpr_additive']:.1f}%" in manuscript
+    lowered = manuscript.lower()
     assert "does not survive matched error rates" in lowered or \
            "failed replication" in lowered
 
 
-def test_paper_b_chance_baseline_is_strength_matched(paper_b, regime):
+def test_chance_baseline_is_strength_matched(manuscript, regime):
     """The pooled expectation assumes a constant rate; it varies 12-fold."""
     smc = regime["strength_matched_chance"]
     rates = smc["rate_by_quintile"]
     assert max(rates) / max(min(rates), 1e-9) > 5, "expected wide variation"
-    assert f"{smc['total']['expected_matched']:,}" in paper_b
+    assert f"{smc['total']['expected_matched']:,}" in manuscript
     assert smc["screen_below_chance_when_matched"], (
         "the strength-matched expectation exceeds the observed count")
-    assert "fewer" in paper_b.lower()
+    assert "fewer" in manuscript.lower()
 
 
-def test_negative_control_exclusion_is_disclosed(paper_a, paper_b):
+def test_negative_control_exclusion_is_disclosed(manuscript):
     """The generator drops pairs where BOTH drugs are implicated -- which is
     what every positive control is."""
-    for text, name in ((paper_a, "paper_a"), (paper_b, "paper_b")):
-        lowered = text.lower()
-        assert "cannot produce a negative" in lowered or \
-               "removes exactly the configuration" in lowered, (
-            f"{name} must disclose the consequence of the exclusion rule")
+    lowered = manuscript.lower()
+    assert "cannot produce a negative" in lowered or \
+           "removes exactly the configuration" in lowered, (
+        "must disclose the consequence of the exclusion rule")
 
 
-def test_both_nulls_reported_by_stratum(paper_a, numbers):
+def test_both_nulls_reported_by_stratum(manuscript, numbers):
     """Reporting the strata for one null only concealed a sign reversal."""
     strata = numbers["tier_b"]["strata"]
     for key in ("easy", "hard"):
         for null in ("fpr_additive", "fpr_multiplicative"):
-            assert f"{100 * strata[key][null]:.2f}%" in paper_a, (
-                f"paper_a omits {key}/{null}")
+            assert f"{100 * strata[key][null]:.2f}%" in manuscript, (
+                f"manuscript omits {key}/{null}")
 
 
 # --- every maintained document, not just the one being edited ---------------
@@ -1198,8 +1177,6 @@ def test_both_nulls_reported_by_stratum(paper_a, numbers):
 
 MAINTAINED = {
     "manuscript": cfg.PROJECT_ROOT / "paper" / "manuscript.md",
-    "paper_a": cfg.PROJECT_ROOT / "paper" / "paper_a.md",
-    "paper_b": cfg.PROJECT_ROOT / "paper" / "paper_b.md",
 }
 
 
@@ -1316,15 +1293,36 @@ def test_no_document_title_asserts_a_conclusion(maintained):
             assert phrase not in title, f"{name} title asserts: '{phrase}'"
 
 
+RETIRED = {
+    "paper": "round 11: duplicated manuscript.md in a different section order",
+    "paper_a": "round 18: merged back into manuscript.md",
+    "paper_b": "round 18: merged back into manuscript.md",
+}
+
+
 def test_retired_documents_are_not_built_and_are_labelled():
-    """paper.md was retired in round 11; it must be out of the build and
-    marked, not left as a fourth thing to keep in sync."""
-    live = cfg.PROJECT_ROOT / "paper" / "paper.md"
-    assert not live.exists(), "paper.md is back in the build directory"
-    archived = cfg.PROJECT_ROOT / "paper" / "archive" / "paper.md"
-    if archived.exists():
-        head = archived.read_text()[:600].lower()
-        assert "archived" in head and "superseded" in head, (
-            "the archived copy must say so at the top")
+    """Retired documents must be out of the build directory, out of build.py,
+    and labelled where they are archived — not left as further things to keep
+    in sync.
+
+    Generalised in round 18. This test was written for paper.md and named for
+    documents plural, but every assertion was hardcoded to that one file, so it
+    would have passed unchanged while paper_a.md and paper_b.md rotted in the
+    build directory. That is the round-16 defect in a test written to prevent
+    the round-16 defect.
+    """
     build = (cfg.PROJECT_ROOT / "paper" / "build.py").read_text()
-    assert '"paper":' not in build, "build.py still lists the retired document"
+    for name, why in RETIRED.items():
+        live = cfg.PROJECT_ROOT / "paper" / f"{name}.md"
+        assert not live.exists(), (
+            f"{name}.md is back in the build directory ({why})")
+        for artefact in (f"{name}.tex", f"{name}.pdf"):
+            assert not (cfg.PROJECT_ROOT / "paper" / artefact).exists(), (
+                f"stale {artefact} left behind by the retirement of {name}.md")
+        archived = cfg.PROJECT_ROOT / "paper" / "archive" / f"{name}.md"
+        if archived.exists():
+            head = archived.read_text()[:800].lower()
+            assert "archived" in head and "superseded" in head, (
+                f"the archived copy of {name}.md must say so at the top")
+        assert f'"{name}":' not in build, (
+            f"build.py still lists the retired document {name}.md")

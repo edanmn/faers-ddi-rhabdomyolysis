@@ -37,10 +37,12 @@ WIDE_TABLE_COLUMNS = 4   # tables with more columns span both columns
 # `paper.md` was retired in round 11 and moved to paper/archive/. It duplicated
 # manuscript.md in a different section order, and maintaining four documents is
 # what allowed a corrected claim to land in two of them and not the other two.
+# `paper_a.md` and `paper_b.md` were retired in round 18 and moved to
+# paper/archive/. They were a two-paper split of manuscript.md; merging them
+# back returns the project to one maintained document, which is what §5 of
+# CLAUDE.md has been arguing for since round 16.
 DOCUMENTS = {
-    "manuscript": ("preamble.tex", None),      # full-detail version / preprint
-    "paper_a": ("preamble_conf.tex", 8),       # conference: calibration
-    "paper_b": ("preamble_conf.tex", 8),       # conference: evaluation
+    "manuscript": ("preamble.tex", None),      # the single maintained document
 }
 
 # Optionally preceded by the "**Table N.** ..." paragraph pandoc renders just

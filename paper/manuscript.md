@@ -1,5 +1,7 @@
 # Calibration and evaluation of disproportionality nulls for drug–drug interaction detection: an analysis of 22 years of FAERS
 
+**Authors.** [TODO: author list and affiliations]
+
 ## Abstract
 
 **Background.** Drug–drug interactions (DDIs) are largely identified after
@@ -320,7 +322,11 @@ by resampling the victim drug (§4.3), not by a binomial on the pair count.
 ### 3.7 Independent interaction reference
 
 Because the authors wrote both the positive control set and the list defining
-"known pair", a second annotation was built that they did not author. For each
+"known pair", a second annotation was built that they did not author. Signals
+are evaluated against **three annotations** of increasing independence — the
+authors' own curated list, FDA labelling for any endpoint, and FDA labelling
+restricted to this endpoint — each applied both to all pairs and to pairs
+containing no positive-control drug. For each
 of the 200 screened ingredients we retrieved the most recent FDA product label
 via openFDA and recorded which other screened ingredients are named in its DRUG
 INTERACTIONS, CONTRAINDICATIONS or WARNINGS AND PRECAUTIONS sections. A pair is
@@ -442,8 +448,8 @@ by a marginal-driven expectation.
 
 > An earlier version of this manuscript reported this correlation for Ω alone
 > and read it as evidence that the multiplicative null is uniquely broken. That
-> reading was wrong. The correlation survives the artifact check, but it does
-> not separate the two nulls, and it is reported here for both.
+> reading was incorrect. The correlation survives the artifact check, but it
+> does not separate the two nulls, and it is reported here for both.
 
 What *does* separate them is **level, not slope**: the multiplicative
 expectation is far larger at every point (72.9% vs 27.9% for gemfibrozil +
@@ -477,9 +483,12 @@ degrades. See also §6.
 
 ### 4.3 Tier A and Tier B
 
-Under the additive null, **12/16 controls signal (12/14 powered)**. Six of seven
+Under the additive null, **12/16 controls signal (12/14 powered)**, against
+**4/16 for Ω (4/14 powered)** at the same threshold. Six of seven
 simvastatin pairs and three of three colchicine pairs recover; both lovastatin
-pairs have n_ab of 19 and 1 and are unmeasurable.
+pairs have n_ab of 19 and 1 and are unmeasurable. Both denominators are given
+because they are not interchangeable: an earlier version quoted the additive
+count out of 14 and the multiplicative count out of 16 in the same comparison.
 
 **The interval must respect the control set's clustering.** The 16 controls are
 five victim drugs and simvastatin appears in seven of them (§3.6), so they are
@@ -541,7 +550,9 @@ recovery is measured.
 **The negative and positive control populations barely overlap.** The generator
 excludes any pair in which *both* drugs are on the implicated list, a reasonable
 guard against seeding the null set with true positives, but every positive
-control is exactly such a pair. Positive controls sit at a median
+control is exactly such a pair — so the generator **cannot produce a negative
+that resembles a positive**, and that is a property of the exclusion rule
+rather than of the data. Positive controls sit at a median
 log₂(RR_A × RR_B) of **8.23** (IQR 7.92–8.99); generated negatives at **0.56**
 (IQR −1.52–2.44), and **only 11 of 16,078 (0.1%) reach the positive controls'
 interquartile floor.** Since §4.1 establishes that the expected count rises
@@ -637,6 +648,22 @@ so the reported configuration is deliberately not the best available on our own
 numbers.
 
 ### 4.5 The screen shows no demonstrable enrichment for genuine interactions (Figures 3–4)
+
+**Not every entry in the vocabulary can form a drug pair.** The selection rule
+is applied mechanically to FDA's resolved active-ingredient field, and four of
+the 200 entries are placeholders that field supplies where it cannot resolve a
+moiety — `UNSPECIFIED INGREDIENT`, `HERBALS`, `INSULIN NOS` and
+`CANNABIS SATIVA SUBSP INDICA TOP`. A further three pairs are one moiety with
+itself, valproate reaching the vocabulary as `VALPROATE`, `VALPROIC ACID` and
+`DIVALPROEX`. Together these account for **719 pairs (4.1% of the screen), of
+which 38 signal and 122 fall in the `plausible` band**. They are not removed
+from the primary analysis — the drug-selection rule was fixed in advance, and
+excluding terms after seeing results would be a researcher degree of freedom —
+and the sensitivity is small: `plausible` enrichment moves from **0.766 to
+0.752** and `known_pair` from **2.015 to 1.995** when they are dropped. The band
+conclusions do not depend on them. They do matter for reading individual pairs,
+since a pair naming `UNSPECIFIED INGREDIENT` is uninterpretable however it
+scores.
 
 17,375 pairs tested, **1,022** above threshold. A pooled chance expectation —
 the held-out false-positive rate of 5.03% applied uniformly — gives **874 (95%
@@ -1048,7 +1075,10 @@ records the outcome directly, and stratifying the whole screen on
 
 Hospitalisation is strongly associated with myotoxicity reporting — an **8-fold**
 difference in event rate — so it is a genuine confounder, unlike the 1.4% drug
-proxy which could not have detected one. **Both strata reproduce the result**:
+proxy which could not have detected one. That earlier attempt perturbed 1.4% of
+the population and left band enrichment essentially unmoved, but **perturbing
+1.4% of the data cannot exclude a confounder**: a null was near-guaranteed
+before the analysis ran, and we do not present it as evidence. **Both strata reproduce the result**:
 the `plausible` band sits below unity in each, and `known_pair` enrichment is
 essentially identical across them. The negative discovery result is not an
 artefact of inpatient case mix.

@@ -12,9 +12,10 @@ A disproportionality analysis of drug–drug interaction (DDI) signals for
 rhabdomyolysis/myotoxicity over the **complete public history of FAERS**
 (2004Q1–2026Q2, 90 quarterly archives, 328,476,258 rows). It began from a
 short PDF guide (`Using FAERS for Drug Interaction Research.pdf`) and grew into
-a validated pipeline plus two conference papers.
+a validated pipeline plus a single full-length manuscript (two conference
+papers were split out and, in round 18, merged back in).
 
-**The deliverables are three documents** (§4). **The research is finished** —
+**The deliverable is one document** (§4). **The research is finished** —
 the analysis is not expected to change. What remains is clerical (§7).
 
 ### Headline results (all from `results/canonical_numbers.json`)
@@ -32,9 +33,9 @@ the analysis is not expected to change. What remains is clerical (§7).
 | Screen | 1,022 of 17,375 signalled; **1,212** expected by chance strength-matched (872 pooled) |
 | Enrichment, control drugs removed | **1.12× (0.69–1.81)** — indistinguishable from unity |
 
-### The two papers' claims, as they now stand
+### The manuscript's two claims, as they now stand
 
-- **Paper A (calibration).** Neither null is usable at its conventional
+- **Calibration.** Neither null is usable at its conventional
   operating point for drug-dominant events, **but they fail in different
   currencies** (r17). Only the additive null is miscalibrated on error rate
   (9.3% against a nominal 2.5%; 42.8% on torsade). Ω runs at 2.2% and 2.0% —
@@ -45,7 +46,7 @@ the analysis is not expected to change. What remains is clerical (§7).
   is mechanistic — observed joint risk rises far more shallowly in marginal
   strength (*r* = +0.12, CI −0.40 to +0.58) than either null predicts
   (*r* ≈ +0.94).
-- **Paper B (evaluation).** A DDI screen shows no enrichment for genuine
+- **Evaluation.** A DDI screen shows no enrichment for genuine
   interactions once the annotation is independent of the control set (2.02× →
   1.12×). Reference quality, not method sensitivity, is the binding constraint:
   the screen's top-ranked pair by event rate — **atorvastatin + fusidic acid**,
@@ -72,8 +73,8 @@ python -m faers_ddi.generalization            # torsade / anaphylaxis
 python -m faers_ddi.audit                     # provenance, coverage, FDR, cap sweep
 python -m faers_ddi.regime                    # in-regime error rates, matched recovery
 python -m faers_ddi.figures                   # 7 figures
-python -m pytest                              # 330 tests
-python paper/build.py                         # all three documents -> .tex -> .pdf
+python -m pytest                              # 329 tests
+python paper/build.py                         # manuscript.md -> .tex -> .pdf
 python paper/build.py --check                 # non-zero if any .tex is stale
 ```
 
@@ -117,7 +118,7 @@ from is third-party and deliberately gitignored — do not commit it.
 
 **`results/canonical_numbers.json` is the single source of truth.** Nothing is
 quoted anywhere that does not come from it. `tests/test_canonical_numbers.py`
-(330 tests) asserts the prose against it.
+(329 tests) asserts the prose against it.
 
 `paper/build.py` generates `.tex` from `.md` via pandoc + tectonic. **Never edit
 a `.tex` by hand** — it is regenerated. Two-column documents declare a body-page
@@ -126,25 +127,38 @@ non-zero if the body exceeds it**.
 
 ---
 
-## 4. The three maintained documents
+## 4. The maintained document
 
 | file | what | size |
 |---|---|---|
-| `paper/manuscript.md` | full-detail version / preprint | 30 pages |
-| `paper/paper_a.md` | **calibration** — error rates in the drug-dominant regime | 8 body pages (cap 8) — **zero slack** |
-| `paper/paper_b.md` | **evaluation** — annotation independence, reference coverage | 8 body pages (cap 8) — **zero slack** since r17 |
+| `paper/manuscript.md` | **the single maintained document** — calibration and evaluation | 31 pages |
 
-`paper/archive/paper.md` is **retired** — a pre-split restructuring, superseded,
-carries a banner saying so, excluded from the build. Do not revive it.
+**Round 18 merged the two conference papers back in.** `paper_a.md`
+(calibration) and `paper_b.md` (evaluation) were a split of this manuscript;
+they are now in `paper/archive/` with banners, alongside `paper.md` retired in
+round 11. `RETIRED` in the test module is the registry, and
+`test_retired_documents_are_not_built_and_are_labelled` asserts across it — it
+checks the build directory, stale `.tex`/`.pdf`, the banner, and `build.py`.
+**Do not revive any of the three.**
 
-Paper B cites Paper A as a companion but no longer depends on it for its
-foundation (it carries the specification grid itself). **Submit A first.**
+Merging was content-preserving by construction: every guard that had been
+scoped to `paper_a`/`paper_b` was **rescoped to the manuscript, not deleted**,
+and six of them failed on first run. Each failure was a claim the conference
+papers made that the manuscript did not — including the vocabulary-hygiene
+disclosure, which existed only in `paper_b`, and a genuine denominator bug
+(`12/14` powered against `4/16`). All were fixed by adding to the manuscript.
+If a document is ever retired again, do it this way round.
+
+One consequence to know: there is no longer a conference-format document, so
+**no page cap is enforced anywhere**. `DOCUMENTS` in `build.py` maps the
+manuscript to a cap of `None`. If a conference submission is ever wanted, it is
+a new derivation from this manuscript, not a revival of the archived pair.
 
 ---
 
 ## 5. Read this before writing any test
 
-This project has been through **seventeen adversarial review rounds**. The
+This project has been through **eighteen adversarial review rounds**. The
 consistent failure has not been in the analysis — it has been in the guards.
 **Five times a test written to catch a specific defect was too weak to catch
 it:**
@@ -178,7 +192,7 @@ Standing practice, non-negotiable:
   `test_no_maintained_document_carries_a_withdrawn_claim`, tagged with the round
   that retracted them.
 
-**330 passing means the stated numbers match the computed ones. It does not mean
+**329 passing means the stated numbers match the computed ones. It does not mean
 the right quantity was computed, nor that the sentence built on a correct
 number says what the number means** (r17). Round 11 overturned the central claim while
 every test passed, before and after.
@@ -217,8 +231,10 @@ screened "ingredients" are non-drug placeholders (immaterial, disclosed).
 
 ## 7. What is actually outstanding
 
-1. **Two `[TODO]` blocks** in the two conference papers — authors/affiliations,
-   one each. `manuscript.md` has none. The availability TODO is closed: all
+1. **One `[TODO]` block** — authors/affiliations, in `manuscript.md`. Note it
+   was **added** in round 18: the manuscript had no author line at all, so
+   retiring the conference papers would have taken the submission tripwire with
+   them and left an authorless document with nothing guarding it. The availability TODO is closed: all
    three documents cite <https://github.com/edanmn/faers-ddi-rhabdomyolysis>.
    The Acknowledgements sections were **removed by author decision**, not left
    unfinished — do not reinstate them. Their removal left three statements with
@@ -416,18 +432,55 @@ filling them in. Do not invent an ablation to satisfy a heading.
 
 - `main` at the r17 commit, pushed, working tree clean.
 - **330 tests pass**; `paper/build.py --check` clean; all three PDFs current.
-- `manuscript` 30 pages; `paper_a` 9 total (8 body, cap 8); `paper_b` 9 total
-  (8 body, cap 8). **Neither conference paper has any slack left.**
+- `manuscript` 31 pages and the only maintained document as of r18; the two
+  conference papers are archived. No page cap is enforced anywhere now.
 - Pipeline was **not** re-run this session — no analysis number changed, only
   prose, guards and documentation. `canonical_numbers.json` is untouched since
   the last full run.
 
-### 9.5 Where to pick up
+### 9.5 Round 18 — merged back into one document
+
+The author's call: *"combine them back into one paper."* The combined paper
+already existed — `manuscript.md` is what the two conference papers were split
+*out of* — so the work was consolidation rather than writing.
+
+Done in the order that matters:
+
+1. **Ported first, retired second.** Five r17 corrections had landed in
+   `paper_a`/`paper_b` and nowhere else. Retiring first would have dropped them
+   silently, which is the round-16 failure exactly.
+2. **Guards rescoped, never deleted.** All 18 tests bound to the conference
+   papers were repointed at the manuscript. **Six failed**, and every failure
+   was a real gap: the vocabulary-hygiene disclosure (719 placeholder pairs,
+   0.766→0.752) existed only in `paper_b`; the three-annotations structure, the
+   negative-control exclusion consequence, the 1.4%-proxy disavowal and the
+   "was incorrect" correction were all missing; and one was a genuine bug —
+   the manuscript compared **12/14 powered against 4/16**, mixing denominators
+   in a single comparison, which is the precise defect that guard was written
+   for in round 10. All fixed by adding to the manuscript.
+3. **Two guards adjusted rather than the prose**, both narrowings that lose
+   nothing: a bare `"essentially identical"` substring that was also matching an
+   innocent sentence about hospitalisation strata (the full withdrawn phrase is
+   in the registry), and a control-table check that pinned `paper_a`'s
+   `"55/349"` notation rather than the invariant, which is that a count and its
+   denominator appear on the same row.
+4. **`test_retired_documents_are_not_built_and_are_labelled` generalised.** It
+   was named for documents plural and hardcoded to `paper.md`, so it would have
+   passed while the newly retired pair rotted in the build directory. It now
+   iterates a `RETIRED` registry and also catches stale `.tex`/`.pdf`.
+   Mutation-tested twice.
+
+**Consequence to remember: no page cap is enforced anywhere now.** The
+manuscript declares a cap of `None`. The zero-slack problem is gone, and so is
+the guard that made it visible. A conference submission would be a fresh
+derivation from the manuscript, not a revival of the archive.
+
+### 9.6 Where to pick up
 
 In order:
 
-1. Nothing, until the author supplies authors/affiliations — or start §7.2,
-   which is independent of them.
+1. Nothing, until the author supplies authors/affiliations — now a single
+   `[TODO]` in `manuscript.md` — or start §7.2, which is independent of them.
 2. §7.2's four pipeline items. The interval on the in-regime rates is first:
    it is the evidence for r17's central correction, it is currently absent, and
    a reviewer who recomputes it will reach the same conclusion r17 did.
