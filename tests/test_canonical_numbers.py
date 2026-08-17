@@ -1523,6 +1523,33 @@ CROSS_REFERENCE_BINDINGS = {
 }
 
 
+def test_no_canonical_block_is_orphaned(numbers):
+    """Round 32. Three blocks the paper depends on -- audit.nesting_condition,
+    audit.top_ranked_pairs and regime.third_estimand -- were computed in
+    throwaway scripts and merged into the canonical file by hand. No module
+    produced them, and both stages assign their section WHOLESALE
+    (`numbers["audit"] = results`), so the next documented pipeline run would
+    have silently deleted all three while the paper went on quoting them.
+
+    Same defect as round 22's hardcoded figure data, one level up: a number with
+    no path from the code that is supposed to compute it. Cheap to check --
+    every key in the canonical section must be assigned somewhere in the module
+    that owns it.
+    """
+    import re as _re
+
+    for section, module in (("audit", "audit.py"), ("regime", "regime.py")):
+        source = (cfg.PROJECT_ROOT / "src" / "faers_ddi" / module).read_text()
+        assigned = set(_re.findall(r'results\[\"(\w+)\"\]\s*=', source))
+        assigned |= set(_re.findall(r'\"(\w+)\":', source))   # inline dict keys
+        present = set(numbers.get(section, {}))
+        orphans = sorted(k for k in present if k not in assigned)
+        assert not orphans, (
+            f"canonical['{section}'] contains {orphans} which {module} never "
+            f"assigns; a pipeline run would drop them, and the paper quotes "
+            f"them")
+
+
 def test_section_numbers_are_unique_and_sequential(manuscript):
     """Round 30. Three sections were inserted into §4 without renumbering,
     producing two §4.2, two §4.4 and two §4.5. Every existing reference to

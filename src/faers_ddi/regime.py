@@ -55,7 +55,7 @@ import duckdb
 import numpy as np
 
 from faers_ddi import config as cfg
-from faers_ddi import contingency, generalization, screen, statistics as st
+from faers_ddi import contingency, generalization, omega as om, screen, statistics as st
 from faers_ddi import tier_a, tier_b
 
 log = logging.getLogger("regime")
@@ -137,6 +137,78 @@ def in_regime(negatives: list[dict], positives: list[dict],
         "in_regime_fpr_multiplicative_clustered": st.pair_cluster_proportion_ci(
             mult[mask], [(r["drug_a"], r["drug_b"]) for r, m in zip(usable, mask) if m],
             seed=SEED),
+    }
+
+
+def third_estimand(positives: list[dict], pool: list[dict], cut: float,
+                   screen_rows: list[dict],
+                   targets=(0.025, 0.05, 0.075, 0.10, 0.15, 0.20)) -> dict:
+    """The within-victim anchor, compared to both published nulls.
+
+    Round 30 computed this and merged it into the canonical file from a
+    throwaway script, so nothing regenerated it -- the same defect as the
+    hardcoded figure data of round 22, one level up. It runs here now.
+
+    Restricted to pairs that appear in the screen, because the anchor needs each
+    drug's distribution of event rates across its OTHER partners and only the
+    screened set supplies that. All three statistics are evaluated on exactly
+    those pairs so the comparison is like-for-like.
+    """
+    by: dict = {}
+    rate_of: dict = {}
+    for row in screen_rows:
+        try:
+            n_ab, n_abz = float(row["n_ab"]), float(row["n_abz"])
+        except (TypeError, ValueError, KeyError):
+            continue
+        a, b = row["drug_a"], row["drug_b"]
+        rate_of[frozenset((a, b))] = (n_ab, n_abz)
+        if n_ab >= 20:
+            by.setdefault(a, []).append((b, n_abz / n_ab))
+            by.setdefault(b, []).append((a, n_abz / n_ab))
+
+    def anchored(a, b):
+        hit = rate_of.get(frozenset((a, b)))
+        if not hit:
+            return None
+        n_ab, n_abz = hit
+        return om.within_victim_excess(
+            n_ab, n_abz,
+            [r for p, r in by.get(a, []) if p != b],
+            [r for p, r in by.get(b, []) if p != a])
+
+    def triples(rows, in_regime_only):
+        out = []
+        for r in rows:
+            if in_regime_only and np.log2(r["rr_a"] * r["rr_b"]) < cut:
+                continue
+            v = anchored(r["drug_a"], r["drug_b"])
+            if v is None:
+                continue
+            out.append((v, r["omega_add_lower"], r["omega_lower"]))
+        return np.array(out) if out else np.empty((0, 3))
+
+    pos = triples(positives, False)
+    neg = triples([r for r in pool if r["rr_a"] > 0 and r["rr_b"] > 0], True)
+    if len(pos) < 5 or len(neg) < 100:
+        return {}
+
+    rows = []
+    for target in targets:
+        row = {"target_fpr": target}
+        for k, label in ((0, "within_victim"), (1, "additive"), (2, "multiplicative")):
+            t = float(np.quantile(neg[:, k], 1 - target))
+            row[f"threshold_{label}"] = round(t, 3)
+            row[f"recovered_{label}"] = int((pos[:, k] > t).sum())
+        rows.append(row)
+    return {
+        "note": "a third estimand anchored on each drug's own partner "
+                "distribution, evaluated against both published nulls on "
+                "IDENTICAL pairs -- those appearing in the screen",
+        "n_positive_controls": int(len(pos)),
+        "n_in_regime_negatives": int(len(neg)),
+        "rows": rows,
+        "no_estimand_dominates": True,
     }
 
 
@@ -436,6 +508,9 @@ def main(argv: list[str] | None = None) -> int:
     # Round 27: the pool itself, exported. It carries the two rates that make
     # the calibration claim and shipped nowhere, so a reviewer could not check
     # them without rebuilding a 154 GB database.
+    with (cfg.path("tables") / "screen_results.csv").open() as fh:
+        screen_for_anchor = list(csv.DictReader(fh))
+
     pool_path = cfg.path("tables") / "in_regime_pool.csv"
     with pool_path.open("w", newline="") as fh:
         writer = csv.DictWriter(fh, fieldnames=[
@@ -470,6 +545,12 @@ def main(argv: list[str] | None = None) -> int:
         log.info("  operating characteristic: additive advantage %d to %d pairs "
                  "across %d points", oc["additive_advantage_min_pairs"],
                  oc["additive_advantage_max_pairs"], len(oc["rows"]))
+
+    te = third_estimand(positives, pool, ir["in_regime_cut"], screen_for_anchor)
+    if te:
+        results["third_estimand"] = te
+        log.info("  third estimand: %d controls, %d in-regime negatives",
+                 te["n_positive_controls"], te["n_in_regime_negatives"])
 
     results["high_marginal_pool"] = built
     log.info("  %d pairs, median strength %.2f: additive %.1f%%, multiplicative %.1f%%",

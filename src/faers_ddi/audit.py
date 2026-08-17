@@ -393,9 +393,9 @@ def era_stable_plausible(con: duckdb.DuckDBPyConnection, tier: str,
 # The polypharmacy cap was chosen on the evaluation set.
 # --------------------------------------------------------------------------
 
-def top_ranked_pairs(con: duckdb.DuckDBPyConnection, tier: str,
-                     screen_rows: list[dict], reference: set,
-                     threshold: float, top_n: int = 5) -> dict:
+def ranked_pairs_with_proxy_test(con: duckdb.DuckDBPyConnection, tier: str,
+                                 screen_rows: list[dict], reference: set,
+                                 threshold: float, top_n: int = 5) -> dict:
     """The screen's highest-event-rate signals, and whether they are proxies.
 
     Round 29. The screen's top-ranked pairs were discussed one at a time in the
@@ -1168,10 +1168,36 @@ def main(argv: list[str] | None = None) -> int:
                 "n_ab": int(r["n_ab"]), "n_abz": int(r["n_abz"]),
                 "additive_expected": float(r["additive_expected"]),
                 "omega_add_lower": float(r["omega_add_lower"]),
+                # Round 32: top_ranked_pairs and null_nesting need the
+                # multiplicative side too. Omitting them here is why wiring an
+                # ad-hoc function into the stage failed on first run -- the
+                # in-memory rows were a narrower projection than the CSV the
+                # function had been developed against.
+                "expected": float(r["expected"]),
+                "omega_lower": float(r["omega_lower"]),
                 "eras_with_signal": int(r["eras_with_signal"]),
             })
     control_drugs = {d for c in tier_a.load_positive_controls()
                      for d in (c["drug_a"].strip().upper(), c["drug_b"].strip().upper())}
+
+    log.info("--- nesting condition ---")
+    with (cfg.path("tables") / "tier_b_pairs.csv").open() as fh:
+        results["nesting_condition"] = nesting_condition(list(csv.DictReader(fh)))
+    ncd = results["nesting_condition"]
+    log.info("  nesting exact when both marginals elevated: %s "
+             "(%d violations overall, %d among %d both-elevated pairs)",
+             ncd["nesting_exact_when_both_elevated"], ncd["violations_all"],
+             ncd["violations_both_elevated"], ncd["n_both_elevated"])
+
+    log.info("--- top-ranked pairs and the proxy test ---")
+    # NOT `top_ranked_pairs` -- that name was already taken by the function
+    # above, and shadowing it silently redirected an existing call site.
+    results["top_ranked_pairs"] = ranked_pairs_with_proxy_test(
+        con, tier, screen_rows, _endpoint_reference(), threshold)
+    log.info("  %d pairs ranked; top is %s",
+             len(results["top_ranked_pairs"]["pairs"]),
+             results["top_ranked_pairs"]["pairs"][0]["pair"]
+             if results["top_ranked_pairs"]["pairs"] else "n/a")
 
     log.info("--- null nesting ---")
     results["null_nesting"] = null_nesting(screen_rows)
