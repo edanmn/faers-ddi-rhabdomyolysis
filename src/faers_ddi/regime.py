@@ -140,6 +140,62 @@ def in_regime(negatives: list[dict], positives: list[dict],
     }
 
 
+def operating_characteristic(positives: list[dict], negatives: list[dict],
+                            cut: float,
+                            targets=(0.01, 0.025, 0.05, 0.075, 0.10, 0.15, 0.20, 0.30)) -> dict:
+    """Recovery against in-regime false-positive rate, swept across thresholds.
+
+    Round 29. The paper reported three matched operating points. A screen needs
+    the curve: the question a practitioner actually faces is not "which null"
+    but "what does recovering k of the known interactions cost me in false
+    positives among pairs that look like them". Both nulls are swept over the
+    same in-regime negative pool so the two are directly comparable at every
+    point rather than at three.
+
+    A strength-varying threshold was also tried and is NOT reported as a rule:
+    calibrating the threshold as a function of log2(RR_a x RR_b) does flatten
+    the false-positive rate across strength (spread 0.080 -> 0.032 over held-out
+    halves) but halves recovery, 11.0 -> 5.5 of 16, because the true
+    interactions are concentrated at exactly the strengths where equalising the
+    rate raises the bar. Uniform error control across strength is the wrong
+    objective for this problem, and that is worth knowing.
+    """
+    usable = [r for r in negatives if r["rr_a"] > 0 and r["rr_b"] > 0]
+    x = _strength(usable)
+    in_regime = [r for r, s in zip(usable, x) if s >= cut]
+    if not in_regime:
+        return {}
+    add_neg = np.array([r["omega_add_lower"] for r in in_regime])
+    mult_neg = np.array([r["omega_lower"] for r in in_regime])
+    add_pos = np.array([p["omega_add_lower"] for p in positives])
+    mult_pos = np.array([p["omega_lower"] for p in positives])
+
+    rows = []
+    for target in targets:
+        t_add = float(np.quantile(add_neg, 1 - target))
+        t_mult = float(np.quantile(mult_neg, 1 - target))
+        rows.append({
+            "target_fpr": target,
+            "threshold_additive": round(t_add, 3),
+            "threshold_multiplicative": round(t_mult, 3),
+            "realised_fpr_additive": round(float((add_neg > t_add).mean()), 4),
+            "realised_fpr_multiplicative": round(float((mult_neg > t_mult).mean()), 4),
+            "recovered_additive": int((add_pos > t_add).sum()),
+            "recovered_multiplicative": int((mult_pos > t_mult).sum()),
+        })
+    gaps = [r["recovered_additive"] - r["recovered_multiplicative"] for r in rows]
+    return {
+        "note": "recovery against in-regime false-positive rate for both nulls, "
+                "swept over the same regime-matched negative pool",
+        "n_in_regime_negatives": len(in_regime),
+        "n_positive_controls": len(positives),
+        "rows": rows,
+        "additive_advantage_max_pairs": max(gaps),
+        "additive_advantage_min_pairs": min(gaps),
+        "additive_never_worse": min(gaps) >= 0,
+    }
+
+
 def matched_recovery(positives: list[dict], negatives: list[dict],
                      cut: float, targets=(0.05, 0.10, 0.20)) -> dict:
     """Recovery when both nulls are calibrated to the same in-regime rate.
@@ -407,6 +463,13 @@ def main(argv: list[str] | None = None) -> int:
                 "at_positive_control_strength": int(strength >= ir["in_regime_cut"]),
             })
     log.info("  pool exported -> %s", pool_path)
+
+    oc = operating_characteristic(positives, pool, ir["in_regime_cut"])
+    if oc:
+        results["operating_characteristic"] = oc
+        log.info("  operating characteristic: additive advantage %d to %d pairs "
+                 "across %d points", oc["additive_advantage_min_pairs"],
+                 oc["additive_advantage_max_pairs"], len(oc["rows"]))
 
     results["high_marginal_pool"] = built
     log.info("  %d pairs, median strength %.2f: additive %.1f%%, multiplicative %.1f%%",

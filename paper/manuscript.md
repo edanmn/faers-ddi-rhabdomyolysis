@@ -137,7 +137,7 @@ and an unusually strong positive-control set in the statin interactions. That
 same property — the controls being the dominant causes of the outcome — creates
 the methodological problem which is this paper's main contribution.
 
-**Contributions.** This paper provides five things a DDI screen can use
+**Contributions.** This paper provides six things a DDI screen can use
 directly.
 
 1. **The condition under which the choice of null stops mattering, and how
@@ -166,9 +166,17 @@ directly.
 4. **A one-line diagnostic for circular screen evaluation** — recompute
    enrichment over pairs containing no positive-control drug. Here it moves
    apparent enrichment from 2.02× to 1.12× (§4.5).
-5. **A polypharmacy cap that improves sensitivity and false-positive rate
+5. **An operating characteristic for DDI screening in this regime**, sweeping
+   both nulls over the same regime-matched negatives, which replaces the
+   "which null" question with the one a screen actually faces: recovering 12 of
+   16 known interactions costs about **7.5%**
+   false positives among strongly-associated non-interacting pairs, three times
+   the nominal rate (§4.4). A strength-varying threshold, the obvious
+   alternative, flattens error across strength but halves recovery, and we
+   report that so others need not repeat it.
+6. **A polypharmacy cap that improves sensitivity and false-positive rate
    simultaneously**, from a quantification of pair-space leverage: 0.09% of
-   cases contribute 34.7% of all drug pairs (§4.4).
+   cases contribute 34.7% of all drug pairs (§4.5).
 
 The screen itself returned no *novel* interaction, and we report that as a
 finding rather than burying it — but it ranked genuine contraindicated
@@ -822,6 +830,53 @@ Recovery is therefore quoted out of 16 where the control set is the unit and
 out of 15 where the screen is, the two denominators are not interchangeable,
 and the missing pair is the least powered of the sixteen rather than a failure
 to detect.
+
+### 4.4 The operating characteristic, and what recovery costs
+
+§4.2 shows the two nulls are one ordering in this regime, and §4.3 gives their
+error rates at one conventional cut. What a screen actually needs is neither: it
+needs to know what recovering *k* known interactions costs in false positives
+among pairs that look like them. Sweeping both nulls over the same
+2,345 regime-matched negatives gives that directly.
+
+<!-- source: canonical:regime.operating_characteristic -->
+
+| in-regime FPR | Ω_add threshold | additive recovery | Ω threshold | multiplicative recovery |
+|---:|---:|---:|---:|---:|
+| 1.0% | +2.14 | **1/16** | +0.60 | 1/16 |
+| 2.5% | +1.32 | **6/16** | -0.12 | 6/16 |
+| 5.0% | +0.70 | **10/16** | -0.74 | 8/16 |
+| 7.5% | +0.28 | **12/16** | -1.05 | 11/16 |
+| 10.0% | -0.10 | **12/16** | -1.34 | 11/16 |
+| 15.0% | -0.62 | **14/16** | -1.82 | 12/16 |
+| 20.0% | -1.10 | **15/16** | -2.27 | 14/16 |
+| 30.0% | -1.96 | **15/16** | -3.10 | 16/16 |
+
+Three things follow, and the first is the one a practitioner needs.
+
+**Recovering 12 of the 16 known interactions costs about 7.5% false positives
+among strongly-associated non-interacting pairs — three times the nominal
+2.5%.** That exchange rate is the quantity a surveillance programme has to
+budget for, and it is not available from any published source we are aware of.
+The conventional Ω_add,₀₂₅ > 0 cut reaches the same 12 at 9.3% (§4.3); the
+saving from calibrating is about two points of false-positive rate, not an
+order of magnitude.
+
+**The additive null's advantage is real but small and not uniform.** It runs
+from -1 to 2 pairs
+across the eight operating points, and the two nulls converge at both ends —
+identical at 1% and 2.5%, and the multiplicative null recovers more at 30%.
+With 16 controls in five victim-drug clusters this is not a difference the data
+can resolve, which is the same conclusion §4.3 reaches by a different route.
+
+**A strength-varying threshold was tried and is not recommended.** Calibrating
+the threshold as a function of log₂(RR_A × RR_B) rather than holding it fixed
+does flatten the false-positive rate across the strength range — the spread
+across quintiles falls from 0.080 to 0.032 over 200 held-out halves — but
+recovery falls from 11.0 to 5.5 of 16, because the true interactions are
+concentrated at exactly the strengths where equalising the rate raises the bar.
+Uniform error control across marginal strength is the wrong objective for this
+problem. We report it because it is the obvious fix and it does not work.
 
 ### 4.4 Polypharmacy leverage (Figure 5)
 

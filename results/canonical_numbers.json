@@ -1820,6 +1820,88 @@
         }
       ]
     },
+    "operating_characteristic": {
+      "additive_advantage_max_pairs": 2,
+      "additive_advantage_min_pairs": -1,
+      "additive_never_worse": false,
+      "n_in_regime_negatives": 2345,
+      "n_positive_controls": 16,
+      "note": "recovery against in-regime false-positive rate for both nulls, swept over the same regime-matched negative pool",
+      "rows": [
+        {
+          "realised_fpr_additive": 0.0102,
+          "realised_fpr_multiplicative": 0.0102,
+          "recovered_additive": 1,
+          "recovered_multiplicative": 1,
+          "target_fpr": 0.01,
+          "threshold_additive": 2.138,
+          "threshold_multiplicative": 0.599
+        },
+        {
+          "realised_fpr_additive": 0.0252,
+          "realised_fpr_multiplicative": 0.0252,
+          "recovered_additive": 6,
+          "recovered_multiplicative": 6,
+          "target_fpr": 0.025,
+          "threshold_additive": 1.318,
+          "threshold_multiplicative": -0.125
+        },
+        {
+          "realised_fpr_additive": 0.0503,
+          "realised_fpr_multiplicative": 0.0503,
+          "recovered_additive": 10,
+          "recovered_multiplicative": 8,
+          "target_fpr": 0.05,
+          "threshold_additive": 0.701,
+          "threshold_multiplicative": -0.739
+        },
+        {
+          "realised_fpr_additive": 0.0751,
+          "realised_fpr_multiplicative": 0.0751,
+          "recovered_additive": 12,
+          "recovered_multiplicative": 11,
+          "target_fpr": 0.075,
+          "threshold_additive": 0.28,
+          "threshold_multiplicative": -1.054
+        },
+        {
+          "realised_fpr_additive": 0.1002,
+          "realised_fpr_multiplicative": 0.1002,
+          "recovered_additive": 12,
+          "recovered_multiplicative": 11,
+          "target_fpr": 0.1,
+          "threshold_additive": -0.102,
+          "threshold_multiplicative": -1.344
+        },
+        {
+          "realised_fpr_additive": 0.1501,
+          "realised_fpr_multiplicative": 0.1501,
+          "recovered_additive": 14,
+          "recovered_multiplicative": 12,
+          "target_fpr": 0.15,
+          "threshold_additive": -0.621,
+          "threshold_multiplicative": -1.816
+        },
+        {
+          "realised_fpr_additive": 0.2,
+          "realised_fpr_multiplicative": 0.2,
+          "recovered_additive": 15,
+          "recovered_multiplicative": 14,
+          "target_fpr": 0.2,
+          "threshold_additive": -1.098,
+          "threshold_multiplicative": -2.268
+        },
+        {
+          "realised_fpr_additive": 0.3002,
+          "realised_fpr_multiplicative": 0.3002,
+          "recovered_additive": 15,
+          "recovered_multiplicative": 16,
+          "target_fpr": 0.3,
+          "threshold_additive": -1.955,
+          "threshold_multiplicative": -3.1
+        }
+      ]
+    },
     "strength_matched_chance": {
       "bands": {
         "known_pair": {
