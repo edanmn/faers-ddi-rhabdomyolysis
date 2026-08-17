@@ -320,6 +320,19 @@
         }
       ]
     },
+    "null_nesting": {
+      "multiplicative_signals_not_additive": 64,
+      "n_expectation_ordered": 13208,
+      "n_high_expected_rate": 4314,
+      "n_low_expected_rate": 3214,
+      "n_pairs": 17375,
+      "nesting_holds_where_expectations_ordered": true,
+      "note": "both nulls are log2((n+a)/(E+a)) under identical shrinkage, so E_mult >= E_add implies the multiplicative signal set is contained in the additive one; the antecedent holds almost always in the drug-dominant regime and rarely outside it",
+      "share_expectation_ordered": 0.7602,
+      "share_ordered_high_expected_rate": 0.9833,
+      "share_ordered_low_expected_rate": 0.1689,
+      "violations_with_expectation_reversed": 64
+    },
     "polypharmacy_bands": {
       "above_cap_cases": 19005,
       "above_cap_enrichment": 4.3,
@@ -585,6 +598,72 @@
           "pair": "CIPROFLOXACIN+SIMVASTATIN"
         }
       ]
+    },
+    "top_ranked_pairs": {
+      "note": "signalled pairs with at least 50 co-reports, ranked by event rate; the third-drug share is the proxy test of 4.7, where a known proxy scores near 100%",
+      "pairs": [
+        {
+          "band": "plausible",
+          "event_cases_with_a_third_implicated_drug": 8.4,
+          "event_rate": 83.8,
+          "label_documented": false,
+          "n_ab": 185,
+          "n_abz": 155,
+          "omega_add_lower": 1.024,
+          "omega_lower": -0.27,
+          "pair": "ATORVASTATIN+FUSIDIC ACID",
+          "signals_multiplicative_too": false
+        },
+        {
+          "band": "plausible",
+          "event_cases_with_a_third_implicated_drug": 16.7,
+          "event_rate": 82.7,
+          "label_documented": false,
+          "n_ab": 283,
+          "n_abz": 234,
+          "omega_add_lower": 3.414,
+          "omega_lower": 1.82,
+          "pair": "ABIRATERONE+ROSUVASTATIN",
+          "signals_multiplicative_too": true
+        },
+        {
+          "band": "plausible",
+          "event_cases_with_a_third_implicated_drug": 19.5,
+          "event_rate": 79.6,
+          "label_documented": false,
+          "n_ab": 142,
+          "n_abz": 113,
+          "omega_add_lower": 0.707,
+          "omega_lower": -0.515,
+          "pair": "FUSIDIC ACID+SIMVASTATIN",
+          "signals_multiplicative_too": false
+        },
+        {
+          "band": "plausible",
+          "event_cases_with_a_third_implicated_drug": 64.7,
+          "event_rate": 78.2,
+          "label_documented": false,
+          "n_ab": 174,
+          "n_abz": 136,
+          "omega_add_lower": 2.166,
+          "omega_lower": 0.232,
+          "pair": "INFLUENZA VIRUS VACCINE+SIMVASTATIN",
+          "signals_multiplicative_too": true
+        },
+        {
+          "band": "unsupported",
+          "event_cases_with_a_third_implicated_drug": 100.0,
+          "event_rate": 74.5,
+          "label_documented": false,
+          "n_ab": 55,
+          "n_abz": 41,
+          "omega_add_lower": 4.174,
+          "omega_lower": 3.088,
+          "pair": "PAROXETINE+ROCURONIUM",
+          "signals_multiplicative_too": true
+        }
+      ],
+      "threshold": 0.436
     },
     "vocabulary_hygiene": {
       "as_specified": {

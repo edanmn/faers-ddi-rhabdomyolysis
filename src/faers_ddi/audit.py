@@ -393,6 +393,136 @@ def era_stable_plausible(con: duckdb.DuckDBPyConnection, tier: str,
 # The polypharmacy cap was chosen on the evaluation set.
 # --------------------------------------------------------------------------
 
+def top_ranked_pairs(con: duckdb.DuckDBPyConnection, tier: str,
+                     screen_rows: list[dict], reference: set,
+                     threshold: float, top_n: int = 5) -> dict:
+    """The screen's highest-event-rate signals, and whether they are proxies.
+
+    Round 29. The screen's top-ranked pairs were discussed one at a time in the
+    prose. Ranking them and applying the same third-drug test §4.7 uses for the
+    era-stable pairs makes the check reproducible, and separates pairs whose
+    event rate is carried by a co-reported statin from pairs where it is not.
+    A known proxy scores near 100%; a pair carrying its own signal scores near
+    zero.
+    """
+    implicated = sorted(tier_b.MYOTOXICITY_IMPLICATED)
+    flag = "is_core" if tier == "core" else "is_broad"
+    ranked = []
+    for row in screen_rows:
+        try:
+            n_ab, n_abz = float(row["n_ab"]), float(row["n_abz"])
+            lower = float(row["omega_add_lower"])
+        except (TypeError, ValueError, KeyError):
+            continue
+        if n_ab < 50 or lower <= threshold:
+            continue
+        ranked.append((n_abz / n_ab, row))
+    ranked.sort(key=lambda r: -r[0])
+
+    out = []
+    placeholder = ", ".join("?" * len(implicated))
+    for rate, row in ranked[:top_n]:
+        a, b = row["drug_a"], row["drug_b"]
+        third = con.execute(f"""
+            WITH pair AS (
+              SELECT cd1.case_id FROM case_drugs cd1 JOIN case_drugs cd2 USING (case_id)
+              WHERE cd1.ingredient = ? AND cd2.ingredient = ?
+            ), ev AS (
+              SELECT p.case_id FROM pair p WHERE EXISTS (
+                SELECT 1 FROM case_events e WHERE e.case_id = p.case_id AND e.{flag})
+            )
+            SELECT count(*), count(*) FILTER (WHERE EXISTS (
+                SELECT 1 FROM case_drugs c3 WHERE c3.case_id = ev.case_id
+                  AND c3.ingredient IN ({placeholder})
+                  AND c3.ingredient NOT IN (?, ?)))
+            FROM ev
+        """, [a, b] + implicated + [a, b]).fetchone()
+        events, with_third = third[0] or 0, third[1] or 0
+        key = tuple(sorted((a, b)))
+        out.append({
+            "pair": f"{a}+{b}",
+            "n_ab": int(float(row["n_ab"])),
+            "n_abz": int(float(row["n_abz"])),
+            "event_rate": round(100 * rate, 1),
+            "omega_add_lower": round(float(row["omega_add_lower"]), 3),
+            "omega_lower": round(float(row["omega_lower"]), 3),
+            "signals_multiplicative_too": float(row["omega_lower"]) > 0,
+            "band": row.get("support"),
+            "label_documented": key in reference,
+            "event_cases_with_a_third_implicated_drug": (
+                round(100 * with_third / events, 1) if events else None),
+        })
+    return {
+        "note": "signalled pairs with at least 50 co-reports, ranked by event "
+                "rate; the third-drug share is the proxy test of 4.7, where a "
+                "known proxy scores near 100%",
+        "threshold": threshold,
+        "pairs": out,
+    }
+
+
+def null_nesting(screen_rows: list[dict]) -> dict:
+    """When do the two nulls stop being different tests?
+
+    Both statistics are log2((n + alpha) / (E + alpha)) under identical
+    shrinkage, so they differ only through E. The posterior quantile is
+    decreasing in E, which gives an exact implication:
+
+        E_mult >= E_add   =>   Omega_025 <= Omega_add,025
+                          =>   {Omega_025 > 0} is contained in {Omega_add,025 > 0}
+
+    Whether that antecedent holds is an empirical question, and it turns out to
+    depend on exactly the quantity this paper is about. When both drugs are
+    strongly associated with the event, the multiplicative expectation runs far
+    above the additive one and the signal sets nest: the two nulls cannot then
+    disagree about which pairs signal, only about where the threshold sits. When
+    the marginals are weak the ordering reverses and they are genuinely
+    different tests.
+
+    This is checkable before any outcome data is used -- both expectations are
+    functions of the marginals alone -- so a screen can determine in advance
+    whether its choice of null is a choice of null or merely of operating point.
+    """
+    pairs = []
+    for row in screen_rows:
+        try:
+            e_mult = float(row["expected"])
+            e_add = float(row["additive_expected"])
+            add = float(row["omega_add_lower"])
+            mult = float(row["omega_lower"])
+            n_ab = float(row["n_ab"])
+        except (TypeError, ValueError, KeyError):
+            continue
+        if not n_ab:
+            continue
+        pairs.append((e_mult, e_add, mult, add, e_mult / n_ab))
+
+    dominant = [p for p in pairs if p[4] > 0.05]
+    weak = [p for p in pairs if p[4] <= 0.005]
+    nested = [p for p in pairs if p[0] >= p[1]]
+    violations = [p for p in pairs if p[2] > 0 and not p[3] > 0]
+    return {
+        "note": "both nulls are log2((n+a)/(E+a)) under identical shrinkage, so "
+                "E_mult >= E_add implies the multiplicative signal set is "
+                "contained in the additive one; the antecedent holds almost "
+                "always in the drug-dominant regime and rarely outside it",
+        "n_pairs": len(pairs),
+        "n_expectation_ordered": len(nested),
+        "share_expectation_ordered": round(len(nested) / len(pairs), 4) if pairs else None,
+        "share_ordered_high_expected_rate": round(
+            sum(1 for p in dominant if p[0] >= p[1]) / len(dominant), 4) if dominant else None,
+        "n_high_expected_rate": len(dominant),
+        "share_ordered_low_expected_rate": round(
+            sum(1 for p in weak if p[0] >= p[1]) / len(weak), 4) if weak else None,
+        "n_low_expected_rate": len(weak),
+        "multiplicative_signals_not_additive": len(violations),
+        "violations_with_expectation_reversed": sum(
+            1 for p in violations if p[0] < p[1]),
+        "nesting_holds_where_expectations_ordered": sum(
+            1 for p in nested if p[2] > 0 and not p[3] > 0) == 0,
+    }
+
+
 def event_definition(pt_rows: list[dict]) -> dict:
     """The tier split of the curated PT list, and what each tier admits.
 
@@ -1002,6 +1132,17 @@ def main(argv: list[str] | None = None) -> int:
             })
     control_drugs = {d for c in tier_a.load_positive_controls()
                      for d in (c["drug_a"].strip().upper(), c["drug_b"].strip().upper())}
+
+    log.info("--- null nesting ---")
+    results["null_nesting"] = null_nesting(screen_rows)
+    nn = results["null_nesting"]
+    log.info("  E_mult >= E_add in %.1f%% of pairs (%.1f%% when the expected "
+             "joint rate exceeds 5%%, %.1f%% when it is under 0.5%%)",
+             100 * nn["share_expectation_ordered"],
+             100 * nn["share_ordered_high_expected_rate"],
+             100 * nn["share_ordered_low_expected_rate"])
+    log.info("  nesting holds wherever the expectations are ordered: %s",
+             nn["nesting_holds_where_expectations_ordered"])
 
     log.info("--- event definition tiers ---")
     results["event_definition"] = event_definition(define_event.load_pt_list())

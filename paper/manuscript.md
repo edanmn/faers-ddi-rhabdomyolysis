@@ -1,4 +1,4 @@
-# Calibration and evaluation of disproportionality nulls for drug–drug interaction detection: an analysis of 22 years of FAERS
+# A pre-hoc test for when disproportionality nulls collapse to one, with calibrated in-regime error rates for drug–drug interaction screening: 22 years of FAERS
 
 **Authors.** [TODO: author list and affiliations]
 
@@ -6,11 +6,21 @@
 
 **Background.** Drug–drug interactions (DDIs) are largely identified after
 approval, and spontaneous reporting databases are the primary instrument. The
-established disproportionality measure for DDI surveillance, Ω (Norén et al.,
-2008), uses a null in which the joint relative risk of two drugs is the product
-of their individual relative risks. Whether that null is appropriate for an
-adverse event whose leading reported causes are the drugs being tested has not,
-to our knowledge, been examined empirically.
+established measure, Ω (Norén et al., 2008), tests the joint report count
+against a multiplicative null; an additive (excess-risk) null is the standard
+alternative. Which to prefer is usually settled by comparing how many known
+interactions each recovers. **We show that comparison is uninformative whenever
+the two nulls induce nested signal sets, give a test for when that happens that
+requires no outcome data, and supply the calibrated error rates the comparison
+should be made at instead.**
+
+**Key result.** Both statistics are log₂((n + α)/(E + α)) under identical
+shrinkage, so E_mult ≥ E_add forces {Ω₀₂₅ > 0} ⊆ {Ω_add,₀₂₅ > 0}: the nulls
+become one ordering read at two thresholds. That ordering holds for
+**98.3%** of pairs whose expected joint rate
+exceeds 5% and only **16.9%** of pairs below
+0.5%, with **no exception among 13,208 ordered pairs**. Both
+expectations depend only on the marginals, so a screen can check this in advance.
 
 **Methods.** We assembled the complete public history of the FDA Adverse Event
 Reporting System — 90 quarterly archives, 2004Q1–2026Q2, 328,476,258 rows —
@@ -124,10 +134,37 @@ and an unusually strong positive-control set in the statin interactions. That
 same property — the controls being the dominant causes of the outcome — creates
 the methodological problem which is this paper's main contribution.
 
-We set out to (i) build a reproducible pipeline over the complete FAERS history,
-(ii) validate it against known interactions, (iii) measure its false-positive
-rate, and (iv) screen for undocumented interactions. Aims (i)–(iii) succeeded.
-Aim (iv) returned a negative result, which we report as the finding.
+**Contributions.** This paper provides five things a DDI screen can use
+directly.
+
+1. **A pre-hoc test for whether the choice of null matters at all.** Both
+   statistics are log₂((n + α)/(E + α)) under identical shrinkage, so they
+   differ only through E. Because the posterior quantile decreases in E,
+   E_mult ≥ E_add forces the multiplicative signal set to lie *inside* the
+   additive one. We show that antecedent holds for **98.3%** of pairs whose
+   expected joint rate exceeds 5% and only **16.9%** of pairs below 0.5%, with
+   **no exception in 13,208 ordered pairs**. Where it holds, the two nulls
+   cannot disagree about which pairs signal — only about where the threshold
+   sits. Both expectations are functions of the marginals alone, so this is
+   checkable before any outcome is examined (§4.2).
+2. **The first calibrated error rates for both nulls in the regime where DDI
+   methods are validated**, on a purpose-built pool of 2,345 strongly-associated
+   non-interacting pairs: Ω₀₂₅ > 0 fires on **2.2% (95% CI 1.24–3.34%)** and
+   Ω_add,₀₂₅ > 0 on **9.3% (7.29–11.32%)** against a nominal 2.5% (§4.3).
+3. **A construction for regime-matched negative controls**, which the standard
+   frequency-matched generator cannot produce, and which is reusable for any
+   endpoint (§4.3).
+4. **A one-line diagnostic for circular screen evaluation** — recompute
+   enrichment over pairs containing no positive-control drug. Here it moves
+   apparent enrichment from 2.02× to 1.12× (§4.5).
+5. **A polypharmacy cap that improves sensitivity and false-positive rate
+   simultaneously**, from a quantification of pair-space leverage: 0.09% of
+   cases contribute 34.7% of all drug pairs (§4.4).
+
+The screen itself returned no *novel* interaction, and we report that as a
+finding rather than burying it — but it ranked genuine contraindicated
+combinations first, and none of them appears in any reference available to us
+(§4.7).
 
 ## 2. Related work
 
@@ -516,6 +553,57 @@ above it. Departure from additivity is the standard criterion for clinically
 meaningful interaction (Rothman, 1976; VanderWeele and Knol, 2014); departure
 from multiplicativity is a stricter and different question, and on a
 drug-dominant event it is a question almost nothing passes.
+
+### 4.2 When the two nulls stop being different tests
+
+The comparison in §4.1 has a structural explanation, and it is checkable before
+any outcome data is used.
+
+Both statistics are log₂((n + α)/(E + α)) under identical shrinkage (§3.8), so
+they differ **only** through the expectation. The gamma-Poisson posterior
+quantile is decreasing in E, which gives an exact implication:
+
+$$E^{\mathrm{mult}}_{111} \;\ge\; E^{\mathrm{add}}_{111}
+\quad\Longrightarrow\quad \Omega_{025} \le \Omega_{\mathrm{add},025}
+\quad\Longrightarrow\quad
+\{\Omega_{025} > 0\} \subseteq \{\Omega_{\mathrm{add},025} > 0\}$$
+
+Where the expectations are ordered that way, the multiplicative null cannot
+signal on a pair the additive null misses. The two are then **not competing
+tests but one ordering read at two thresholds**, and any recovery comparison
+between them measures the threshold, not the null.
+
+Whether the antecedent holds is empirical, and it depends on precisely the
+quantity this paper is about:
+
+<!-- source: canonical:audit.null_nesting -->
+
+| pairs | n | E_mult ≥ E_add |
+|---|---:|---:|
+| expected joint rate > 5% (drug-dominant) | 4,314 | **98.3%** |
+| expected joint rate ≤ 0.5% (diffuse) | 3,214 | **16.9%** |
+| all screened pairs | 17,375 | 76.0% |
+
+The implication holds without exception in the data: of the
+**13,208** pairs whose expectations are ordered, **not one**
+signals under Ω while failing under Ω_add. All
+**64** pairs that do so — anywhere in the
+screen — have the expectations reversed, which is the only way the theory
+permits. Across the 17,375 screened pairs and the 19,826-pair
+high-marginal pool, there is no counterexample.
+
+**This is the diagnostic.** Both expectations are functions of the marginals and
+the co-report count alone — no outcome comparison, no control set, no
+calibration. A screen can therefore determine *before looking at any result*
+whether its two candidate nulls are genuinely different tests or the same
+ordering at two operating points. When they are the same ordering, the only
+decision left is the threshold, and §4.3 shows that decision cannot be made from
+a nominal credibility bound.
+
+It also explains §4.1 without appeal to any property of rhabdomyolysis: the
+multiplicative expectation exceeds the additive one exactly when both marginals
+are strong, which is the definition of the regime where DDI methods are
+validated.
 
 ### 4.2 The estimand switch does not inflate sensitivity
 
@@ -1055,6 +1143,45 @@ returns no label for it at all and no fusidic acid pair can ever be
 list. The screen ranked a genuine contraindicated interaction first and both
 evaluation references were blind to it.
 
+**Ranking the screen, and separating signal from proxy.** The same third-drug
+test applies to every signalled pair, not only the era-stable ones. Ranking all
+signalled pairs with at least 50 co-reports by event rate:
+
+<!-- source: canonical:audit.top_ranked_pairs -->
+
+| pair | co-reports | event rate | Ω₀₂₅ | signals under Ω too | event cases with a third implicated drug |
+|---|---:|---:|---:|---|---:|
+| Atorvastatin + Fusidic Acid | 185 | 83.8% | -0.27 | no | 8.4% |
+| Abiraterone + Rosuvastatin | 283 | 82.7% | +1.82 | yes | 16.7% |
+| Fusidic Acid + Simvastatin | 142 | 79.6% | -0.52 | no | 19.5% |
+| Influenza Virus Vaccine + Simvastatin | 174 | 78.2% | +0.23 | yes | 64.7% |
+| Paroxetine + Rocuronium | 55 | 74.5% | +3.09 | yes | 100.0% |
+
+The proxy test separates the list cleanly. The bottom two entries carry a third
+implicated drug on **64.7%** and **100%** of their event cases: these are the
+"cardiovascular patient taking a statin" pattern already described, and the
+pair is not the cause. The top three sit at **8.4%, 16.7% and 19.5%** — they
+carry their own signal.
+
+Those top three are also **absent from every reference available to us**, and
+two of them are the same contraindication: fusidic acid with atorvastatin and
+with simvastatin, ranked first and third in the entire screen.
+
+**Abiraterone + rosuvastatin is the one entry that clears both nulls.** Its
+Ω₀₂₅ of **+1.82** is remarkable in context: §4.3 shows the multiplicative null
+is systematically negative in this regime and fires on only 2.2% of
+strongly-associated non-interacting pairs, so a pair clearing it here is
+clearing the conservative test where that test almost never fires. We report
+this as a ranked observation and **make no mechanistic claim**: the cached FDA
+label for abiraterone documents CYP2D6 and CYP2C8 inhibition and says nothing
+about transporters, statins or muscle, and rosuvastatin is not a CYP2C8
+substrate. Confounding by indication cannot be excluded either — abiraterone
+treats metastatic prostate cancer, and statin co-prescription in that
+population is common — although that would raise co-reporting rather than the
+event rate *conditional* on co-reporting, which is what is elevated here. It is
+a candidate for follow-up in a data source with exposure denominators, not a
+finding.
+
 **Revised conclusion.** No pair identified by this screen constitutes a *novel*
 pharmacokinetic interaction — atorvastatin + fusidic acid is documented, not
 novel. But the earlier claim that every era-stable pair traces to confounding
@@ -1496,19 +1623,25 @@ against author-curated reference lists should be read accordingly.
 
 ## 7. Conclusion
 
-A reproducible pipeline over the complete public FAERS history recovers known
-rhabdomyolysis interactions on an author-curated control set with a measured
-false-positive rate, and finds no evidence of novel interaction discovery. The
-robust methodological contributions are the demonstration that **neither**
-disproportionality null is usable at its conventional operating point when the
-drugs under study dominate the outcome — though they fail in different
-currencies, 2.2% and 9.3% against a nominal 2.5% on a purpose-built pool of
-2,345 strongly-associated non-interacting pairs, so that only the additive null
-is miscalibrated on error rate while Ω holds its advertised rate and is
-disqualified by power — and the quantification of polypharmacy leverage in
-pairwise screens. The apparent superiority of the additive null is mostly an
-operating-point effect and does not survive matched error rates on the
-replication event. The
+**A screen can determine in advance whether its choice of null is a real
+choice.** Both statistics are the same shrunk log-ratio and differ only through
+the expectation, so wherever E_mult ≥ E_add the multiplicative signal set lies
+inside the additive one and the two nulls are one ordering at two thresholds.
+That ordering holds for 98.3% of drug-dominant pairs and 16.9% of diffuse ones,
+without a single exception among 13,208 ordered pairs, and it is computable from
+the marginals before any result is seen. Where it holds, a recovery comparison
+between the nulls measures the operating point and nothing else — which is what
+the eight-pair advantage in this study turns out to be, falling to one or two
+pairs at matched error rates and to none on the replication event.
+
+**The thresholds those comparisons should use are supplied.** On a purpose-built
+pool of 2,345 strongly-associated non-interacting pairs — a construction the
+standard frequency-matched generator cannot produce — Ω₀₂₅ > 0 fires on 2.2%
+(95% CI 1.24–3.34%) and Ω_add,₀₂₅ > 0 on 9.3% (7.29–11.32%) against a nominal
+2.5%. Only the additive null is miscalibrated on error rate; Ω holds its
+advertised rate and is disqualified by power instead. Both figures are new: no
+prior work measures either null in the regime where DDI methods are validated.
+The
 temporal-stability filter, promoted in an earlier version of this work, does not
 survive validation against negative controls and is reported here as a negative
 result.

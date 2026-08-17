@@ -311,6 +311,10 @@ def test_tables_that_declare_a_source_match_it(manuscript, numbers):
             for v in leaves:
                 derivable |= {f"{v:g}", f"{v:.0f}", f"{v:.1f}", f"{v:.2f}",
                               f"{100 * v:.0f}", f"{100 * v:.1f}", f"{100 * v:.2f}"}
+                # Signed values render with a leading minus or a Unicode
+                # en-dash in the prose, and the cell scanner reads the digits
+                # without the sign. Admit the unsigned form too.
+                derivable |= {f"{abs(v):g}", f"{abs(v):.1f}", f"{abs(v):.2f}"}
                 if abs(v) >= 1000 and v == int(v):
                     derivable.add(f"{int(v):,}")
             lines = block.strip().split("\n")
@@ -319,7 +323,13 @@ def test_tables_that_declare_a_source_match_it(manuscript, numbers):
             for line in lines[1:]:
                 if _re.match(r"^\|[\s\-:|]+\|$", line):
                     continue
-                for num in _re.findall(r"(?<![\w.])(\d+(?:,\d{3})*(?:\.\d+)?)", line):
+                # Skip the first cell: it is the row label, and labels legitimately
+                # contain numbers that are thresholds rather than data ("expected
+                # joint rate > 5%"). The CSV branch already skips it; this branch
+                # did not, and flagged a correct table.
+                cells = [c for c in line.strip("|").split("|")]
+                body_cells = " | ".join(cells[1:]) if len(cells) > 1 else ""
+                for num in _re.findall(r"(?<![\w.])(\d+(?:,\d{3})*(?:\.\d+)?)", body_cells):
                     assert num in derivable or num.replace(",", "") in derivable, (
                         f"{num} in row {line.strip()!r} is not derivable from "
                         f"{filename}")
@@ -1520,6 +1530,40 @@ def test_load_bearing_cross_references_point_at_the_right_section(manuscript):
             assert expected in refs, (
                 f"the claim {phrase!r} cites §{', §'.join(refs)} but is "
                 f"established in §{expected}: {sentence[:150]}")
+
+
+def test_null_nesting_claim_matches_the_data(manuscript, numbers):
+    """Round 29. The paper's lead contribution is that E_mult >= E_add forces
+    the multiplicative signal set inside the additive one, so the two nulls
+    become one ordering at two thresholds.
+
+    The implication is arithmetic given identical shrinkage, but the CLAIM the
+    paper makes is empirical -- that the antecedent holds in the drug-dominant
+    regime and not outside it, and that the data contain no counterexample.
+    Assert the empirical part, and assert the direction, so a future run that
+    reversed it would fail here rather than leaving a headline standing on
+    numbers that no longer support it.
+    """
+    nn = numbers["audit"]["null_nesting"]
+
+    assert nn["nesting_holds_where_expectations_ordered"], (
+        "a pair signals under the multiplicative null but not the additive one "
+        "while having E_mult >= E_add; that contradicts the shrinkage algebra "
+        "and the paper's lead claim")
+    assert nn["violations_with_expectation_reversed"] == nn["multiplicative_signals_not_additive"], (
+        "some violation is not explained by reversed expectations, so the "
+        "implication is not exhaustive as claimed")
+    assert nn["share_ordered_high_expected_rate"] > nn["share_ordered_low_expected_rate"], (
+        "the paper claims the expectation ordering is a property of the "
+        "drug-dominant regime; that direction no longer holds")
+    assert nn["share_ordered_high_expected_rate"] > 0.9
+
+    flat = " ".join(manuscript.split())
+    for value in (f"{100 * nn['share_ordered_high_expected_rate']:.1f}%",
+                  f"{100 * nn['share_ordered_low_expected_rate']:.1f}%",
+                  f"{nn['n_expectation_ordered']:,}"):
+        assert value in flat, (
+            f"the manuscript must report {value} for the nesting result")
 
 
 def test_generalization_table_has_no_blank_cells(manuscript, numbers):
