@@ -365,14 +365,22 @@ def main(argv: list[str] | None = None) -> int:
         "era_stable_fpr": round(neg_stable / len(negative_rows), 6) if negative_rows else None,
         "era_stable_fpr_ci": [round(lo, 6), round(hi, 6)],
         "upper_bound_used": round(bound, 6),
-        "expected_era_stable_by_chance": round(bound * len(rows), 1),
+        # Round 19 renamed this. It was called `expected_era_stable_by_chance`
+        # while being computed from `bound` -- the UPPER confidence limit, not
+        # the point estimate. It evaluates to 33.2 where the expectation is
+        # 16.1, so anyone reading the key by its name would conclude the 19
+        # observed pairs fall well BELOW chance. The papers always quoted 16.1
+        # correctly; nothing asserted this key, so nothing caught it.
+        "expected_era_stable_at_upper_bound": round(bound * len(rows), 1),
+        "expected_era_stable_point": (round(neg_stable / len(negative_rows) * len(rows), 1)
+                                      if negative_rows else None),
         "observed_era_stable": len(era_stable),
     }
     ev = numbers["era_stability_validation"]
     log.info("era-stability on negatives: %d/%d pass (upper bound %.4f%%) -> "
              "<=%.1f of %d era-stable pairs expected by chance",
              neg_stable, len(negative_rows), 100 * bound,
-             ev["expected_era_stable_by_chance"], len(era_stable))
+             ev["expected_era_stable_at_upper_bound"], len(era_stable))
     log.info("era-stable (3/3): %d pairs, known-pair enrichment %.2fx",
              len(era_stable),
              numbers["tier_c"]["era_stable"]["bands"]["known_pair"]["enrichment"] or 0)

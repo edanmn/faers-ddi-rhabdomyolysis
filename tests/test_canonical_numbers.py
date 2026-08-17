@@ -160,6 +160,66 @@ def test_manuscript_reports_era_stability_validated_on_negatives(manuscript, num
     assert "not distinguishable from chance" in manuscript.lower()
 
 
+def test_document_defines_both_estimands(manuscript):
+    """Round 19. The whole paper is a comparison of two nulls, and it defined
+    neither. Both estimands were written out only in paper_a.md, so retiring it
+    in round 18 deleted the formulae and left the additive null described in
+    prose that omitted the cap at 1 and the conversion from risk to count. No
+    guard noticed, because none asserted that a formula existed.
+
+    Assert the structure rather than an exact string: a display equation for
+    each null, the shrinkage constant, and the three risk terms.
+    """
+    flat = " ".join(manuscript.split())
+    assert flat.count("$$") >= 4, (
+        "expected display equations for both estimands; found "
+        f"{flat.count('$$') // 2} display block(s)")
+    for token, why in (
+        (r"\log_2", "the log2 ratio defining Omega"),
+        (r"E^{\mathrm{mult}}", "the multiplicative expectation"),
+        (r"E^{\mathrm{add}}", "the additive expectation"),
+        (r"n_{11\cdot}", "the co-report count the additive risk is applied to"),
+        (r"\alpha", "the shrinkage constant"),
+        (r"\min", "the cap at 1, which binds in the drug-dominant regime"),
+        (r"\max", "the floor at the larger single-drug risk"),
+    ):
+        assert token in flat, f"manuscript does not state {why} ({token})"
+    for term in ("p_A", "p_B"):
+        assert term in flat, f"manuscript does not define {term}"
+
+
+def test_era_stable_chance_expectation_is_the_point_estimate(manuscript, numbers):
+    """Round 19. The chance expectation quoted against the 19 observed pairs
+    must be the POINT estimate (rate x pairs screened), not the upper
+    confidence limit.
+
+    The pipeline stored the upper limit under a key named
+    `expected_era_stable_by_chance` -- 33.2 where the expectation is 16.1. The
+    prose was always right, but nothing asserted the key, so a reader or a
+    future guard taking it at its name would have concluded that 19 observed
+    falls far below chance. Derived here from the rate and the screen size so
+    it holds whatever the key is called.
+    """
+    ev = numbers["era_stability_validation"]
+    tested = numbers["tier_c"]["n_pairs_tested"]
+    point = ev["era_stable_fpr"] * tested
+    assert f"{point:.1f}" in manuscript, (
+        f"manuscript must quote the point expectation {point:.1f} "
+        f"({100 * ev['era_stable_fpr']:.4f}% x {tested:,})")
+    upper = ev.get("expected_era_stable_at_upper_bound",
+                   ev.get("expected_era_stable_by_chance"))
+    if upper is not None:
+        assert upper > point, "the upper limit must exceed the point estimate"
+        # The upper limit may appear, but only as an interval bound.
+        import re as _re
+        flat = " ".join(manuscript.split())
+        for sentence in _re.split(r"(?<=[.!?])\s+", flat):
+            if f"{upper:.1f}" in sentence and f"{point:.1f}" not in sentence:
+                assert "CI" in sentence or "interval" in sentence.lower(), (
+                    f"{upper:.1f} is the upper confidence limit, not the "
+                    f"expectation ({point:.1f}): {sentence[:160]}")
+
+
 def test_manuscript_reports_the_independent_annotation(manuscript, numbers):
     """Pooled enrichment is circular; the de-circularised figure must be given
     and must be presented as the honest one."""
@@ -679,7 +739,14 @@ def test_reference_blindness_is_quantified(manuscript, audit):
     assert rc["share_without_label"] > 0
     assert rc["endpoint_relevant_without_label"], "expected unlabelled implicated drugs"
     assert f"{100 * rc['share_without_label']:.1f}%" in manuscript
-    assert f"{100 * rc['share_of_pairs_structurally_undocumentable']:.1f}%" in manuscript
+    # Derived from the counts, not from the stored share. Round 19: the
+    # stored share was rounded to 4dp, so formatting it gave 9.8% while
+    # 1712/17375 = 9.853% -> 9.9%. A guard that re-rounds the same rounded
+    # value cannot catch a rounding error.
+    exact = 100 * rc["pairs_touching_an_unlabelled_drug"] / rc["pairs_total"]
+    assert f"{exact:.1f}%" in manuscript, (
+        f"manuscript must report {exact:.1f}% "
+        f"({rc['pairs_touching_an_unlabelled_drug']}/{rc['pairs_total']})")
     for drug in ("CERIVASTATIN", "FUSIDIC ACID"):
         assert drug.lower() in manuscript.lower()
 
@@ -999,23 +1066,52 @@ def test_blindness_is_reported_over_the_screened_set(manuscript, audit):
     correct = f"{100 * rc['screened_share_without_label']:.1f}%"
     stale = f"{100 * rc['share_without_label']:.1f}%"
     assert correct in manuscript, f"must report {correct}, the screened-set figure"
-    assert f"{100 * rc['share_of_pairs_structurally_undocumentable']:.1f}%" in manuscript
-    if stale in manuscript:
-        assert "800 ingredients for which labels were retrieved" in \
-            " ".join(manuscript.split()), (
-            "the cache-wide figure may appear only where it is labelled as the "
-            "wider reference, never as the screen's blindness")
+    # Derived from the counts, not from the stored share. Round 19: the
+    # stored share was rounded to 4dp, so formatting it gave 9.8% while
+    # 1712/17375 = 9.853% -> 9.9%. A guard that re-rounds the same rounded
+    # value cannot catch a rounding error.
+    exact = 100 * rc["pairs_touching_an_unlabelled_drug"] / rc["pairs_total"]
+    assert f"{exact:.1f}%" in manuscript, (
+        f"manuscript must report {exact:.1f}% "
+        f"({rc['pairs_touching_an_unlabelled_drug']}/{rc['pairs_total']})")
+    # Round 19: this used to check that the qualifying phrase appeared ANYWHERE
+    # in the document. It did -- in §4.5 -- while the Abstract and Limitations
+    # each carried "17.2% of ingredients ... including cerivastatin, the
+    # fibrates", the round-10 withdrawn claim, one of them asserting it of
+    # "screened ingredients" outright. A document-level co-occurrence check
+    # cannot bind a claim to its qualification. Bind them per SENTENCE.
+    import re as _re
+    flat = " ".join(manuscript.split())
+    for sentence in _re.split(r"(?<=[.!?])\s+", flat):
+        if stale not in sentence:
+            continue
+        assert ("800" in sentence or "cache" in sentence.lower()), (
+            f"the cache-wide figure {stale} appears in a sentence that does not "
+            f"identify it as the 800-ingredient cache: {sentence[:160]}")
+        assert "screened ingredient" not in sentence.lower(), (
+            f"{stale} is the cache-wide share, not the screened share "
+            f"({correct}); this sentence asserts it of the screened set: "
+            f"{sentence[:160]}")
 
 
 def test_drugs_cited_as_blind_were_actually_screened(manuscript, audit):
     """Four of the five drugs once cited as evidence were never in the screen."""
     rc = audit["reference_coverage"]
     assert rc["cited_but_not_screened"], "expected drugs cited but never screened"
+    # Round 19: also per-sentence. The document-level version passed while the
+    # Abstract cited cerivastatin and the fibrates as evidence of the SCREEN's
+    # blindness, with the disclaimer sitting 700 lines away in §4.5.
+    import re as _re
     flat = " ".join(manuscript.split()).lower()
+    sentences = _re.split(r"(?<=[.!?])\s+", flat)
     for drug in rc["cited_but_not_screened"]:
-        if drug.lower() in flat:
-            assert "none of the four entered the top-200 screen" in flat, (
-                f"{drug} is cited without stating it was never screened")
+        for sentence in sentences:
+            if drug.lower() not in sentence:
+                continue
+            assert ("never" in sentence or "not bear on" in sentence
+                    or "800" in sentence or "wider" in sentence), (
+                f"{drug} was never screened, but appears in a sentence that "
+                f"does not say so: {sentence[:160]}")
     assert "fusidic acid" in flat, "the one valid example must remain"
 
 

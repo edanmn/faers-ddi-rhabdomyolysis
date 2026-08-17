@@ -144,13 +144,13 @@ term, capturing 16/16 positive controls): enrichment 3.52×
 control drugs are excluded, and to \textbf{1.045} after stratifying on co-report
 count. The band in which a novel
 interaction would appear shows enrichment \textbf{below} unity (0.77×, 95\% CI
-0.66--0.89). The reference is also structurally blind to 9.8\% of screened
-pairs --- 17.2\% of ingredients have no FDA label at all, including cerivastatin,
-the fibrates and fusidic acid --- and restricting to pairs whose two labels both
+0.66--0.89). The reference is also structurally blind to 9.9\% of screened
+pairs --- 11 of the 200 screened ingredients (5.5\%) have no FDA label at all,
+among them fusidic acid --- and restricting to pairs whose two labels both
 exist leaves enrichment at \textbf{1.067 (0.292--1.972)}, unchanged. Requiring the
 signal to persist independently in all three eras yields 19 pairs, but the same
 filter applied to negative controls admits 0.093\% of them (95\% CI
-0.039--0.191\%), implying \textbf{16.1 era-stable pairs by chance (95\% CI 6.8--33.2)
+0.039--0.191\%), implying \textbf{16.1 era-stable pairs by chance (95\% CI 6.7--33.2)
 against 19 observed}; and under the endpoint-specific reference with control
 drugs removed, \textbf{none} of the 19 is documented. Neither how many pairs survive
 the filter nor which ones is distinguishable from the null.
@@ -456,14 +456,40 @@ part of the insensitivity that is structural rather than editorial.
 The eight cells of the 2×2×2 table are recoverable from the triple count, six
 marginals and the total.
 
-\textbf{Ω (multiplicative null).} Fitted exactly by iterative proportional fitting
-rather than the published closed-form approximation, which we measured at up to
-237\% error once pairwise log-odds reach 2 --- enough to produce Ω \textless{} −1 on tables
-with no synergy.
+Write \(n_{111}\) for the count of cases reporting drug \(A\), drug \(B\) and event
+\(Z\); \(n_{11\cdot}\) for the co-report count; \(p_A = P(Z \mid A)\),
+\(p_B = P(Z \mid B)\) and \(p = P(Z)\) for the two marginal risks and the database
+background; and \(\alpha\) for the shrinkage constant. Both statistics compare
+\(n_{111}\) against an expectation and differ \textbf{only} in how that expectation is
+formed.
 
-\textbf{Ω\_add (additive null), primary.} Expected joint risk P(Z\textbar A) + P(Z\textbar B) − P(Z),
-floored at max(P(Z\textbar A), P(Z\textbar B)). Identical gamma-posterior shrinkage, so the two
-differ only in the null.
+\textbf{Ω (multiplicative null).} The expectation \(E^{\mathrm{mult}}_{111}\) is the
+fit of the log-linear model \([AB][AZ][BZ]\) --- all pairwise associations, no
+three-way term:
+
+\[\Omega = \log_2\!\left(\frac{n_{111} + \alpha}{E^{\mathrm{mult}}_{111} + \alpha}\right)\]
+
+fitted exactly by iterative proportional fitting rather than the published
+closed-form approximation, which we measured at up to 237\% error once pairwise
+log-odds reach 2 --- enough to produce Ω \textless{} −1 on tables with no synergy.
+
+\textbf{Ω\_add (additive null), primary.} The expectation is the joint risk under
+additivity of excess risk, floored at the larger single-drug risk and capped at
+1, applied to the co-report count:
+
+\[E^{\mathrm{add}}_{111} = n_{11\cdot}\,\min\!\big(\max(p_A + p_B - p,\; p_A,\; p_B),\;1\big)\]
+
+\[\Omega_{\mathrm{add}} = \log_2\!\left(\frac{n_{111} + \alpha}{E^{\mathrm{add}}_{111} + \alpha}\right)\]
+
+The floor is not at zero: when both drugs are reported with the event \emph{less}
+often than background, \(p_A + p_B - p < 0\), and clipping to zero would make the
+expected count zero and Ω\_add unbounded in the observed count. The cap at 1
+binds precisely in the drug-dominant regime this paper is about, where
+\(p_A + p_B\) can exceed unity. Shrinkage is identical for both, so the two
+estimands differ only in the null.
+
+\(\Omega_{025}\) and \(\Omega_{\mathrm{add},025}\) denote the 2.5th percentile of
+the corresponding gamma-Poisson posterior.
 
 \textbf{Shrinkage constant.} α = 0.5 is conventional and could not be verified
 against Norén et al.~It is therefore varied across a 20-fold range as a
@@ -945,7 +971,7 @@ nominated.
 
 \textbf{Confirmed against an independent reference.} To remove any dependence on the
 authors' curation we built a second annotation from FDA product labelling
-(§3.6): 6,106 pairs in which one drug's label names the other. It captures
+(§3.7): 6,106 pairs in which one drug's label names the other. It captures
 16/16 positive controls, so it is not insensitive.
 
 Two corrections were required before it could be used. First, \textbf{a label
@@ -997,7 +1023,7 @@ FDA labelling, any endpoint & no control drug & 57/1,069 & 0.92 (0.71--1.2) & 0.
 screened ingredients (\textbf{5.5\%}) have no FDA label in openFDA at all, so no pair
 containing one can ever be \texttt{label\_documented}. Because those 11 are well
 co-reported they touch a disproportionate share of the pair space:
-\textbf{1,712 of 17,375 pairs (9.8\%)} are undocumentable by construction and fall
+\textbf{1,712 of 17,375 pairs (9.9\%)} are undocumentable by construction and fall
 into the denominator. The gap is not random --- it falls on agents without a
 current US marketing authorisation, and the one that matters for this endpoint
 is \textbf{fusidic acid}, whose statin combination is contraindicated in practice and
@@ -1018,7 +1044,7 @@ stratified on 142 documented pairs. \textbf{The negative result is unchanged by 
 correction}, but the reference's coverage is a property of US marketing status
 rather than of pharmacology and should be read that way.
 
-Note the direction of this bias. §3.6 states that under-sensitivity biases
+Note the direction of this bias. §3.7 states that under-sensitivity biases
 enrichment downward, ``the conservative direction for a claim that enrichment
 exists'' --- which is true of the pooled 3.52×. It is the \textbf{anti}-conservative
 direction for this paper's actual claim, which is that enrichment is absent:
@@ -1033,6 +1059,14 @@ observed baseline signal rate it has 83\% power to detect a true enrichment of
 than ``no enrichment''. A real but modest enrichment would very likely be missed
 here, and excluding it would need either a larger reference or a screen extended
 beyond the top 200 drugs.
+
+\emph{A note on precision.} The crude \texttt{plausible} enrichment appears in this paper
+as 0.77, 0.767 and 0.766. It is one quantity --- 228 signals in 4,930 pairs
+against the \texttt{unsupported} rate --- computed in three places that round
+differently: the band table reports two decimals, the marginal-strength
+stratification three, and the vocabulary-hygiene sensitivity three from its own
+recomputation over the same pairs. The spread is rounding, not disagreement, and
+no conclusion turns on the third decimal.
 
 All annotations agree. Pooled enrichment is real and, under the endpoint-specific
 reference, substantial (3.52×). \textbf{It vanishes once pairs containing a
@@ -1104,7 +1138,7 @@ eras with signal & pairs \\
 
 Of the 19, nine carry prior support. But the same filter applied to the 6,471
 negative controls that also enter the screen admits \textbf{6 of them (0.093\%, 95\% CI
-0.039--0.191\%)}, implying \textbf{16.1 era-stable pairs by chance (95\% CI 6.8--33.2)
+0.039--0.191\%)}, implying \textbf{16.1 era-stable pairs by chance (95\% CI 6.7--33.2)
 against 19 observed}.
 
 \textbf{The number of era-stable pairs is not distinguishable from chance.} An
@@ -1730,9 +1764,11 @@ against author-curated reference lists should be read accordingly.
   licensed and unavailable; the ONC list is available but is class-level and
   excludes the canonical myotoxicity pair (§2). Labelling is independent of the
   authors and captures 16/16 positive controls, but it is informed by FAERS
-  itself, warns by class as well as by name, and is \textbf{absent entirely for 17.2\%
-  of screened ingredients --- 9.8\% of pairs}, among them cerivastatin, the
-  fibrates and fusidic acid. §4.5 reports the analysis restricted to
+  itself, warns by class as well as by name, and is \textbf{absent entirely for 5.5\%
+  of screened ingredients --- 9.9\% of pairs}, among them fusidic acid. Widening
+  the label reference to 800 ingredients raises the absent share to 17.2\% and
+  adds cerivastatin, the fibrates and telithromycin, but none of those four
+  entered the top-200 screen and they do not bear on this result (§4.5). §4.5 reports the analysis restricted to
   label-covered pairs and the conclusion is unchanged, but the residual
   insensitivity biases enrichment \emph{toward} this paper's own conclusion, not away
   from it. \textbf{A curated, ingredient-level, severity-graded DDI compendium remains

@@ -237,7 +237,11 @@ def reference_coverage(rows: list[dict], reference: set, control_drugs: set,
         "endpoint_relevant_without_label": endpoint_relevant,
         "pairs_total": len(rows),
         "pairs_touching_an_unlabelled_drug": len(blind),
-        "share_of_pairs_structurally_undocumentable": round(len(blind) / len(rows), 4),
+        # NOT rounded to 4dp. Round-19 found the paper quoting 9.8% where
+        # 1712/17375 = 9.853% -> 9.9%: the value was stored pre-rounded and
+        # then re-rounded for display, and the guard re-derived the paper's
+        # figure from the same rounded intermediate, so it could not fail.
+        "share_of_pairs_structurally_undocumentable": len(blind) / len(rows),
         "documented_tested": n_doc,
         "documented_signalled": k_doc,
         "undocumented_tested": n_und,

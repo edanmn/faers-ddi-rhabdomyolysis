@@ -73,7 +73,7 @@ python -m faers_ddi.generalization            # torsade / anaphylaxis
 python -m faers_ddi.audit                     # provenance, coverage, FDR, cap sweep
 python -m faers_ddi.regime                    # in-regime error rates, matched recovery
 python -m faers_ddi.figures                   # 7 figures
-python -m pytest                              # 329 tests
+python -m pytest                              # 331 tests
 python paper/build.py                         # manuscript.md -> .tex -> .pdf
 python paper/build.py --check                 # non-zero if any .tex is stale
 ```
@@ -118,7 +118,7 @@ from is third-party and deliberately gitignored — do not commit it.
 
 **`results/canonical_numbers.json` is the single source of truth.** Nothing is
 quoted anywhere that does not come from it. `tests/test_canonical_numbers.py`
-(329 tests) asserts the prose against it.
+(331 tests) asserts the prose against it.
 
 `paper/build.py` generates `.tex` from `.md` via pandoc + tectonic. **Never edit
 a `.tex` by hand** — it is regenerated. Two-column documents declare a body-page
@@ -158,9 +158,9 @@ a new derivation from this manuscript, not a revival of the archived pair.
 
 ## 5. Read this before writing any test
 
-This project has been through **eighteen adversarial review rounds**. The
+This project has been through **nineteen adversarial review rounds**. The
 consistent failure has not been in the analysis — it has been in the guards.
-**Five times a test written to catch a specific defect was too weak to catch
+**Six times a test written to catch a specific defect was too weak to catch
 it:**
 
 1. a `6/16` check satisfied by the substring inside `16/16`;
@@ -172,7 +172,13 @@ it:**
 5. (r17) the round-11 withdrawal registered as `"essentially identical
    false-positive rate"`, while `manuscript.md` carried **`"almost identical
    false-positive rate (6.4% vs 6.7%)"`** in its abstract for six rounds —
-   defeated by a **synonym**.
+   defeated by a **synonym**;
+6. (r19) two guards checked that a qualifying phrase appeared **anywhere in the
+   document**. It did — in §4.5 — while the Abstract *and* Limitations each
+   carried the round-10 withdrawn claim, one of them asserting the 800-drug
+   cache figure of the *screened* set outright (17.2% where it is 5.5%).
+   Defeated by **distance**: the qualifier sat 700 lines from the claim. Both
+   guards now bind claim to qualification **per sentence**.
 
 Note what each of these has in common: the registry matches *surface strings*,
 so it only ever catches the exact phrasing whoever wrote the entry had in front
@@ -192,7 +198,7 @@ Standing practice, non-negotiable:
   `test_no_maintained_document_carries_a_withdrawn_claim`, tagged with the round
   that retracted them.
 
-**329 passing means the stated numbers match the computed ones. It does not mean
+**331 passing means the stated numbers match the computed ones. It does not mean
 the right quantity was computed, nor that the sentence built on a correct
 number says what the number means** (r17). Round 11 overturned the central claim while
 every test passed, before and after.
@@ -205,6 +211,10 @@ Detail in `results/PHASE*_FINDINGS.md` (16 files). The ones that bite:
 
 | claim | status |
 |---|---|
+| "17.2% of screened ingredients have no label", cerivastatin/fibrates as evidence | **withdrawn r10, found live again r19** in the Abstract and Limitations. The screened figure is **5.5%** (11/200); 17.2% is the 800-drug cache. The four extra drugs were never screened |
+| "9.8% of pairs undocumentable" | **wrong r19** — 1712/17375 = 9.853% → **9.9%**. The value was stored pre-rounded to 4dp and re-rounded for display, and the guard re-derived it from the same rounded intermediate |
+| era-stable "expected by chance" read off `expected_era_stable_by_chance` | **trap r19** — that key held the **upper confidence limit** (33.2), not the expectation (16.1). Renamed; a point estimate is now emitted beside it |
+| "(95% CI 6.8–33.2)" on the era-stable expectation | **wrong r19** — exact Jeffreys gives 6.73 → **6.7** |
 | "**both** nulls are severely miscalibrated" | **withdrawn r17** — 2.2% is 52/2345; its Jeffreys interval covers 2.5% and exact binomial *p* = 0.43. Torsade is 3/152, *p* = 1.00. Only the **additive** null is miscalibrated on error rate; Ω fails on **power** |
 | "Ω is about twice as conservative as advertised" | **wrong r17** — 2.5/2.2 = 1.13×, never computed. The additive "four times too permissive" (3.7×) was right |
 | "the observed joint event rate does not rise with marginal strength at all" | **overclaimed r17** — CI −0.40 to +0.58 admits a moderate rise; say "far shallower than either null predicts" |
