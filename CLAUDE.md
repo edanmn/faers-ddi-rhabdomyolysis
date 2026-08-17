@@ -73,7 +73,7 @@ python -m faers_ddi.generalization            # torsade / anaphylaxis
 python -m faers_ddi.audit                     # provenance, coverage, FDR, cap sweep
 python -m faers_ddi.regime                    # in-regime error rates, matched recovery
 python -m faers_ddi.figures                   # 7 figures
-python -m pytest                              # 346 tests
+python -m pytest                              # 347 tests
 python paper/build.py                         # manuscript.md -> .tex -> .pdf
 python paper/build.py --check                 # non-zero if any .tex is stale
 ```
@@ -118,7 +118,7 @@ from is third-party and deliberately gitignored — do not commit it.
 
 **`results/canonical_numbers.json` is the single source of truth.** Nothing is
 quoted anywhere that does not come from it. `tests/test_canonical_numbers.py`
-(346 tests) asserts the prose against it.
+(347 tests) asserts the prose against it.
 
 `paper/build.py` generates `.tex` from `.md` via pandoc + tectonic. **Never edit
 a `.tex` by hand** — it is regenerated. Two-column documents declare a body-page
@@ -205,7 +205,7 @@ Standing practice, non-negotiable:
   `test_no_maintained_document_carries_a_withdrawn_claim`, tagged with the round
   that retracted them.
 
-**346 passing means the stated numbers match the computed ones. It does not mean
+**347 passing means the stated numbers match the computed ones. It does not mean
 the right quantity was computed, nor that the sentence built on a correct
 number says what the number means** (r17). Round 11 overturned the central claim while
 every test passed, before and after.
@@ -468,9 +468,35 @@ and the three new sections' references **by intent** (they were written against
 the old numbering). `test_section_numbers_are_unique_and_sequential` now
 requires uniqueness *and* no gaps.
 
+### 9.3c Round 32 — three blocks the pipeline would have deleted
+
+The new analyses were wired in by merging throwaway-script output into
+`canonical_numbers.json` **by hand**. `audit.nesting_condition`,
+`audit.top_ranked_pairs` and `regime.third_estimand` were produced by **no
+module**, and both stages assign their section wholesale
+(`numbers["audit"] = results`), so the next documented pipeline run would have
+**silently deleted all three** while the paper went on quoting them. Round 22's
+hardcoded-figure defect, one level up.
+
+Wiring them in properly surfaced two further bugs that only a real run finds:
+
+- the in-memory `screen_rows` in `audit.main()` is a **narrower projection**
+  than `screen_results.csv`, so a function developed against the CSV died on
+  `omega_lower`;
+- **a name collision** — `top_ranked_pairs` already existed at `audit.py:313`
+  and is called at 1290. The new function shadowed it and silently redirected
+  that call site, which would have broken the audit stage outright. Renamed to
+  `ranked_pairs_with_proxy_test`.
+
+Both stages then ran end to end with nothing lost and every quoted value
+reproduced exactly. `test_no_canonical_block_is_orphaned` now requires every key
+in the `audit` and `regime` sections to be assigned somewhere in the module that
+owns it. **Merging computed output by hand is how a number reaches the paper
+with no way to regenerate it.**
+
 ### 9.4 State
 
-- **346 tests**, build clean, manuscript **39 pages**, tree clean, pushed.
+- **347 tests**, build clean, manuscript **39 pages**, tree clean, pushed.
 - Blocking submission: **authors/affiliations**. Nothing else.
 - Unverifiable list is down to determinism and the two external benchmarks
   (AEOLUS, DiAna) — all inherently outside the artefact.
