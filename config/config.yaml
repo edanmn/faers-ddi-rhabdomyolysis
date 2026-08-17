@@ -287,10 +287,15 @@ controls:
   # Negative controls are GENERATED in Phase 8, not hand-picked, to avoid
   # selecting pairs that flatter the pipeline. Criteria:
   negative_generation:
-    # 2,000, not 50. A 95th-percentile calibration on 50 pairs is the 2nd-highest
-    # observation: the same procedure gave +2.358 at n=50 and +0.305 at n=2000,
-    # and flipped the sign of the easy-vs-hard stratum difference.
-    n_pairs: 2000
+    # null means the ENTIRE eligible pool (16,138 pairs), which is what every
+    # reported result uses. Superseded history, kept because it explains the key:
+    # calibration on 50 pairs put the threshold at the 2nd-highest observation
+    # (+2.358); 2,000 gave +0.305 but left the threshold at the mercy of the
+    # draw, with legitimate runs producing +0.092 and +0.423. The whole pool
+    # removes that variance. Setting a number here re-enables sampling and will
+    # disagree with the paper -- `tier_b` standalone once defaulted to 2000 and
+    # shipped a 2,000-row tier_b_pairs.csv against a 16,138-pair analysis.
+    n_pairs: null
     frequency_matched_to_positives: true
     frequency_match_tolerance: 0.5     # log10 units of co-report count
     exclude_if_in_drugbank_ddi: true

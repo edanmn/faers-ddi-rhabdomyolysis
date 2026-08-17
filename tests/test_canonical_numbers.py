@@ -1410,6 +1410,107 @@ def test_in_regime_error_rates_are_reported(manuscript, regime):
         "the matched-FPR framing was withdrawn")
 
 
+def test_event_definition_matches_the_pt_config(manuscript, numbers):
+    """Round 24. The paper said the event was "23 PTs in 10 concepts" -- the
+    whole curation -- while every primary result uses the `core` tier: 10 PTs in
+    3 concepts. `core` admits 42,058 event cases and `broad` 339,063, so a
+    reader applying the stated definition misses by eight-fold.
+
+    This is the first guard here that runs from the CONFIG outward to the prose
+    rather than from canonical_numbers.json outward. Round 23 noted that gap:
+    every existing guard checks numbers the pipeline computed, none checked that
+    the paper describes the inputs it actually used.
+    """
+    import csv as _csv
+
+    with open(cfg.PROJECT_ROOT / "config" / "pt_sets" / "rhabdomyolysis.csv") as fh:
+        rows = [r for r in _csv.DictReader(fh) if r["pt"].strip()]
+    core = [r for r in rows if r["tier"].strip().lower() == "core"]
+    ed = numbers["audit"]["event_definition"]
+
+    # the canonical block must agree with the config it claims to describe
+    assert ed["core_pts"] == len(core), (
+        f"canonical says {ed['core_pts']} core PTs; the config has {len(core)}")
+    assert ed["curated_pts"] == len(rows)
+    assert ed["core_concepts"] == len({r["concept"].strip().lower() for r in core})
+
+    # The prose must state the CORE counts *where it defines the event*. The
+    # first version of this guard only required the core counts to appear
+    # SOMEWHERE, and passed when the definitional sentence was corrupted back to
+    # "23 PTs" because §3.5 still mentioned 10 elsewhere -- the round-19 distance
+    # failure, in a guard written one round after that lesson was recorded.
+    # Bind to the sentence that does the defining.
+    import re as _re
+
+    flat = " ".join(manuscript.split())
+    defining = [s for s in _re.split(r"(?<=[.!?])\s+", flat)
+                if _re.search(r"event was defined by|event is defined by", s)]
+    assert defining, "no sentence defines the event"
+    # Bind the PAIR, not membership. The second version of this guard asserted
+    # that core_pts appeared among the sentence's numbers, and still passed the
+    # mutation: core_pts is 10 and the wrong sentence says "in 10 concepts", so
+    # the right number was present for the wrong reason. Two numeric
+    # coincidences in two attempts is what a weak guard looks like.
+    for sentence in defining:
+        stated = _re.search(
+            r"(\d+)\s+[^.]*?Preferred Terms\s+in\s+(\d+)\s+concepts", sentence)
+        assert stated, (
+            f"the defining sentence must read '<n> ... Preferred Terms in <m> "
+            f"concepts' so the pair can be checked: {sentence[:150]}")
+        pts, concepts = int(stated.group(1)), int(stated.group(2))
+        assert (pts, concepts) == (ed["core_pts"], ed["core_concepts"]), (
+            f"the event is defined as {pts} PTs in {concepts} concepts, but the "
+            f"analysed (`core`) tier is {ed['core_pts']} in {ed['core_concepts']}. "
+            f"The {ed['curated_pts']}-term curation admits "
+            f"{ed['broad_event_cases']:,} event cases against core's "
+            f"{ed['core_event_cases']:,} -- "
+            f"{ed['broad_event_cases'] / ed['core_event_cases']:.0f}x.")
+
+    for value in (f"{ed['core_event_cases']:,}", f"{ed['broad_event_cases']:,}"):
+        assert value in flat, (
+            f"the manuscript must give {value} so the two tiers cannot be "
+            f"confused")
+
+
+def test_shipped_negative_pool_is_the_pool_that_was_analysed(numbers):
+    """Round 24. tier_b_pairs.csv shipped 2,000 rows against a 16,138-pair
+    analysis -- a balanced sample from the superseded `n_pairs: 2000` regime,
+    and the exact sampling §4.3 argues against. The calibrated threshold
+    recomputed from the shipped file was +1.273 against the reported +0.436.
+
+    It is also the only shipped table carrying rr_a/rr_b, so it is the route a
+    reviewer takes to recompute the marginal-strength analyses without the
+    154 GB database.
+    """
+    import csv as _csv
+
+    path = cfg.path("tables") / "tier_b_pairs.csv"
+    if not path.exists():
+        pytest.skip("tier_b_pairs.csv not generated")
+    with path.open() as fh:
+        rows = list(_csv.DictReader(fh))
+    assert len(rows) == numbers["tier_b"]["n_pairs"], (
+        f"tier_b_pairs.csv ships {len(rows):,} rows against an analysis of "
+        f"{numbers['tier_b']['n_pairs']:,}; the shipped pool must be the pool "
+        f"that was analysed")
+
+    from collections import Counter
+    counts = Counter(r["stratum"] for r in rows)
+    for stratum in ("easy", "hard"):
+        assert counts[stratum] == numbers["tier_b"]["strata"][stratum]["n"], (
+            f"{stratum} stratum: shipped {counts[stratum]}, analysed "
+            f"{numbers['tier_b']['strata'][stratum]['n']}")
+
+    # and it must actually reproduce the calibration
+    import numpy as _np
+    values = _np.array([float(r["omega_add_lower"]) for r in rows])
+    recomputed = float(_np.percentile(values, 95))
+    assert abs(recomputed - numbers["tier_b"]["calibrated_threshold"]) < 0.01, (
+        f"the shipped pool gives a 5%-FPR threshold of {recomputed:+.3f} "
+        f"against the reported "
+        f"{numbers['tier_b']['calibrated_threshold']:+.3f}")
+
+
 def test_in_regime_rates_carry_a_clustered_interval(manuscript, regime):
     """Round 23. The two rates carrying the calibration claim shipped as bare
     point estimates for six rounds, while Methods promised a cluster bootstrap

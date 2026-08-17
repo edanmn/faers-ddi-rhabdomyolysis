@@ -63,7 +63,7 @@ import numpy as np
 from scipy import stats
 
 from faers_ddi import config as cfg
-from faers_ddi import contingency, omega as om, screen, statistics as st, tier_a, tier_b
+from faers_ddi import contingency, define_event, omega as om, screen, statistics as st, tier_a, tier_b
 
 log = logging.getLogger("audit")
 
@@ -392,6 +392,40 @@ def era_stable_plausible(con: duckdb.DuckDBPyConnection, tier: str,
 # --------------------------------------------------------------------------
 # The polypharmacy cap was chosen on the evaluation set.
 # --------------------------------------------------------------------------
+
+def event_definition(pt_rows: list[dict]) -> dict:
+    """The tier split of the curated PT list, and what each tier admits.
+
+    Added in round 24. The paper described the event as "23 PTs in 10 concepts"
+    -- the whole curation -- while every primary result uses the `core` tier,
+    which is 10 PTs in 3 concepts. The counts differ eight-fold in event cases,
+    so a reader applying the stated definition reproduces nothing. Emitting the
+    split makes the prose checkable against the config rather than against
+    someone's memory of it.
+    """
+    core = [r for r in pt_rows if r["tier"] == "core"]
+    broad = [r for r in pt_rows if r["tier"] != "core"]
+    counts = {"core": 0, "broad": 0}
+    path = cfg.path("tables") / "event_case_counts.csv"
+    if path.exists():
+        with path.open() as fh:
+            for row in csv.DictReader(fh):
+                if row.get("scope") == "era":
+                    counts["core"] += int(row["core_cases"])
+                    counts["broad"] += int(row["broad_cases"])
+    return {
+        "note": "core is the primary analysis; broad is sensitivity only and is "
+                "inclusive of core",
+        "curated_pts": len(pt_rows),
+        "curated_concepts": len({r["concept"] for r in pt_rows}),
+        "core_pts": len(core),
+        "core_concepts": len({r["concept"] for r in core}),
+        "broad_only_pts": len(broad),
+        "broad_only_concepts": len({r["concept"] for r in broad}),
+        "core_event_cases": counts["core"],
+        "broad_event_cases": counts["broad"],
+    }
+
 
 POLYPHARMACY_BANDS = ((1, 1, "1"), (2, 5, "2-5"), (6, 10, "6-10"), (11, 20, "11-20"),
                       (21, 30, "21-30"), (31, 50, "31-50"), (51, None, "51+"))
@@ -953,6 +987,13 @@ def main(argv: list[str] | None = None) -> int:
             })
     control_drugs = {d for c in tier_a.load_positive_controls()
                      for d in (c["drug_a"].strip().upper(), c["drug_b"].strip().upper())}
+
+    log.info("--- event definition tiers ---")
+    results["event_definition"] = event_definition(define_event.load_pt_list())
+    ed = results["event_definition"]
+    log.info("  core %d PTs / %d concepts -> %d cases; broad %d PTs -> %d cases",
+             ed["core_pts"], ed["core_concepts"], ed["core_event_cases"],
+             ed["curated_pts"], ed["broad_event_cases"])
 
     log.info("--- polypharmacy bands ---")
     results["polypharmacy_bands"] = polypharmacy_bands(con, tier)

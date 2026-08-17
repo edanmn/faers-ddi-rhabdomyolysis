@@ -202,6 +202,17 @@
         "share": 0.0839
       }
     ],
+    "event_definition": {
+      "broad_event_cases": 339063,
+      "broad_only_concepts": 7,
+      "broad_only_pts": 13,
+      "core_concepts": 3,
+      "core_event_cases": 42058,
+      "core_pts": 10,
+      "curated_concepts": 10,
+      "curated_pts": 23,
+      "note": "core is the primary analysis; broad is sensitivity only and is inclusive of core"
+    },
     "fdr": {
       "method": "Benjamini-Hochberg on one-sided Poisson tail probabilities",
       "n_discoveries": 1147,

@@ -19,7 +19,9 @@ a cross-era identifier bridge validated against a chance baseline. After
 excluding 19,005 cases listing more than 20 drugs (see Results), the analysis
 population was **20,274,416 cases carrying 41,889 myotoxicity events (0.207%)**.
 Drug entries were resolved to active ingredients (98.0% of 73.96M rows) and the
-event was defined by 23 hand-curated MedDRA Preferred Terms in 10 concepts,
+event was defined by **10 hand-curated MedDRA Preferred Terms in 3 concepts**
+(the `core` tier of a 23-term, 10-concept curation; the remaining 13 terms form
+the `broad` sensitivity tier),
 verified continuous across two MedDRA renamings. We validated against 16
 positive controls, measured the false-positive rate against the full pool of
 16,138 generated negative controls, and screened 17,375 drug pairs.
@@ -279,8 +281,19 @@ performed; see §6.
 
 ### 3.5 Event definition
 
-23 PTs in 10 concepts, curated against the 25,047 PT strings actually present
-rather than a current MedDRA release. Two renamings occur within the concept
+23 PTs across 10 concepts were curated against the 25,047 PT strings actually
+present rather than against a current MedDRA release, and split into two tiers.
+
+**Every primary result uses the `core` tier: 10 PTs in 3 concepts** — muscle
+destruction specific enough to be hard to report for any other reason
+(rhabdomyolysis, myoglobin release, muscle necrosis). The remaining 13 PTs in
+7 concepts form the `broad` tier, which adds general myotoxicity and the
+creatine-kinase markers; it is far more powerful and far more confounded —
+MYALGIA alone carries 163,419 reports and is reported against almost
+everything — and is used for sensitivity analysis only. The two tiers are not
+interchangeable: `core` admits **42,058** event cases before the polypharmacy
+exclusion and `broad` admits **339,063**, an eight-fold difference, so a reader
+applying the wrong tier will not reproduce any count in this paper. Two renamings occur within the concept
 area, both clean instantaneous switches: `BLOOD CREATINE PHOSPHOKINASE
 INCREASED` → `CREATINE KINASE INCREASED` at 2026Q2 (part of a vocabulary-wide
 event in which 1,907 PT strings make their last appearance in 2026Q1), and
