@@ -293,13 +293,14 @@ MYALGIA alone carries 163,419 reports and is reported against almost
 everything — and is used for sensitivity analysis only. The two tiers are not
 interchangeable: `core` admits **42,058** event cases before the polypharmacy
 exclusion and `broad` admits **339,063**, an eight-fold difference, so a reader
-applying the wrong tier will not reproduce any count in this paper. Two renamings occur within the concept
-area, both clean instantaneous switches: `BLOOD CREATINE PHOSPHOKINASE
+applying the wrong tier will not reproduce any count in this paper.
+
+Two renamings occur within the concept area, both clean instantaneous switches: `BLOOD CREATINE PHOSPHOKINASE
 INCREASED` → `CREATINE KINASE INCREASED` at 2026Q2 (part of a vocabulary-wide
 event in which 1,907 PT strings make their last appearance in 2026Q1), and
 `IMMUNE-MEDIATED NECROTISING MYOPATHY` → `IMMUNE-MEDIATED MYOSITIS` at 2019Q4.
 The latter is *not* meaning-preserving — the successor carries ~5× the
-per-quarter volume — so both are held out of the primary tier.
+per-quarter volume — so both sit in the broad tier.
 
 ### 3.6 The positive control set, and its verification
 
@@ -564,10 +565,14 @@ reported the pre-specified arm without disclosing that the others existed:
 additive null's advantage disappears entirely.** The contrast holds in three of
 four arms and is null in the fourth. Any reader weighing the headline result
 should weigh that: it is robust to either widening alone, and not to both
-together. The broad tier deliberately includes the two MedDRA concepts held out
-of the primary definition for not being meaning-preserving (§3.5), and the
-sensitivity policy admits concomitant drugs with no suspected causal role, so
-the fourth arm is the least specific analysis available — but it is not
+together. The broad tier adds 13 PTs across 7 concepts — the creatine-kinase markers,
+the two non-meaning-preserving renamings, and general myotoxicity terms
+including MYALGIA, which carries 163,419 reports on its own and is reported
+against almost everything (§3.5) — while the sensitivity policy admits
+concomitant drugs with no suspected causal role. The fourth arm therefore
+combines the least specific outcome available with the least specific exposure,
+which is the most likely reason both nulls converge there rather than one
+degrading faster than the other. It is the least specific analysis available — but it is not
 unreasonable, and it is now on the record.
 
 Against the **full pool of 16,138 negative controls** (not a sample — sampling

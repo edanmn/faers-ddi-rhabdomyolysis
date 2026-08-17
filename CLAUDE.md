@@ -73,7 +73,7 @@ python -m faers_ddi.generalization            # torsade / anaphylaxis
 python -m faers_ddi.audit                     # provenance, coverage, FDR, cap sweep
 python -m faers_ddi.regime                    # in-regime error rates, matched recovery
 python -m faers_ddi.figures                   # 7 figures
-python -m pytest                              # 338 tests
+python -m pytest                              # 339 tests
 python paper/build.py                         # manuscript.md -> .tex -> .pdf
 python paper/build.py --check                 # non-zero if any .tex is stale
 ```
@@ -118,7 +118,7 @@ from is third-party and deliberately gitignored — do not commit it.
 
 **`results/canonical_numbers.json` is the single source of truth.** Nothing is
 quoted anywhere that does not come from it. `tests/test_canonical_numbers.py`
-(338 tests) asserts the prose against it.
+(339 tests) asserts the prose against it.
 
 `paper/build.py` generates `.tex` from `.md` via pandoc + tectonic. **Never edit
 a `.tex` by hand** — it is regenerated. Two-column documents declare a body-page
@@ -158,7 +158,7 @@ a new derivation from this manuscript, not a revival of the archived pair.
 
 ## 5. Read this before writing any test
 
-This project has been through **twenty-four adversarial review rounds**. The
+This project has been through **twenty-five adversarial review rounds**. The
 consistent failure has not been in the analysis — it has been in the guards.
 **Seven times a test written to catch a specific defect was too weak to catch
 it:**
@@ -205,7 +205,7 @@ Standing practice, non-negotiable:
   `test_no_maintained_document_carries_a_withdrawn_claim`, tagged with the round
   that retracted them.
 
-**338 passing means the stated numbers match the computed ones. It does not mean
+**339 passing means the stated numbers match the computed ones. It does not mean
 the right quantity was computed, nor that the sentence built on a correct
 number says what the number means** (r17). Round 11 overturned the central claim while
 every test passed, before and after.
@@ -218,6 +218,7 @@ Detail in `results/PHASE*_FINDINGS.md` (16 files). The ones that bite:
 
 | claim | status |
 |---|---|
+| "the broad tier includes the two MedDRA concepts held out…" | **wrong r25** — broad adds **13 PTs in 7 concepts**, including MYALGIA (163,419 reports). Fixing the event definition in r24 left this characterisation behind, so the paper stated two compositions for one tier |
 | "the event was defined by 23 PTs in 10 concepts" | **wrong r24** — that is the whole curation. Every primary result uses the **core** tier: **10 PTs in 3 concepts**. core admits 42,058 event cases, broad 339,063 — **8×**. Stated now, and guarded from the config outward |
 | `tier_b_pairs.csv` shipping 2,000 rows | **wrong r24** — the analysis uses **16,138**. The shipped file was a balanced sample from the retired `n_pairs: 2000` regime, and recomputed the threshold at +1.273 vs +0.436. Regenerated; config key set to null |
 | Figure 5's band data | **hardcoded r22** — fourteen literals in `figures.py`, not pipeline output. Every value was **exactly right** (verified against the DB), but unverifiable, while the paper claimed every figure comes from the canonical file. Now `audit.polypharmacy_bands`, exported to `results/tables/polypharmacy_bands.csv` |

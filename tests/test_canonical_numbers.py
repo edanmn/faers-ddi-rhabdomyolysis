@@ -1472,6 +1472,51 @@ def test_event_definition_matches_the_pt_config(manuscript, numbers):
             f"confused")
 
 
+def test_every_tier_composition_statement_agrees_with_the_config(manuscript, numbers):
+    """Round 25. Round 24 fixed the event definition in §3.5 and the Abstract,
+    and left §4.3 saying the broad tier 'includes the two MedDRA concepts held
+    out of the primary definition' -- so the paper stated two different
+    compositions for one tier. The round-24 guard could not catch it: it binds
+    the sentence that DEFINES the event, and this one merely CHARACTERISES a
+    tier. Scoped to where the author was looking, again.
+
+    This checks every sentence in the document that pairs a PT count with a
+    concept count, and requires the pair to be one the config actually
+    licenses: the full curation, the core tier, or the broad-only remainder.
+    An invented or stale composition matches none of them.
+    """
+    import re as _re
+
+    ed = numbers["audit"]["event_definition"]
+    legitimate = {
+        (ed["curated_pts"], ed["curated_concepts"]),
+        (ed["core_pts"], ed["core_concepts"]),
+        (ed["broad_only_pts"], ed["broad_only_concepts"]),
+    }
+
+    flat = " ".join(manuscript.split())
+    # "<n> ... PTs|Preferred Terms ... in|across <m> concepts", tolerating the
+    # markdown emphasis the prose uses around the numbers.
+    pattern = _re.compile(
+        r"\*{0,2}(\d+)\*{0,2}\s+(?:hand-curated\s+)?(?:MedDRA\s+)?"
+        r"(?:PTs|Preferred Terms)[^.]{0,60}?(?:in|across)\s+\*{0,2}(\d+)\*{0,2}\s+concepts")
+    found = [(int(a), int(b)) for a, b in pattern.findall(flat)]
+    assert found, "no tier-composition statement found; the pattern has drifted"
+
+    for pair in found:
+        assert pair in legitimate, (
+            f"the document states a tier as {pair[0]} PTs in {pair[1]} concepts, "
+            f"which the config does not license. Valid compositions are "
+            f"{sorted(legitimate)}: the full curation, the core tier (analysed), "
+            f"and the broad-only remainder.")
+
+    # the core composition must be among them -- a document that only ever
+    # describes the curation has not said what was analysed
+    assert (ed["core_pts"], ed["core_concepts"]) in found, (
+        f"no statement gives the analysed (core) composition of "
+        f"{ed['core_pts']} PTs in {ed['core_concepts']} concepts")
+
+
 def test_shipped_negative_pool_is_the_pool_that_was_analysed(numbers):
     """Round 24. tier_b_pairs.csv shipped 2,000 rows against a 16,138-pair
     analysis -- a balanced sample from the superseded `n_pairs: 2000` regime,

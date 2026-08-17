@@ -413,9 +413,24 @@ def event_definition(pt_rows: list[dict]) -> dict:
                 if row.get("scope") == "era":
                     counts["core"] += int(row["core_cases"])
                     counts["broad"] += int(row["broad_cases"])
+    # Round 25: the report count of the largest broad-only term is quoted in
+    # the prose to explain why the broad arm behaves as it does. It lived only
+    # in event_pt_verification.csv, so quoting it breached the rule that nothing
+    # is quoted which is not in the canonical file.
+    verification = cfg.path("tables") / "event_pt_verification.csv"
+    broad_reports: dict = {}
+    if verification.exists():
+        with verification.open() as fh:
+            for row in csv.DictReader(fh):
+                if row.get("tier", "").strip().lower() != "core" and row.get("reports"):
+                    broad_reports[row["pt"]] = int(row["reports"])
+    largest = max(broad_reports.items(), key=lambda kv: kv[1], default=("", 0))
+
     return {
         "note": "core is the primary analysis; broad is sensitivity only and is "
                 "inclusive of core",
+        "broad_only_largest_pt": largest[0],
+        "broad_only_largest_pt_reports": largest[1],
         "curated_pts": len(pt_rows),
         "curated_concepts": len({r["concept"] for r in pt_rows}),
         "core_pts": len(core),

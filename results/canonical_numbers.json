@@ -205,6 +205,8 @@
     "event_definition": {
       "broad_event_cases": 339063,
       "broad_only_concepts": 7,
+      "broad_only_largest_pt": "MYALGIA",
+      "broad_only_largest_pt_reports": 163419,
       "broad_only_pts": 13,
       "core_concepts": 3,
       "core_event_cases": 42058,
