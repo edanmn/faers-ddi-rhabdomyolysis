@@ -155,7 +155,7 @@ directly.
    and **16.9%** of diffuse ones, so in the
    regime where DDI methods are validated the two nulls are one ordering at two
    thresholds — and it is checkable from the marginals before any outcome is
-   examined (§4.3).
+   examined (§4.2).
 2. **The first calibrated error rates for both nulls in the regime where DDI
    methods are validated**, on a purpose-built pool of 2,345 strongly-associated
    non-interacting pairs: Ω₀₂₅ > 0 fires on **2.2% (95% CI 1.24–3.34%)** and
@@ -171,12 +171,12 @@ directly.
    "which null" question with the one a screen actually faces: recovering 12 of
    16 known interactions costs about **7.5%**
    false positives among strongly-associated non-interacting pairs, three times
-   the nominal rate (§4.6). A strength-varying threshold, the obvious
+   the nominal rate (§4.5). A strength-varying threshold, the obvious
    alternative, flattens error across strength but halves recovery, and we
    report that so others need not repeat it.
 6. **A polypharmacy cap that improves sensitivity and false-positive rate
    simultaneously**, from a quantification of pair-space leverage: 0.09% of
-   cases contribute 34.7% of all drug pairs (§4.8).
+   cases contribute 34.7% of all drug pairs (§4.6).
 
 The screen itself returned no *novel* interaction, and we report that as a
 finding rather than burying it — but it ranked genuine contraindicated

@@ -1504,11 +1504,22 @@ def test_event_definition_matches_the_pt_config(manuscript, numbers):
 # Round 30 renumbered §4 after three sections were inserted; these move with it.
 CROSS_REFERENCE_BINDINGS = {
     "in regime the rates are": "4.4",
-    "resampling the victim drug": "4.4",
+    "not by a binomial on the pair count": "4.4",
     "analysis to torsade": "4.4",
     "the analysis restricted to pairs whose two labels both exist": "4.8",
     "varied across a 20-fold range as a sensitivity analysis": "4.11",
     "with a control set drawn by FDA labelling": "4.13",
+    # Round 31. Each contribution in the Introduction points at the section that
+    # delivers it. Three of the six were wrong after round 30's renumbering: the
+    # remap was applied by rule to the whole document, but these had been written
+    # against the NEW numbering, so the rule moved them off target. The numbers
+    # stayed unique and sequential throughout, so the round-30 guard passed --
+    # a renumber can corrupt references without breaking the numbering.
+    "The condition under which the choice of null stops mattering": "4.2",
+    "The first calibrated error rates for both nulls": "4.4",
+    "A one-line diagnostic for circular screen evaluation": "4.8",
+    "An operating characteristic for DDI screening in this regime": "4.5",
+    "A polypharmacy cap that improves sensitivity": "4.6",
 }
 
 
@@ -1554,17 +1565,22 @@ def test_load_bearing_cross_references_point_at_the_right_section(manuscript):
     """
     import re as _re
 
-    flat = " ".join(manuscript.split())
+    # Blocks, not sentences. A numbered contribution runs several sentences and
+    # carries its reference in the last one, so a sentence-scoped check found no
+    # reference beside the phrase and skipped -- it passed its own mutation.
+    # A block is a paragraph or a numbered list item.
+    blocks = _re.split(r"\n\s*\n|\n(?=\d+\. \*\*)", manuscript)
     for phrase, expected in CROSS_REFERENCE_BINDINGS.items():
-        for sentence in _re.split(r"(?<=[.!?])\s+", flat):
-            if phrase not in sentence:
+        for block in blocks:
+            flat_block = " ".join(block.split())
+            if phrase not in flat_block:
                 continue
-            refs = _re.findall(r"§(\d+(?:\.\d+)*)", sentence)
+            refs = _re.findall(r"§(\d+(?:\.\d+)*)", flat_block)
             if not refs:
                 continue
             assert expected in refs, (
                 f"the claim {phrase!r} cites §{', §'.join(refs)} but is "
-                f"established in §{expected}: {sentence[:150]}")
+                f"established in §{expected}: {flat_block[:150]}")
 
 
 def test_nesting_result_credits_prior_work(manuscript, numbers):

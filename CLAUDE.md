@@ -432,7 +432,30 @@ contribution #1 before it was checked. It took one search to find it published.
   The top three carry their own signal (8.4/16.7/19.5% third-drug) against
   64.7% and 100% for the two proxies below them.
 
-### 9.3 The defect this session created
+### 9.3 The defects this session created (two, both from the same edit)
+
+**Duplicate section numbers.** Inserting three sections into §4 without
+renumbering produced two §4.2, two §4.4 and two §4.5. Every reference to those
+numbers pointed at two sections at once, and the round-28 existence guard
+passed throughout — the numbers resolved, just not uniquely.
+
+**Then the fix broke three more references.** Renumbering remapped every
+reference *by rule*, but the Contributions list had been written against the
+NEW numbering, so the rule moved three of its six off target: the pre-hoc test
+pointed at "The estimand switch", the operating characteristic at
+"Polypharmacy", and the polypharmacy cap at "The screen". Numbers stayed unique
+and sequential, so the guard written one step earlier could not see it.
+**A renumber can corrupt references without breaking the numbering** — those
+are separate properties and need separate guards. Five contribution claims are
+now bound in `CROSS_REFERENCE_BINDINGS`.
+
+That registry guard then failed its own mutation twice: once because it scoped
+to the sentence while a numbered contribution carries its reference several
+sentences later, and once because widening to the block let a generic key
+("resampling the victim drug") match an unrelated Limitations bullet. It now
+scopes to blocks, with keys unique to their claim.
+
+### 9.3b Original note
 
 Inserting three sections into §4 without renumbering produced **two §4.2, two
 §4.4 and two §4.5**. Every reference to those numbers then pointed at two
