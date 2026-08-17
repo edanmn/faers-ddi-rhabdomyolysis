@@ -1472,6 +1472,83 @@ def test_event_definition_matches_the_pt_config(manuscript, numbers):
             f"confused")
 
 
+def test_generalization_table_has_no_blank_cells(manuscript, numbers):
+    """Round 27. The generalization table's `median marginal RR` column was
+    populated for all three secondary events and blank for the primary one --
+    the column that operationalises "drug-dominant", which is the paper's
+    conditional, missing for the event the paper is about.
+
+    Asserts every event block carries the comparative fields, so a future event
+    added without them fails here rather than shipping an em dash.
+    """
+    g = numbers["generalization"]
+    for name, block in g.items():
+        for field in ("median_marginal_rr", "recovered_additive",
+                      "recovered_multiplicative", "n_controls"):
+            assert block.get(field) is not None, (
+                f"generalization.{name} has no {field}; the table renders it as "
+                f"a blank cell")
+    flat = " ".join(manuscript.split())
+    for name, block in g.items():
+        value = f"{block['median_marginal_rr']:.1f}"
+        assert value in flat, (
+            f"the median marginal RR for {name} ({value}) is not in the "
+            f"manuscript, so the table cannot be showing it")
+    # the ordering is the paper's argument; assert it holds rather than assuming
+    primary = g["rhabdomyolysis_primary"]["median_marginal_rr"]
+    anaphylaxis = g.get("anaphylaxis", {}).get("median_marginal_rr")
+    if anaphylaxis:
+        assert primary > anaphylaxis, (
+            "the paper argues the primary event is drug-dominant and anaphylaxis "
+            "diffuse; if that ordering reversed, the conditional claim needs "
+            "rewriting rather than this guard relaxing")
+
+
+def test_in_regime_pool_ships_and_reproduces_its_rates(numbers):
+    """Round 27. The pool carrying the two rates that make the calibration claim
+    shipped nowhere, so a reviewer could not check them without a 154 GB
+    rebuild. It ships now -- and must reproduce the rates exactly.
+
+    The first export rounded the bounds to 3 dp, at which a value just above
+    zero becomes 0.000 and the `> 0` test flips: the file gave 9.30% where the
+    analysis gives 9.34%, one pair in 2,345. A table exported so a number can be
+    rechecked has to return that number.
+    """
+    import csv as _csv
+
+    path = cfg.path("tables") / "in_regime_pool.csv"
+    if not path.exists():
+        pytest.skip("in_regime_pool.csv not generated; run faers_ddi.regime")
+    with path.open() as fh:
+        rows = list(_csv.DictReader(fh))
+    pool = numbers["regime"]["high_marginal_pool"]
+    assert len(rows) == pool["n_pairs"], (
+        f"shipped {len(rows):,} rows against a pool of {pool['n_pairs']:,}")
+
+    strong = [r for r in rows if r["at_positive_control_strength"] == "1"]
+    expected = pool["at_positive_control_strength"]
+    assert len(strong) == expected["n"]
+
+    for label, column, key in (("additive", "omega_add_lower", "fpr_additive"),
+                               ("multiplicative", "omega_lower", "fpr_multiplicative")):
+        from_bound = sum(1 for r in strong if float(r[column]) > 0) / len(strong)
+        from_flag = sum(1 for r in strong if r[f"signals_{label}"] == "1") / len(strong)
+        assert abs(from_bound - expected[key]) < 1e-4, (
+            f"recomputing the in-regime {label} rate from the shipped bounds "
+            f"gives {100 * from_bound:.2f}% against {100 * expected[key]:.2f}%; "
+            f"the export has lost precision")
+        assert abs(from_flag - expected[key]) < 1e-4, (
+            f"the shipped signal flag for {label} disagrees with the rate")
+
+    # and the marginal RRs behind Table 2 must ship too
+    with (cfg.path("tables") / "tier_a_results.csv").open() as fh:
+        controls = [r for r in _csv.DictReader(fh)
+                    if r["tier"] == "core" and r["policy"] == "primary"]
+    assert controls and all(r.get("rr_a") for r in controls), (
+        "tier_a_results.csv must carry rr_a/rr_b, or Table 2's correlations "
+        "cannot be recomputed from shipped artefacts")
+
+
 def test_parse_validation_claims_match_the_validation_table(manuscript):
     """Round 26. The paper said "0 orphans across all 328,476,258 rows". That
     total is every parsed row across seven tables; the orphan check runs on the

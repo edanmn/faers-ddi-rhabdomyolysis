@@ -843,6 +843,7 @@
     },
     "rhabdomyolysis_primary": {
       "label": "rhabdomyolysis (primary event)",
+      "median_marginal_rr": 24.3,
       "n_controls": 16,
       "omega_vs_marginal_product": {
         "ci_high": -0.19225171345789638,
@@ -2365,6 +2366,7 @@
       "optimism": 0.0,
       "selection_is_stable": true
     },
+    "median_marginal_rr": 24.3,
     "n_controls": 16,
     "n_powered": 14,
     "observed_rate_vs_marginal_product": {

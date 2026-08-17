@@ -1258,10 +1258,17 @@ test than the analysis it was replicating. Both lists are reported.
 
 | event | event rate | median marginal RR | multiplicative | additive | Ω vs log₂(RR_A×RR_B) | Ω_add vs same |
 |---|---:|---:|---:|---:|---|---|
-| rhabdomyolysis (primary) | 0.207% | — | 4/16 | 12/16 | r = −0.63, p = 0.009 | r = −0.65, p = 0.007 |
+| rhabdomyolysis (primary) | 0.207% | 24.3 | 4/16 | 12/16 | r = −0.63, p = 0.009 | r = −0.65, p = 0.007 |
 | **torsade / QT (curated PTs)** | 0.199% | 19.3 | **0/10** | **9/10** | **r = −0.81, p = 0.005** | r = −0.79, p = 0.006 |
 | torsade / QT (broad PTs) | 0.659% | 11.2 | 1/10 | 7/10 | r = −0.76, p = 0.011 | r = −0.72, p = 0.020 |
 | anaphylaxis | 0.410% | 5.2 | 1/4 | 1/4 | n = 4, uninformative | n = 4, uninformative |
+
+The median marginal RR column orders the events by how drug-dominant they are:
+rhabdomyolysis 24.3, torsade 19.3 on the curated PT list and 11.2 on the broad
+one, anaphylaxis 5.2. That ordering is the paper's conditional made
+quantitative — the two events where both nulls misbehave are the two whose
+marginals are largest, and the arm that cannot test the claim is the one whose
+marginals are diffuse.
 
 At Ω₀₂₅ > 0, Ω recovers **0/10** on torsade against 9/10 for the additive null —
 an apparently stronger version of the primary result on an independent
@@ -1609,6 +1616,8 @@ limit. No GPU. Total on-disk footprint 157 GB, of which 3.55 GB is the
 irreducible source archive set.
 
 ## Data and code availability
+
+The in-regime negative pool (`in_regime_pool.csv`, 19,826 pairs with the 2,345 in-regime ones flagged) and the per-drug marginal relative risks behind Table 2 (`rr_a`/`rr_b` in `tier_a_results.csv`) both ship, so the calibration rates and the mechanistic correlations can be recomputed without rebuilding the database.
 
 All code, configuration and result tables are available at
 <https://github.com/edanmn/faers-ddi-rhabdomyolysis>. Every figure quoted in the Abstract and Results is generated into `results/canonical_numbers.json` by a single deterministic run and asserted against this text by `tests/test_canonical_numbers.py`; pipeline statistics quoted in Methods are persisted under `audit.provenance` in the same file and asserted alongside them. Figures drawn from cited work are attributed and not regenerated. The pipeline is deterministic: two full runs

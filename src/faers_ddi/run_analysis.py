@@ -101,6 +101,15 @@ def main(argv: list[str] | None = None) -> int:
         "n_powered": len(powered),
         "recovered_powered": sum(r["signal"] for r in powered),
         "powered_min_pair": POWERED_MIN_PAIR,
+        # Round 27: same definition generalization.py uses for the other three
+        # events -- the median of all 2N per-drug marginal RRs -- so the
+        # generalization table's comparative column is populated for the primary
+        # event too. It was the only blank cell, in the column that
+        # operationalises "drug-dominant", which is the paper's conditional.
+        "median_marginal_rr": round(float(np.median(
+            [r["rr_a"] for r in results if r.get("rr_a")]
+            + [r["rr_b"] for r in results if r.get("rr_b")])), 1)
+        if any(r.get("rr_a") for r in results) else None,
     }
     lo, hi = st.proportion_ci(numbers["tier_a"]["recovered_powered"], len(powered))
     numbers["tier_a"]["recovered_powered_ci"] = [round(lo, 4), round(hi, 4)]

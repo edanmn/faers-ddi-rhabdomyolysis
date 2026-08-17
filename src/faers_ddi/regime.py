@@ -377,6 +377,37 @@ def main(argv: list[str] | None = None) -> int:
             "fpr_multiplicative_clustered": st.pair_cluster_proportion_ci(
                 mult[strong_mask], strong_pairs, seed=SEED),
         }
+    # Round 27: the pool itself, exported. It carries the two rates that make
+    # the calibration claim and shipped nowhere, so a reviewer could not check
+    # them without rebuilding a 154 GB database.
+    pool_path = cfg.path("tables") / "in_regime_pool.csv"
+    with pool_path.open("w", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=[
+            "drug_a", "drug_b", "rr_a", "rr_b", "strength", "n_ab", "n_abz",
+            "omega", "omega_lower", "omega_add", "omega_add_lower",
+            "signals_additive", "signals_multiplicative",
+            "at_positive_control_strength"])
+        writer.writeheader()
+        for row, strength in zip(pool, x_pool):
+            writer.writerow({
+                "drug_a": row["drug_a"], "drug_b": row["drug_b"],
+                "rr_a": round(row["rr_a"], 3), "rr_b": round(row["rr_b"], 3),
+                "strength": round(float(strength), 3),
+                "n_ab": row["n_ab"], "n_abz": row["n_abz"],
+                # 6 dp, not 3: at 3 dp a bound just above zero rounds to
+                # 0.000 and the > 0 test flips, so the shipped file gave 9.30%
+                # where the analysis gives 9.34% -- one pair in 2,345. A table
+                # exported so the rates can be rechecked has to reproduce them.
+                "omega": round(row["omega"], 6),
+                "omega_lower": round(row["omega_lower"], 6),
+                "omega_add": round(row["omega_add"], 6),
+                "omega_add_lower": round(row["omega_add_lower"], 6),
+                "signals_additive": int(row["omega_add_lower"] > 0),
+                "signals_multiplicative": int(row["omega_lower"] > 0),
+                "at_positive_control_strength": int(strength >= ir["in_regime_cut"]),
+            })
+    log.info("  pool exported -> %s", pool_path)
+
     results["high_marginal_pool"] = built
     log.info("  %d pairs, median strength %.2f: additive %.1f%%, multiplicative %.1f%%",
              built["n_pairs"], built["strength_median"],

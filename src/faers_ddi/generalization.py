@@ -250,6 +250,7 @@ def main(argv: list[str] | None = None) -> int:
         "recovered_multiplicative": primary["recovered_multiplicative"],
         "recovered_additive": primary["recovered_additive"],
         "n_controls": primary["n_controls"],
+        "median_marginal_rr": primary.get("median_marginal_rr"),
         "omega_vs_marginal_product": primary["omega_vs_marginal_product"],
     }
     numbers["generalization"] = results

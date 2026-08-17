@@ -51,6 +51,21 @@ def evaluate(con: duckdb.DuckDBPyConnection, tier: str, policy: str,
     contingency.pair_counts(con, drugs, tier, min_pair=1)
     scored = {(r["drug_a"], r["drug_b"]): r for r in contingency.score(con, tier)}
 
+    # Round 27: the per-drug marginal relative risks. These were computed inside
+    # the pipeline and thrown away, so Table 2's correlations -- the mechanistic
+    # claim, the one thing that survived every correction -- could not be
+    # recomputed from any shipped artefact, and the generalization table's
+    # "median marginal RR" column was blank for the primary event while being
+    # populated for all three secondary ones.
+    n_total, n_event = contingency.totals(con, tier)
+    baseline = n_event / n_total if n_total else 0.0
+    marginal = {}
+    for ingredient, n_drug, n_drug_event in con.execute(
+        "SELECT ingredient, n_drug, n_drug_event FROM drug_marginals"
+    ).fetchall():
+        if n_drug and baseline:
+            marginal[ingredient] = (n_drug_event / n_drug) / baseline
+
     results = []
     for control in controls:
         a = control["drug_a"].strip().upper()
@@ -70,6 +85,8 @@ def evaluate(con: duckdb.DuckDBPyConnection, tier: str, policy: str,
             "omega_add": round(row["omega_add"], 3) if row else None,
             "omega_add_lower": round(row["omega_add_lower"], 3) if row else None,
             "naive_log2_oe": round(row["naive_log2_oe"], 3) if row else None,
+            "rr_a": round(marginal.get(a), 3) if marginal.get(a) else None,
+            "rr_b": round(marginal.get(b), 3) if marginal.get(b) else None,
             # The gate is judged on the additive null.
             "signal": bool(row and row["omega_add_lower"] > 0),
             "signal_multiplicative": bool(row and row["omega_lower"] > 0),
