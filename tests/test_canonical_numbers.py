@@ -160,6 +160,86 @@ def test_manuscript_reports_era_stability_validated_on_negatives(manuscript, num
     assert "not distinguishable from chance" in manuscript.lower()
 
 
+def test_tables_that_declare_a_source_match_it(manuscript):
+    """Round 20's structural guard: a table may declare its source, and every
+    numeric cell in it is then verified against that source record.
+
+    Two weaker designs were tried and measured first, and both were discarded:
+
+    * membership in a corpus of every value in canonical_numbers.json plus every
+      shipped CSV. That corpus renders 470,526 strings from 178,563 values and
+      covers **100% of all one-decimal numbers from 0.0 to 99.9**, so the check
+      cannot fail for any percentage. It passed both mutations. Decorative.
+    * requiring every number in a table row to come from one flat record. Too
+      strict: 46 legitimate rows combine a count, a rate, an enrichment and an
+      interval that live in different parts of the canonical file.
+
+    So provenance is declared per table, in an HTML comment the builder ignores:
+
+        <!-- source: tier_a_results.csv tier=core policy=primary -->
+
+    Tables without a declaration are not checked here; the count of undeclared
+    tables is asserted so that this guard's coverage cannot silently shrink, and
+    declarations should be added as tables are touched.
+    """
+    import csv as _csv, itertools as _it, re as _re
+
+    tables = _re.findall(
+        r"<!--\s*source:\s*(\S+)([^>]*)-->\s*\n+((?:^\|.*\|\s*$\n)+)",
+        manuscript, _re.M)
+    assert tables, "no table declares a source; the pair-level table must"
+
+    for filename, opts, block in tables:
+        filters = dict(_re.findall(r"(\w+)=(\S+)", opts))
+        path = cfg.path("tables") / filename
+        assert path.exists(), f"declared source {filename} does not exist"
+        with open(path) as handle:
+            records = [r for r in _csv.DictReader(handle)
+                       if all(r.get(k) == v for k, v in filters.items())]
+        assert records, f"{filename} has no rows matching {filters}"
+
+        for line in block.strip().split("\n"):
+            if _re.match(r"^\|[\s\-:|]+\|$", line):
+                continue
+            cells = [c.strip() for c in line.strip("|").split("|")]
+            label = cells[0].lower()
+            names = _re.findall(r"[a-z][a-z ]+", label)
+            match = None
+            for rec in records:
+                drugs = f"{rec.get('drug_a','')} {rec.get('drug_b','')}".lower()
+                if all(n.strip() in drugs for n in names if n.strip()):
+                    match = rec
+                    break
+            if match is None:
+                continue                      # header row, or a non-pair row
+            nums = []
+            for value in match.values():
+                try:
+                    nums.append(float(value))
+                except (TypeError, ValueError):
+                    pass
+            derivable = set()
+            for v in nums:
+                derivable |= {f"{v:g}", f"{v:.0f}", f"{v:.1f}", f"{v:.2f}"}
+            for a, b in _it.permutations(nums, 2):
+                if b:
+                    derivable |= {f"{100 * a / b:.0f}", f"{100 * a / b:.1f}",
+                                  f"{100 * a / b:.2f}"}
+            for cell in cells[1:]:
+                for num in _re.findall(r"(?<![\w.])(\d+(?:\.\d+)?)", cell):
+                    assert num in derivable, (
+                        f"{label.strip()}: {num} is not derivable from the "
+                        f"declared source {filename} ({filters}); the row reads "
+                        f"{line.strip()}")
+
+    total = len(_re.findall(r"((?:^\|.*\|\s*$\n){2,})", manuscript, _re.M))
+    declared = len(tables)
+    assert declared >= 1, "the pair-level table lost its source declaration"
+    assert total - declared <= 25, (
+        f"{total - declared} tables carry no source declaration; add one when "
+        f"you touch a table rather than letting coverage shrink")
+
+
 def test_document_defines_both_estimands(manuscript):
     """Round 19. The whole paper is a comparison of two nulls, and it defined
     neither. Both estimands were written out only in paper_a.md, so retiring it

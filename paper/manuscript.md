@@ -431,13 +431,15 @@ The drugs of interest are the dominant reported causes of the outcome, with
 marginal relative risks of 3–19 against a 0.207% background, so the
 multiplicative null predicts very high joint rates (Figure 1):
 
+<!-- source: tier_a_results.csv tier=core policy=primary -->
+
 | pair | observed | multiplicative | additive |
 |---|---:|---:|---:|
-| gemfibrozil + simvastatin | 55.1% | 72.9% | 27.9% |
-| atorvastatin + gemfibrozil | 14.5% | 71.8% | 22.9% |
-| amiodarone + simvastatin | 15.1% | 25.1% | 10.9% |
+| gemfibrozil + simvastatin | 56.2% | 73.9% | 28.3% |
+| atorvastatin + gemfibrozil | 14.9% | 72.6% | 23.1% |
+| amiodarone + simvastatin | 22.3% | 29.2% | 11.0% |
 
-55% of gemfibrozil + simvastatin co-reports carry rhabdomyolysis and the pair
+56% of gemfibrozil + simvastatin co-reports carry rhabdomyolysis and the pair
 still scores as protective.
 
 **The marginal-strength gradient is real, but it is not diagnostic of the
@@ -512,7 +514,7 @@ degrades. See also §6.
 Under the additive null, **12/16 controls signal (12/14 powered)**, against
 **4/16 for Ω (4/14 powered)** at the same threshold. Six of seven
 simvastatin pairs and three of three colchicine pairs recover; both lovastatin
-pairs have n_ab of 19 and 1 and are unmeasurable. Both denominators are given
+pairs have n_ab of 13 and 1 and are unmeasurable. Both denominators are given
 because they are not interchangeable: an earlier version quoted the additive
 count out of 14 and the multiplicative count out of 16 in the same comparison.
 
@@ -653,8 +655,11 @@ to detect.
 
 ### 4.4 Polypharmacy leverage (Figure 5)
 
-The strongest apparent false positive was alirocumab + ipratropium: 88
-co-reports, 88 events. Those 88 cases share 5 distinct event dates and 1
+The strongest apparent false positive, measured before the cap was applied,
+was alirocumab + ipratropium: 88 co-reports, 88 events. The pair does not
+appear in the shipped screen or negative-control tables, both of which are
+generated after the exclusion; it is quoted here from the uncapped run that
+motivated the cap. Those 88 cases share 5 distinct event dates and 1
 distinct age, each listing 31–40 drugs — residual near-duplicates the exact-set
 fingerprint could not merge.
 

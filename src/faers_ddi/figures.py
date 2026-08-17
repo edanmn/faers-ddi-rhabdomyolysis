@@ -37,13 +37,17 @@ def figure_1_null_comparison(numbers: dict, path):
     labels, observed, mult, add = [], [], [], []
     for r in sorted(rows, key=lambda r: -int(r["n_ab"])):
         n_ab = int(r["n_ab"])
-        labels.append(f"{r['drug_a'][:11].title()}+{r['drug_b'][:11].title()}")
+        # Round 20: these were truncated to 11 characters, which cut six of
+        # the fourteen labels mid-name -- "Atorvastati", "Rosuvastati",
+        # "Clarithromy", "Itraconazol". Drug identity is the point of the
+        # figure, so the names are given in full and the margin widened.
+        labels.append(f"{r['drug_a'].title()} + {r['drug_b'].title()}")
         observed.append(int(r["n_abz"]) / n_ab)
         mult.append(float(r["expected"]) / n_ab if r["expected"] else np.nan)
         add.append(float(r["additive_expected"]) / n_ab if r["additive_expected"] else np.nan)
 
     y = np.arange(len(labels))
-    fig, ax = plt.subplots(figsize=(9, 6))
+    fig, ax = plt.subplots(figsize=(10.5, 6))
     ax.barh(y, mult, height=0.72, color=PALETTE["light"],
             label="expected, multiplicative null (Ω)", zorder=2)
     ax.plot(add, y, "s", color=PALETTE["good"], ms=6,

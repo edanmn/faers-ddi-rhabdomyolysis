@@ -73,7 +73,7 @@ python -m faers_ddi.generalization            # torsade / anaphylaxis
 python -m faers_ddi.audit                     # provenance, coverage, FDR, cap sweep
 python -m faers_ddi.regime                    # in-regime error rates, matched recovery
 python -m faers_ddi.figures                   # 7 figures
-python -m pytest                              # 331 tests
+python -m pytest                              # 332 tests
 python paper/build.py                         # manuscript.md -> .tex -> .pdf
 python paper/build.py --check                 # non-zero if any .tex is stale
 ```
@@ -118,7 +118,7 @@ from is third-party and deliberately gitignored — do not commit it.
 
 **`results/canonical_numbers.json` is the single source of truth.** Nothing is
 quoted anywhere that does not come from it. `tests/test_canonical_numbers.py`
-(331 tests) asserts the prose against it.
+(332 tests) asserts the prose against it.
 
 `paper/build.py` generates `.tex` from `.md` via pandoc + tectonic. **Never edit
 a `.tex` by hand** — it is regenerated. Two-column documents declare a body-page
@@ -158,9 +158,9 @@ a new derivation from this manuscript, not a revival of the archived pair.
 
 ## 5. Read this before writing any test
 
-This project has been through **nineteen adversarial review rounds**. The
+This project has been through **twenty adversarial review rounds**. The
 consistent failure has not been in the analysis — it has been in the guards.
-**Six times a test written to catch a specific defect was too weak to catch
+**Seven times a test written to catch a specific defect was too weak to catch
 it:**
 
 1. a `6/16` check satisfied by the substring inside `16/16`;
@@ -173,6 +173,13 @@ it:**
    false-positive rate"`, while `manuscript.md` carried **`"almost identical
    false-positive rate (6.4% vs 6.7%)"`** in its abstract for six rounds —
    defeated by a **synonym**;
+7. (r20) a *structural* guard written to close the whole category was
+   **decorative on its first draft**: membership in a corpus of every value in
+   the canonical file plus every shipped CSV. That corpus renders 470,526
+   strings and covers **100% of all one-decimal numbers 0.0–99.9**, so it could
+   not fail for any percentage — it passed both mutations. Measured, discarded,
+   replaced with declared per-table provenance. **Mutation-test before
+   believing a guard, including your own.**
 6. (r19) two guards checked that a qualifying phrase appeared **anywhere in the
    document**. It did — in §4.5 — while the Abstract *and* Limitations each
    carried the round-10 withdrawn claim, one of them asserting the 800-drug
@@ -198,7 +205,7 @@ Standing practice, non-negotiable:
   `test_no_maintained_document_carries_a_withdrawn_claim`, tagged with the round
   that retracted them.
 
-**331 passing means the stated numbers match the computed ones. It does not mean
+**332 passing means the stated numbers match the computed ones. It does not mean
 the right quantity was computed, nor that the sentence built on a correct
 number says what the number means** (r17). Round 11 overturned the central claim while
 every test passed, before and after.
@@ -211,6 +218,9 @@ Detail in `results/PHASE*_FINDINGS.md` (16 files). The ones that bite:
 
 | claim | status |
 |---|---|
+| Table 1 of §4.1 (observed / multiplicative / additive joint rates) | **stale r20** — the nine values matched no arm, were absent from canonical, were asserted by no test, and contradicted both the adjacent prose and Figure 1. Correct: 56.2/73.9/28.3, 14.9/72.6/23.1, 22.3/29.2/11.0 |
+| lovastatin pairs "n_ab of 19 and 1" | **wrong r20** — core/primary gives **13 and 1**; no arm yields 19 |
+| alirocumab + ipratropium 88/88 | **unverifiable r20** — in no shipped table; now attributed in-text to the uncapped run |
 | "17.2% of screened ingredients have no label", cerivastatin/fibrates as evidence | **withdrawn r10, found live again r19** in the Abstract and Limitations. The screened figure is **5.5%** (11/200); 17.2% is the 800-drug cache. The four extra drugs were never screened |
 | "9.8% of pairs undocumentable" | **wrong r19** — 1712/17375 = 9.853% → **9.9%**. The value was stored pre-rounded to 4dp and re-rounded for display, and the guard re-derived it from the same rounded intermediate |
 | era-stable "expected by chance" read off `expected_era_stable_by_chance` | **trap r19** — that key held the **upper confidence limit** (33.2), not the expectation (16.1). Renamed; a point estimate is now emitted beside it |
