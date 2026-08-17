@@ -1472,6 +1472,56 @@ def test_event_definition_matches_the_pt_config(manuscript, numbers):
             f"confused")
 
 
+# Round 28. Cross-references that RESOLVE but point at the wrong section have
+# now slipped past the round-19 existence check twice: §3.6-for-§3.7, and the
+# Abstract citing §4.6 for the in-regime rates that §4.3 derives.
+#
+# Two general guards were written and MEASURED before this registry, and both
+# were discarded:
+#
+#   * keyword overlap with the target section's title. Passes 37% of legitimate
+#     citations -- titles like "Tier A and Tier B" and "Limitations" share no
+#     vocabulary with the sentences citing them. 43 false positives.
+#   * "a number in the citing sentence must appear in the cited section". Passes
+#     98%, and catches the real defect, but the premise is false in general: a
+#     sentence may cite a section for a qualitative claim while quoting figures
+#     that belong elsewhere. 4 legitimate citations flagged, and whitelisting
+#     them is the trap this project keeps falling into.
+#
+# So: an explicit registry, the same pattern as the withdrawn-claim and RETIRED
+# registries. It only covers what is listed, which is honest about its scope --
+# add an entry when a citation carries real weight.
+CROSS_REFERENCE_BINDINGS = {
+    "in regime the rates are": "4.3",
+    "resampling the victim drug": "4.3",
+    "analysis to torsade": "4.3",
+    "the analysis restricted to pairs whose two labels both exist": "4.5",
+    "varied across a 20-fold range as a sensitivity analysis": "4.8",
+    "with a control set drawn by FDA labelling": "4.10",
+}
+
+
+def test_load_bearing_cross_references_point_at_the_right_section(manuscript):
+    """Each registered claim must cite the section that actually establishes it.
+
+    See CROSS_REFERENCE_BINDINGS above for why this is a registry rather than a
+    general rule, and what was measured before settling on one.
+    """
+    import re as _re
+
+    flat = " ".join(manuscript.split())
+    for phrase, expected in CROSS_REFERENCE_BINDINGS.items():
+        for sentence in _re.split(r"(?<=[.!?])\s+", flat):
+            if phrase not in sentence:
+                continue
+            refs = _re.findall(r"§(\d+(?:\.\d+)*)", sentence)
+            if not refs:
+                continue
+            assert expected in refs, (
+                f"the claim {phrase!r} cites §{', §'.join(refs)} but is "
+                f"established in §{expected}: {sentence[:150]}")
+
+
 def test_generalization_table_has_no_blank_cells(manuscript, numbers):
     """Round 27. The generalization table's `median marginal RR` column was
     populated for all three secondary events and blank for the primary one --

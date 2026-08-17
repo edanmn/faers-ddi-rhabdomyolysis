@@ -96,7 +96,7 @@ the same threshold. The pooled false-positive rates of the two nulls are close
 (6.4\% vs 6.7\%), but that pooling is over a pool that does not occupy the regime
 where recovery is measured; in regime the rates are 2.2\% (95\% CI 1.24--3.34\%,
 cluster bootstrap over drugs) and 9.3\% (7.29--11.32\%), so the
-recovery comparison is between two very different operating points (§4.6).
+recovery comparison is between two very different operating points (§4.3).
 We adopted the additive null after observing this. Ω also becomes more negative
 as the marginal associations strengthen (r = −0.63, n = 16, 95\% CI −0.86 to
 −0.19, p = 0.009) --- but so does Ω\_add (r = −0.65, p = 0.007), while the
@@ -1565,22 +1565,43 @@ artefact of inpatient case mix.
 being available.
 
 {\def\LTcaptype{none} % do not increment counter
-\begin{longtable}[]{@{}lrrl@{}}
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1765}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2353}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.2353}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1765}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 8\tabcolsep) * \real{0.1765}}@{}}
 \toprule\noalign{}
-stratum & cases & event rate & stratified enrichment \\
+\begin{minipage}[b]{\linewidth}\raggedright
+stratum
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+cases
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+event rate
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+crude enrichment (pairwise CI)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+stratified (cluster bootstrap)
+\end{minipage} \\
 \midrule\noalign{}
 \endhead
 \bottomrule\noalign{}
 \endlastfoot
-female & 10,686,771 & 0.136\% & 1.723 (0.534--3.447) \\
-male & 6,998,836 & 0.327\% & 0.542 (0.0--1.459) \\
+female & 10,686,771 & 0.136\% & 2.13 (1.2--3.78) & 1.723 (0.534--3.447) \\
+male & 6,998,836 & 0.327\% & 0.69 (0.26--1.82) & 0.542 (0.0--1.459) \\
 \end{longtable}
 }
 
 Myotoxicity is reported at 2.4× the rate in male as in female reports,
-consistent with the known epidemiology of rhabdomyolysis. Enrichment intervals
-overlap unity in both strata and each other; these subgroups are underpowered
-and no subgroup claim is made.
+consistent with the known epidemiology of rhabdomyolysis. \textbf{Both
+cluster-bootstrap intervals overlap unity}, and so does the crude male one.
+The crude female interval does \emph{not} --- 2.13 (1.20--3.78) --- and it is the only
+non-control enrichment anywhere in this paper whose interval excludes unity. We
+report it rather than only its clustered counterpart, because it is a clean
+instance of the anticonservatism §3.8 describes: 15,471 pairs built from a few
+hundred drugs are not independent trials, and resampling drugs moves the
+estimate to 1.723 with an interval spanning unity. No subgroup claim is made on
+either scale, and these subgroups are underpowered.
 
 \section{4.10 Recovery on controls the authors did not choose}\label{recovery-on-controls-the-authors-did-not-choose}
 
