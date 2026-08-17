@@ -160,6 +160,61 @@ def test_manuscript_reports_era_stability_validated_on_negatives(manuscript, num
     assert "not distinguishable from chance" in manuscript.lower()
 
 
+def test_no_figure_carries_hardcoded_data(numbers):
+    """Round 20+2. Figure 5's fourteen values were literals in figures.py --
+    the stale-Table-1 defect relocated into the one medium the table provenance
+    guard did not look at. The values were exactly right, which is precisely why
+    nothing caught them: only their provenance was wrong, and the paper claims
+    in Data and code availability that every figure is generated from the
+    canonical file.
+
+    Round 20's guard was scoped to the MEDIUM the defect was found in (markdown
+    tables) rather than to the defect (numbers without provenance). This one is
+    scoped to the defect: no figure function may contain a literal numeric
+    sequence, because that is what hand-entered data looks like in plotting code.
+    """
+    import re as _re
+
+    source = (cfg.PROJECT_ROOT / "src" / "faers_ddi" / "figures.py").read_text()
+    offenders = []
+    for match in _re.finditer(r"^\s*(\w+)\s*=\s*\[([^\]]*)\]", source, _re.M):
+        name, body = match.group(1), match.group(2)
+        # a sequence of two or more bare numeric literals
+        literals = _re.findall(r"(?<![\w.])-?\d+\.?\d*(?![\w.])", body)
+        if len(literals) >= 2 and not _re.search(r"[A-Za-z_]\w*\s*[\[(]", body):
+            offenders.append((name, body[:70]))
+    assert not offenders, (
+        "figures.py contains hardcoded numeric data; figures must be derived "
+        "from canonical_numbers.json or the shipped tables: "
+        + "; ".join(f"{n} = [{b}...]" for n, b in offenders))
+
+    # and the band data the figure now uses must actually be in the canonical file
+    pb = numbers["audit"]["polypharmacy_bands"]
+    assert len(pb["bands"]) >= 5
+    assert abs(sum(b["share_of_pairs"] for b in pb["bands"]) - 100.0) < 0.5, (
+        "band shares must sum to 100%")
+    above = [b for b in pb["bands"] if b["band"] in ("21-30", "31-50", "51+")]
+    assert abs(sum(b["share_of_pairs"] for b in above)
+               - pb["above_cap_share_of_pairs"]) < 0.15
+
+
+def test_polypharmacy_reversal_is_disclosed(manuscript, numbers):
+    """Round 20+2. The '4x enriched event rate' aggregate hides a reversal: the
+    51+ band contributes the largest share of pairs of any band while running
+    far BELOW background. Figure 5 shows it; the text did not mention it."""
+    pb = numbers["audit"]["polypharmacy_bands"]
+    top = next(b for b in pb["bands"] if b["band"] == "51+")
+    assert top["event_rate"] < pb["background_event_rate"], (
+        "this guard assumes the 51+ band is depleted; if that changed, the "
+        "prose it protects needs rewriting rather than the guard relaxing")
+    flat = " ".join(manuscript.split())
+    assert f"{top['event_rate']:.2f}%" in flat, (
+        f"the 51+ band event rate {top['event_rate']:.2f}% must be stated, not "
+        f"folded into the aggregate")
+    assert "below the 0.207% background" in flat or "below" in flat.lower(), (
+        "the reversal must be described, not merely tabulated")
+
+
 def test_figures_do_not_plot_retracted_quantities(numbers, manuscript):
     """Round 21. Figure 3 plotted the any-endpoint, all-pairs era-stable
     enrichment -- 13.31x, interval excluding unity, the largest effect in the

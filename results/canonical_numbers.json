@@ -307,6 +307,65 @@
         }
       ]
     },
+    "polypharmacy_bands": {
+      "above_cap_cases": 19005,
+      "above_cap_enrichment": 4.3,
+      "above_cap_event_rate": 0.889,
+      "above_cap_share_of_pairs": 34.7,
+      "background_event_rate": 0.207,
+      "bands": [
+        {
+          "band": "1",
+          "cases": 15366836,
+          "event_rate": 0.13,
+          "events": 20155,
+          "share_of_pairs": 0.0
+        },
+        {
+          "band": "2-5",
+          "cases": 4424434,
+          "event_rate": 0.43,
+          "events": 19074,
+          "share_of_pairs": 28.6
+        },
+        {
+          "band": "6-10",
+          "cases": 411109,
+          "event_rate": 0.53,
+          "events": 2180,
+          "share_of_pairs": 22.3
+        },
+        {
+          "band": "11-20",
+          "cases": 71563,
+          "event_rate": 0.67,
+          "events": 479,
+          "share_of_pairs": 14.4
+        },
+        {
+          "band": "21-30",
+          "cases": 9861,
+          "event_rate": 0.85,
+          "events": 84,
+          "share_of_pairs": 6.7
+        },
+        {
+          "band": "31-50",
+          "cases": 5842,
+          "event_rate": 1.44,
+          "events": 84,
+          "share_of_pairs": 10.0
+        },
+        {
+          "band": "51+",
+          "cases": 3302,
+          "event_rate": 0.03,
+          "events": 1,
+          "share_of_pairs": 18.0
+        }
+      ],
+      "note": "a case with k drugs contributes k(k-1)/2 pairs; the aggregate enrichment above the cap hides a reversal in the largest band"
+    },
     "provenance": {
       "aeolus_benchmark": {
         "aeolus_published_cases": 4928413,

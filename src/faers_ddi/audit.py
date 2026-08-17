@@ -393,6 +393,65 @@ def era_stable_plausible(con: duckdb.DuckDBPyConnection, tier: str,
 # The polypharmacy cap was chosen on the evaluation set.
 # --------------------------------------------------------------------------
 
+POLYPHARMACY_BANDS = ((1, 1, "1"), (2, 5, "2-5"), (6, 10, "6-10"), (11, 20, "11-20"),
+                      (21, 30, "21-30"), (31, 50, "31-50"), (51, None, "51+"))
+
+
+def polypharmacy_bands(con: duckdb.DuckDBPyConnection, tier: str) -> dict:
+    """Pair contribution and event rate by drugs-per-case band.
+
+    Added in round 20+2. Figure 5 carried these fourteen numbers as literals in
+    figures.py -- the same defect as the stale Table 1, in the one medium the
+    table provenance guard did not look at. The values turned out to be exactly
+    right, but nothing shipped could show that, while the paper claimed every
+    figure was generated from the canonical file.
+
+    A case listing k drugs contributes k(k-1)/2 pairs, so pair count grows
+    quadratically while case count does not: that is the leverage the section
+    is about. The event rate is reported per band because the aggregate hides a
+    reversal -- the 51+ band contributes the largest share of pairs of any band
+    while sitting far BELOW the database background rate.
+    """
+    flag = "is_core" if tier == "core" else "is_broad"
+    cases = []
+    for lo, hi, label in POLYPHARMACY_BANDS:
+        upper = "" if hi is None else f" AND n.n_drugs <= {hi}"
+        row = con.execute(f"""
+            SELECT count(*),
+                   sum(n.n_drugs * (n.n_drugs - 1) / 2.0),
+                   sum(CASE WHEN e.case_id IS NOT NULL THEN 1 ELSE 0 END)
+            FROM case_ndrugs n
+            LEFT JOIN (SELECT DISTINCT case_id FROM case_events WHERE {flag}) e
+                   USING (case_id)
+            WHERE n.n_drugs >= {lo}{upper}
+        """).fetchone()
+        cases.append({"band": label, "cases": int(row[0]),
+                      "pairs": float(row[1] or 0.0), "events": int(row[2] or 0)})
+
+    total_pairs = sum(b["pairs"] for b in cases)
+    total_cases = sum(b["cases"] for b in cases)
+    total_events = sum(b["events"] for b in cases)
+    background = total_events / total_cases if total_cases else 0.0
+    for b in cases:
+        b["share_of_pairs"] = round(100 * b["pairs"] / total_pairs, 1) if total_pairs else 0.0
+        b["event_rate"] = round(100 * b["events"] / b["cases"], 2) if b["cases"] else 0.0
+        b.pop("pairs")
+    above = [b for b in cases if b["band"] in ("21-30", "31-50", "51+")]
+    above_cases = sum(b["cases"] for b in above)
+    above_events = sum(b["events"] for b in above)
+    return {
+        "note": "a case with k drugs contributes k(k-1)/2 pairs; the aggregate "
+                "enrichment above the cap hides a reversal in the largest band",
+        "bands": cases,
+        "background_event_rate": round(100 * background, 3),
+        "above_cap_cases": above_cases,
+        "above_cap_share_of_pairs": round(sum(b["share_of_pairs"] for b in above), 1),
+        "above_cap_event_rate": round(100 * above_events / above_cases, 3) if above_cases else 0.0,
+        "above_cap_enrichment": round((above_events / above_cases) / background, 1)
+        if above_cases and background else 0.0,
+    }
+
+
 NO_CAP = 10_000  # build_case_drugs treats None as "use the configured cap"
 
 
@@ -894,6 +953,13 @@ def main(argv: list[str] | None = None) -> int:
             })
     control_drugs = {d for c in tier_a.load_positive_controls()
                      for d in (c["drug_a"].strip().upper(), c["drug_b"].strip().upper())}
+
+    log.info("--- polypharmacy bands ---")
+    results["polypharmacy_bands"] = polypharmacy_bands(con, tier)
+    pb = results["polypharmacy_bands"]
+    log.info("  above the cap: %d cases, %.1f%% of pairs, %.3f%% event rate (%.1fx)",
+             pb["above_cap_cases"], pb["above_cap_share_of_pairs"],
+             pb["above_cap_event_rate"], pb["above_cap_enrichment"])
 
     log.info("--- reference coverage ---")
     results["reference_coverage"] = reference_coverage(

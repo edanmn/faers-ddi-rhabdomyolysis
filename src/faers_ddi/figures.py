@@ -78,7 +78,10 @@ def figure_2_correlation(numbers: dict, path):
     ax.plot(xs, slope * xs + intercept, color=PALETTE["neutral"], lw=1.4, zorder=2)
     ax.set_xlabel("log₂(RR$_A$ × RR$_B$)  —  strength of the marginal associations")
     ax.set_ylabel("Ω  (multiplicative null)")
-    ax.set_title(f"The better established the interaction, the more protective Ω looks\n"
+    # Round 20+2: was "The better established the interaction..." -- all 16 pairs
+    # are equally established (all label-verified). What varies along x is the
+    # marginal association strength, which is what the section actually argues.
+    ax.set_title(f"The stronger the marginal associations, the more protective Ω looks\n"
                  f"r = {c['r']:.2f}  (n = {c['n']}, 95% CI {c['ci_low']:.2f} to "
                  f"{c['ci_high']:.2f}, p = {c['p_value']:.3f})", fontsize=10)
     _style(ax)
@@ -180,9 +183,14 @@ def figure_4_era_stability(numbers: dict, path):
 
 def figure_5_polypharmacy(numbers: dict, path):
     """Share of pairs and event rate by drugs per case."""
-    labels = ["1", "2–5", "6–10", "11–20", "21–30", "31–50", "51+"]
-    share = [0.0, 28.6, 22.3, 14.4, 6.7, 10.0, 18.0]
-    rate = [0.13, 0.43, 0.53, 0.67, 0.85, 1.44, 0.03]
+    # Round 20+2: these were fourteen literals. Every one matched the database
+    # exactly, but nothing shipped could show that, while the paper claimed each
+    # figure is generated from the canonical file. They now come from
+    # audit.polypharmacy_bands.
+    pb = numbers["audit"]["polypharmacy_bands"]
+    labels = [b["band"].replace("-", "–") for b in pb["bands"]]
+    share = [b["share_of_pairs"] for b in pb["bands"]]
+    rate = [b["event_rate"] for b in pb["bands"]]
     x = np.arange(len(labels))
     fig, ax = plt.subplots(figsize=(7.5, 4.2))
     colours = [PALETTE["neutral"]] * 4 + [PALETTE["bad"]] * 3
@@ -195,8 +203,11 @@ def figure_5_polypharmacy(numbers: dict, path):
     twin.spines[["top"]].set_visible(False)
     ax.axvline(3.5, color=PALETTE["bad"], ls=":", lw=1.4)
     ax.text(3.6, max(share) * 0.92, "cap at 20", fontsize=8, color=PALETTE["bad"])
-    ax.set_title("0.09% of cases (>20 drugs) contribute 34.7% of all pairs,\n"
-                 "at a 4× enriched event rate", fontsize=10)
+    ax.set_title(
+        f"{pb['above_cap_share_of_pairs']:.1f}% of all pairs come from the "
+        f"{pb['above_cap_cases']:,} cases listing >20 drugs\n"
+        f"({pb['above_cap_enrichment']:.1f}× the background event rate overall — "
+        f"but the 51+ band runs below it)", fontsize=10)
     _style(ax)
     fig.tight_layout(); fig.savefig(path, dpi=200); plt.close(fig)
 
@@ -215,7 +226,8 @@ def figure_6_alpha_sensitivity(numbers: dict, path):
     ax.plot(alphas, recovered, "o-", color=PALETTE["good"], lw=1.6, ms=7,
             label=f"positive controls recovered (of {total})")
     ax.set_xscale("log"); ax.set_xlabel("shrinkage constant α (log scale)")
-    ax.set_ylabel("controls recovered", color=PALETTE["good"])
+    ax.set_ylabel(f"controls recovered (of {total}, at the calibrated threshold)",
+                  color=PALETTE["good"], fontsize=9)
     ax.set_ylim(0, total)
     twin = ax.twinx()
     twin.plot(alphas, signals, "s--", color=PALETTE["neutral"], lw=1.4, ms=6,
@@ -224,8 +236,8 @@ def figure_6_alpha_sensitivity(numbers: dict, path):
     twin.spines[["top"]].set_visible(False)
     ax.axvline(0.5, color=PALETTE["bad"], ls=":", lw=1.4)
     ax.text(0.52, 1.0, "α = 0.5 (adopted)", fontsize=8, color=PALETTE["bad"])
-    ax.set_title("Conclusions are invariant to the unverified shrinkage constant\n"
-                 "across a 20-fold range", fontsize=10)
+    ax.set_title("No conclusion depends on the unverified shrinkage constant\n"
+                 "across a 20-fold range (recovery moves by two pairs)", fontsize=10)
     _style(ax)
     fig.tight_layout(); fig.savefig(path, dpi=200); plt.close(fig)
 

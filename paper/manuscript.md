@@ -664,7 +664,15 @@ distinct age, each listing 31–40 drugs — residual near-duplicates the exact-
 fingerprint could not merge.
 
 A case listing 40 drugs contributes 780 pairs. **19,005 cases (0.09% of the
-database) contribute 34.7% of all drug pairs at a 4× enriched event rate.**
+database) contribute 34.7% of all drug pairs at a 4.3× enriched event rate.**
+That aggregate hides a reversal, and Figure 5 shows it: the event rate climbs
+across the bands to **1.44% at 31–50 drugs**, then collapses to **0.03% at 51+
+drugs** — roughly seven-fold *below* the 0.207% background — even though the
+51+ band is the single largest contributor of pairs in the database at 18% of
+them. Leverage and enrichment are therefore not the same problem. The pair
+arithmetic is what motivates the cap; the enrichment applies to the 21–50
+bands and not to the largest one, whose reports look more like registry dumps
+than clinical narratives.
 Capping at 20 drugs per case improved sensitivity (11→12/16) and the
 false-positive rate (6.9%→6.7%) simultaneously, and the multiplicative null
 improves from 2/16 to 4/16, so the headline contrast in §4.1 is *understated*
@@ -1501,7 +1509,8 @@ Verified against indexed sources. PMIDs and DOIs as listed.
    Pharmacol.* 1998;54(4):315–321. doi:10.1007/s002280050466
 2. Banda JM, Evans L, Vanguri RS, Tatonetti NP, Ryan PB, Shah NH. A curated and
    standardized adverse drug event resource to accelerate drug safety research.
-   *Sci Data.* 2016. PMID 27193236. Data: doi:10.5061/dryad.8q0s4
+   *Sci Data.* 2016;3:160026. PMID 27193236. doi:10.1038/sdata.2016.26
+   Data: doi:10.5061/dryad.8q0s4
 3. DuMouchel W. Bayesian data mining in large frequency tables, with an
    application to the FDA spontaneous reporting system. *Am Stat.*
    1999;53(3):177–190. doi:10.1080/00031305.1999.10474456
@@ -1510,7 +1519,7 @@ Verified against indexed sources. PMIDs and DOIs as listed.
    *Pharmacoepidemiol Drug Saf.* 2001;10(6):483–486. doi:10.1002/pds.677
 5. Fusaroli M, et al. Enhancing transparency in defining studied drugs: the
    open-source living DiAna dictionary for standardizing drug names in the
-   FAERS. *Drug Saf.* 2024;47:271–284.
+   FAERS. *Drug Saf.* 2024;47(3):271–284. doi:10.1007/s40264-023-01391-4
 6. Norén GN, Sundberg R, Bate A, Edwards IR. A statistical methodology for
    drug–drug interaction surveillance. *Stat Med.* 2008 Jul 20;27(16):3057–3070.
    PMID 18344185. doi:10.1002/sim.3247
@@ -1519,19 +1528,23 @@ Verified against indexed sources. PMIDs and DOIs as listed.
    PMID 22539083. doi:10.1136/amiajnl-2011-000612
 8. Rothman KJ. Causes. *Am J Epidemiol.* 1976;104(6):587–592.
 9. Tatonetti NP, Ye PP, Daneshjou R, Altman RB. Data-driven prediction of drug
-   effects and interactions. *Sci Transl Med.* 2012. PMID 22422992.
-   doi:10.1126/scitranslmed.3003377
+   effects and interactions. *Sci Transl Med.* 2012;4(125):125ra31.
+   PMID 22422992. doi:10.1126/scitranslmed.3003377
 10. Thakrar BT, Grundschober SB, Doessegger L. Detecting signals of drug–drug
     interactions in a spontaneous reports database. *Br J Clin Pharmacol.*
-    2007;64(4):489–495.
+    2007;64(4):489–495. doi:10.1111/j.1365-2125.2007.02900.x
 11. VanderWeele TJ, Knol MJ. A tutorial on interaction. *Epidemiol Methods.*
     2014;3(1):33–72. doi:10.1515/em-2013-0005
 
-**Secondary corroboration for the Ω definition** (see §2): a peer-reviewed
-review of DDI statistical methodologies (*Front Pharmacol.* 2019;10:1319) and
-Uppsala Monitoring Centre operational documentation on drug–drug interaction
+12. Noguchi Y, Tachi T, Teramachi H. Review of statistical methodologies for
+    detecting drug–drug interactions using spontaneous reporting systems.
+    *Front Pharmacol.* 2019;10:1319. doi:10.3389/fphar.2019.01319
+
+**Secondary corroboration for the Ω definition** (see §2): reference 12, a
+peer-reviewed review of DDI statistical methodologies, together with Uppsala
+Monitoring Centre operational documentation on drug–drug interaction
 signalling. The primary Norén et al. paper is paywalled and unread by the
-authors.
+authors, so the definition used here rests on those secondary sources.
 
 ## 9. Computational environment
 

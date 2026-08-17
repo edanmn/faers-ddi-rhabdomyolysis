@@ -73,7 +73,7 @@ python -m faers_ddi.generalization            # torsade / anaphylaxis
 python -m faers_ddi.audit                     # provenance, coverage, FDR, cap sweep
 python -m faers_ddi.regime                    # in-regime error rates, matched recovery
 python -m faers_ddi.figures                   # 7 figures
-python -m pytest                              # 333 tests
+python -m pytest                              # 335 tests
 python paper/build.py                         # manuscript.md -> .tex -> .pdf
 python paper/build.py --check                 # non-zero if any .tex is stale
 ```
@@ -118,7 +118,7 @@ from is third-party and deliberately gitignored — do not commit it.
 
 **`results/canonical_numbers.json` is the single source of truth.** Nothing is
 quoted anywhere that does not come from it. `tests/test_canonical_numbers.py`
-(333 tests) asserts the prose against it.
+(335 tests) asserts the prose against it.
 
 `paper/build.py` generates `.tex` from `.md` via pandoc + tectonic. **Never edit
 a `.tex` by hand** — it is regenerated. Two-column documents declare a body-page
@@ -158,7 +158,7 @@ a new derivation from this manuscript, not a revival of the archived pair.
 
 ## 5. Read this before writing any test
 
-This project has been through **twenty-one adversarial review rounds**. The
+This project has been through **twenty-two adversarial review rounds**. The
 consistent failure has not been in the analysis — it has been in the guards.
 **Seven times a test written to catch a specific defect was too weak to catch
 it:**
@@ -205,7 +205,7 @@ Standing practice, non-negotiable:
   `test_no_maintained_document_carries_a_withdrawn_claim`, tagged with the round
   that retracted them.
 
-**333 passing means the stated numbers match the computed ones. It does not mean
+**335 passing means the stated numbers match the computed ones. It does not mean
 the right quantity was computed, nor that the sentence built on a correct
 number says what the number means** (r17). Round 11 overturned the central claim while
 every test passed, before and after.
@@ -218,6 +218,9 @@ Detail in `results/PHASE*_FINDINGS.md` (16 files). The ones that bite:
 
 | claim | status |
 |---|---|
+| Figure 5's band data | **hardcoded r22** — fourteen literals in `figures.py`, not pipeline output. Every value was **exactly right** (verified against the DB), but unverifiable, while the paper claimed every figure comes from the canonical file. Now `audit.polypharmacy_bands`, exported to `results/tables/polypharmacy_bands.csv` |
+| "34.7% of pairs at a 4× enriched event rate" | **incomplete r22** — 4.3×, and the aggregate hides a reversal: the 51+ band is the largest pair contributor (18%) at **0.03%**, ~7× *below* background. Disclosed |
+| Figure 2 title "the better established the interaction…" | **wrong r22** — the x-axis is marginal strength; all 16 controls are equally established |
 | Figure 3's era-stable point (13.31×) | **removed r21** — §4.6 retracts the value; plotting it beside the surviving results showed a reader the artefact the paper exists to warn about. Guarded by `test_figures_do_not_plot_retracted_quantities` |
 | Table 1 of §4.1 (observed / multiplicative / additive joint rates) | **stale r20** — the nine values matched no arm, were absent from canonical, were asserted by no test, and contradicted both the adjacent prose and Figure 1. Correct: 56.2/73.9/28.3, 14.9/72.6/23.1, 22.3/29.2/11.0 |
 | lovastatin pairs "n_ab of 19 and 1" | **wrong r20** — core/primary gives **13 and 1**; no arm yields 19 |
