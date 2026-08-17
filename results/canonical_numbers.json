@@ -1946,6 +1946,68 @@
         "tested": 17375
       }
     },
+    "third_estimand": {
+      "n_in_regime_negatives": 716,
+      "n_positive_controls": 15,
+      "no_estimand_dominates": true,
+      "note": "a third estimand anchored on each drug's own partner distribution, evaluated against both published nulls on IDENTICAL pairs -- the subset of controls and in-regime negatives that appear in the screen",
+      "rows": [
+        {
+          "recovered_additive": 4,
+          "recovered_multiplicative": 6,
+          "recovered_within_victim": 3,
+          "target_fpr": 0.025,
+          "threshold_additive": 1.557,
+          "threshold_multiplicative": -0.182,
+          "threshold_within_victim": 3.522
+        },
+        {
+          "recovered_additive": 10,
+          "recovered_multiplicative": 8,
+          "recovered_within_victim": 9,
+          "target_fpr": 0.05,
+          "threshold_additive": 0.735,
+          "threshold_multiplicative": -0.727,
+          "threshold_within_victim": 2.937
+        },
+        {
+          "recovered_additive": 12,
+          "recovered_multiplicative": 11,
+          "recovered_within_victim": 12,
+          "target_fpr": 0.075,
+          "threshold_additive": 0.34,
+          "threshold_multiplicative": -1.09,
+          "threshold_within_victim": 2.472
+        },
+        {
+          "recovered_additive": 12,
+          "recovered_multiplicative": 11,
+          "recovered_within_victim": 12,
+          "target_fpr": 0.1,
+          "threshold_additive": 0.061,
+          "threshold_multiplicative": -1.405,
+          "threshold_within_victim": 2.322
+        },
+        {
+          "recovered_additive": 14,
+          "recovered_multiplicative": 12,
+          "recovered_within_victim": 15,
+          "target_fpr": 0.15,
+          "threshold_additive": -0.474,
+          "threshold_multiplicative": -1.904,
+          "threshold_within_victim": 1.884
+        },
+        {
+          "recovered_additive": 14,
+          "recovered_multiplicative": 13,
+          "recovered_within_victim": 15,
+          "target_fpr": 0.2,
+          "threshold_additive": -0.811,
+          "threshold_multiplicative": -2.166,
+          "threshold_within_victim": 1.564
+        }
+      ]
+    },
     "torsade_matched": {
       "in_regime": {
         "in_regime_cut": 7.45,

@@ -45,7 +45,7 @@ the same threshold. The pooled false-positive rates of the two nulls are close
 (6.4% vs 6.7%), but that pooling is over a pool that does not occupy the regime
 where recovery is measured; in regime the rates are 2.2% (95% CI 1.24–3.34%,
 cluster bootstrap over drugs) and 9.3% (7.29–11.32%), so the
-recovery comparison is between two very different operating points (§4.3).
+recovery comparison is between two very different operating points (§4.4).
 We adopted the additive null after observing this. Ω also becomes more negative
 as the marginal associations strengthen (r = −0.63, n = 16, 95% CI −0.86 to
 −0.19, p = 0.009) — but so does Ω_add (r = −0.65, p = 0.007), while the
@@ -57,7 +57,7 @@ selected on the evaluation set, the (binary) selection was cross-validated: the
 additive null wins in **16/16 leave-one-out folds**. Stable selection forces
 leave-one-out recovery to equal in-sample recovery, so the reported optimism of
 0.000 is a consequence of that stability rather than independent evidence, and
-it does not address the choice of controls (§4.10). Both measures are reported
+it does not address the choice of controls (§4.13). Both measures are reported
 throughout.
 
 **Results.** Under the additive null the pipeline recovered **12/16** controls
@@ -155,33 +155,33 @@ directly.
    and **16.9%** of diffuse ones, so in the
    regime where DDI methods are validated the two nulls are one ordering at two
    thresholds — and it is checkable from the marginals before any outcome is
-   examined (§4.2).
+   examined (§4.3).
 2. **The first calibrated error rates for both nulls in the regime where DDI
    methods are validated**, on a purpose-built pool of 2,345 strongly-associated
    non-interacting pairs: Ω₀₂₅ > 0 fires on **2.2% (95% CI 1.24–3.34%)** and
-   Ω_add,₀₂₅ > 0 on **9.3% (7.29–11.32%)** against a nominal 2.5% (§4.3).
+   Ω_add,₀₂₅ > 0 on **9.3% (7.29–11.32%)** against a nominal 2.5% (§4.4).
 3. **A construction for regime-matched negative controls**, which the standard
    frequency-matched generator cannot produce, and which is reusable for any
-   endpoint (§4.3).
+   endpoint (§4.4).
 4. **A one-line diagnostic for circular screen evaluation** — recompute
    enrichment over pairs containing no positive-control drug. Here it moves
-   apparent enrichment from 2.02× to 1.12× (§4.5).
+   apparent enrichment from 2.02× to 1.12× (§4.8).
 5. **An operating characteristic for DDI screening in this regime**, sweeping
    both nulls over the same regime-matched negatives, which replaces the
    "which null" question with the one a screen actually faces: recovering 12 of
    16 known interactions costs about **7.5%**
    false positives among strongly-associated non-interacting pairs, three times
-   the nominal rate (§4.4). A strength-varying threshold, the obvious
+   the nominal rate (§4.6). A strength-varying threshold, the obvious
    alternative, flattens error across strength but halves recovery, and we
    report that so others need not repeat it.
 6. **A polypharmacy cap that improves sensitivity and false-positive rate
    simultaneously**, from a quantification of pair-space leverage: 0.09% of
-   cases contribute 34.7% of all drug pairs (§4.5).
+   cases contribute 34.7% of all drug pairs (§4.8).
 
 The screen itself returned no *novel* interaction, and we report that as a
 finding rather than burying it — but it ranked genuine contraindicated
 combinations first, and none of them appears in any reference available to us
-(§4.7).
+(§4.10).
 
 ## 2. Related work
 
@@ -401,7 +401,7 @@ scored poorly would be selection on the evaluation set.
 
 **The 16 are not 16 independent trials.** They are five victim drugs, and
 simvastatin appears in seven of them. Recovery intervals are therefore computed
-by resampling the victim drug (§4.3), not by a binomial on the pair count.
+by resampling the victim drug (§4.4), not by a binomial on the pair count.
 
 ### 3.7 Independent interaction reference
 
@@ -427,7 +427,7 @@ under-sensitive, biasing measured enrichment downward.
 **That is the conservative direction for a claim that enrichment exists, and the
 anti-conservative direction for this paper's actual claim, which is that it does
 not.** Attenuating a ratio toward unity moves it toward our own conclusion, so
-under-sensitivity cannot be offered as a safeguard here. §4.5 therefore reports
+under-sensitivity cannot be offered as a safeguard here. §4.8 therefore reports
 the analysis restricted to pairs whose two labels both exist, which removes the
 part of the insensitivity that is structural rather than editorial.
 
@@ -473,7 +473,7 @@ the corresponding gamma-Poisson posterior.
 
 **Shrinkage constant.** α = 0.5 is conventional and could not be verified
 against Norén et al. It is therefore varied across a 20-fold range as a
-sensitivity analysis (§4.8) rather than assumed.
+sensitivity analysis (§4.11) rather than assumed.
 
 **Intervals and tests.** All proportions carry Jeffreys 95% intervals; ratios
 carry log-scale intervals. Binomial tests are **not** used for inference:
@@ -503,7 +503,7 @@ additive null at the same threshold. Pooled over the generated negative controls
 the two nulls' false-positive rates are 6.4% and 6.7%. **Those pooled rates do
 not describe the regime in which the recovery comparison is made**, and an
 earlier version of this manuscript presented them as though they did, calling
-the comparison matched. §4.3 shows they do not: among pairs as strongly
+the comparison matched. §4.4 shows they do not: among pairs as strongly
 associated as the positive controls the rates are 2.2% and 9.3%, and once they
 are equalised the recovery gap falls from eight pairs to one or two.
 
@@ -636,7 +636,7 @@ the co-report count alone — no outcome comparison, no control set, no
 calibration. A screen can therefore determine *before looking at any result*
 whether its two candidate nulls are genuinely different tests or the same
 ordering at two operating points. When they are the same ordering, the only
-decision left is the threshold, and §4.3 shows that decision cannot be made from
+decision left is the threshold, and §4.4 shows that decision cannot be made from
 a nominal credibility bound.
 
 It also explains §4.1 without appeal to any property of rhabdomyolysis: the
@@ -644,7 +644,7 @@ multiplicative expectation exceeds the additive one exactly when both marginals
 are strong, which is the definition of the regime where DDI methods are
 validated.
 
-### 4.2 The estimand switch does not inflate sensitivity
+### 4.3 The estimand switch does not inflate sensitivity
 
 The additive null was adopted because it recovered more controls, and control
 recovery is then reported as validation — selection on the evaluation set. The
@@ -662,11 +662,11 @@ establish is the stability itself: the choice between the two nulls does not
 depend on any single control.
 
 It does **not** address the deeper issue that these 16 controls were chosen by
-the authors. That is addressed instead in §4.10, with a control set drawn by FDA
+the authors. That is addressed instead in §4.13, with a control set drawn by FDA
 labelling rather than by us, and it is where the sensitivity estimate actually
 degrades. See also §6.
 
-### 4.3 Tier A and Tier B
+### 4.4 Tier A and Tier B
 
 Under the additive null, **12/16 controls signal (12/14 powered)**, against
 **4/16 for Ω (4/14 powered)** at the same threshold. Six of seven
@@ -820,7 +820,7 @@ rather than the 869 implied by the nominal 5%.
 
 **Sensitivity is quoted at Ω₀₂₅ > 0 throughout, not at the calibrated
 threshold.** At +0.436 recovery is 11/15 of the controls that enter the screen
-(§4.5). The two operating points are reported separately and should not be
+(§4.8). The two operating points are reported separately and should not be
 combined.
 
 **Fifteen of the sixteen controls enter the screen.** Itraconazole + lovastatin
@@ -831,9 +831,9 @@ out of 15 where the screen is, the two denominators are not interchangeable,
 and the missing pair is the least powered of the sixteen rather than a failure
 to detect.
 
-### 4.4 The operating characteristic, and what recovery costs
+### 4.5 The operating characteristic, and what recovery costs
 
-§4.2 shows the two nulls are one ordering in this regime, and §4.3 gives their
+§4.2 shows the two nulls are one ordering in this regime, and §4.4 gives their
 error rates at one conventional cut. What a screen actually needs is neither: it
 needs to know what recovering *k* known interactions costs in false positives
 among pairs that look like them. Sweeping both nulls over the same
@@ -858,7 +858,7 @@ Three things follow, and the first is the one a practitioner needs.
 among strongly-associated non-interacting pairs — three times the nominal
 2.5%.** That exchange rate is the quantity a surveillance programme has to
 budget for, and it is not available from any published source we are aware of.
-The conventional Ω_add,₀₂₅ > 0 cut reaches the same 12 at 9.3% (§4.3); the
+The conventional Ω_add,₀₂₅ > 0 cut reaches the same 12 at 9.3% (§4.4); the
 saving from calibrating is about two points of false-positive rate, not an
 order of magnitude.
 
@@ -867,7 +867,7 @@ from -1 to 2 pairs
 across the eight operating points, and the two nulls converge at both ends —
 identical at 1% and 2.5%, and the multiplicative null recovers more at 30%.
 With 16 controls in five victim-drug clusters this is not a difference the data
-can resolve, which is the same conclusion §4.3 reaches by a different route.
+can resolve, which is the same conclusion §4.4 reaches by a different route.
 
 **A strength-varying threshold was tried and is not recommended.** Calibrating
 the threshold as a function of log₂(RR_A × RR_B) rather than holding it fixed
@@ -878,7 +878,7 @@ concentrated at exactly the strengths where equalising the rate raises the bar.
 Uniform error control across marginal strength is the wrong objective for this
 problem. We report it because it is the obvious fix and it does not work.
 
-### 4.4 Polypharmacy leverage (Figure 5)
+### 4.6 Polypharmacy leverage (Figure 5)
 
 The strongest apparent false positive, measured before the cap was applied,
 was alirocumab + ipratropium: 88 co-reports, 88 events. The pair does not
@@ -904,14 +904,54 @@ improves from 2/16 to 4/16, so the headline contrast in §4.1 is *understated*
 by the cap rather than produced by it. Nothing in the positive controls could
 have revealed the leverage problem itself — it is visible only from the
 false-positive side. **The cap value, however, was chosen by looking at control
-recovery**, and §4.9 reports the full sweep: the conclusion is flat from 15 to
+recovery**, and §4.12 reports the full sweep: the conclusion is flat from 15 to
 40, and a cap of 10 would have been better on both axes. We retain 20 rather
 than the dominating value: re-tuning the cap on the same 16 controls used to
 measure performance would convert a pre-specified parameter into a fitted one,
 so the reported configuration is deliberately not the best available on our own
 numbers.
 
-### 4.5 The screen shows no demonstrable enrichment for genuine interactions (Figures 3–4)
+### 4.7 A third estimand, and why it does not settle the question
+
+Both published nulls build an expectation from the two marginals, and §4.1–4.2
+show that expectation misbehaves exactly when the marginals are large. The
+alternative is to abandon the global expectation: ask whether drug A with drug B
+produces more events than drug A produces **with its other partners**, and
+symmetrically for B. Each drug's own contribution then cancels by construction
+rather than being modelled. We take the smaller of the two excesses, so a pair
+must clear both anchors — a pair carried entirely by one dangerous drug scores
+nothing against that drug's own baseline.
+
+Evaluated against both published nulls on **identical pairs** — the
+15 positive controls and 716
+in-regime negatives that appear in the screen, so the three statistics are
+directly comparable at every operating point:
+
+<!-- source: canonical:regime.third_estimand -->
+
+| in-regime FPR | within-victim | additive | multiplicative |
+|---:|---:|---:|---:|
+| 2.5% | **3/15** | 4/15 | 6/15 |
+| 5.0% | **9/15** | 10/15 | 8/15 |
+| 7.5% | **12/15** | 12/15 | 11/15 |
+| 10.0% | **12/15** | 12/15 | 11/15 |
+| 15.0% | **15/15** | 14/15 | 12/15 |
+| 20.0% | **15/15** | 14/15 | 13/15 |
+
+**No estimand dominates.** The within-victim anchor is the only one to recover
+every control, and does so at 15% in-regime FPR where the additive null reaches
+14 and the multiplicative 12 — but it is the worst of the three at 2.5%, where
+the conservative multiplicative null does best. Each is preferable somewhere on
+the curve and nowhere throughout it.
+
+That is the same conclusion §4.5 reaches with two estimands, now with three
+built on genuinely different principles — one multiplicative, one additive, one
+using no global expectation at all. **The estimand is not where the leverage
+is.** With 15 controls in five victim-drug clusters a
+one-pair difference is not resolvable, and a screen's real decision is the
+operating point, which §4.5 supplies.
+
+### 4.8 The screen shows no demonstrable enrichment for genuine interactions (Figures 3–4)
 
 **Not every entry in the vocabulary can form a drug pair.** The selection rule
 is applied mechanically to FDA's resolved active-ingredient field, and four of
@@ -934,7 +974,7 @@ the held-out false-positive rate of 5.03% applied uniformly — gives **874 (95%
 CI 759–997)**, suggesting a modest excess.
 
 **That calculation assumes the false-positive rate is constant across the
-screen, and §4.3 shows it varies by an order of magnitude.** The four bands
+screen, and §4.4 shows it varies by an order of magnitude.** The four bands
 differ systematically in marginal strength (median log₂(RR_A × RR_B) of 2.85,
 4.16, 5.32 and 8.15). Matching each screened pair to the observed rate among
 negative controls of similar marginal strength:
@@ -1040,11 +1080,11 @@ co-reported they touch a disproportionate share of the pair space:
 into the denominator. The gap is not random — it falls on agents without a
 current US marketing authorisation, and the one that matters for this endpoint
 is **fusidic acid**, whose statin combination is contraindicated in practice and
-which is the screen's highest-ranked pair by event rate (§4.7).
+which is the screen's highest-ranked pair by event rate (§4.10).
 
 Widening the reference beyond the screened set makes the coverage problem more
 visible without changing the screen: of the 800 ingredients for which labels
-were retrieved for the screen-size sensitivity analysis (§4.9), 138 (17.2%) have
+were retrieved for the screen-size sensitivity analysis (§4.12), 138 (17.2%) have
 none, and those include **cerivastatin** — a statin withdrawn worldwide for
 rhabdomyolysis with gemfibrozil — together with **bezafibrate, ciprofibrate**
 and **telithromycin**. None of the four entered the top-200 screen, so they do
@@ -1113,7 +1153,7 @@ signal rate by marginal-strength quintile is weak and non-monotone (3.7%, 7.2%,
 respecting interval now touches unity — which is consistent with the
 circularity argument above rather than an additional finding.
 
-### 4.6 Temporal stability: composition, not count (Figure 4)
+### 4.9 Temporal stability: composition, not count (Figure 4)
 
 Requiring the signal in all three eras reduces 1,022 pairs to **19**.
 
@@ -1147,7 +1187,7 @@ applying the filter to negative controls. That was wrong.
 What appeared to survive was a composition-based claim: among the era-stable
 pairs, 10 of 1,339 label-documented pairs signal against 9 of 16,036
 undocumented ones — enrichment **13.31× (95% CI 5.42–32.69)**, interval
-excluding unity. **That figure does not withstand the two corrections §4.5
+excluding unity. **That figure does not withstand the two corrections §4.8
 applies to every other enrichment in this paper**, and an earlier version
 reported it without them: it uses the *any-endpoint* reference, shown two
 sections earlier to be 82% endpoint-irrelevant, and it is unstratified on
@@ -1165,11 +1205,11 @@ Applying both:
 **Once the reference is made endpoint-specific and control drugs are removed,
 not one era-stable pair is documented.** The composition claim therefore rests
 entirely on pairs containing a drug the authors had already nominated — the same
-circularity as §4.5, which the earlier draft asserted this analysis had escaped.
+circularity as §4.8, which the earlier draft asserted this analysis had escaped.
 It had not. *How many* pairs survive the era filter is consistent with chance,
 and *which* pairs survive is not demonstrably non-random either.
 
-### 4.7 Confounding explains the unsupported era-stable pairs, but not all of them
+### 4.10 Confounding explains the unsupported era-stable pairs, but not all of them
 
 The 19 era-stable pairs comprise 5 positive controls, 4 `known_pair`,
 2 `plausible` and 8 `unsupported`. Both of the last two groups are examined here;
@@ -1199,7 +1239,7 @@ set.)
 hospitalisation directly: `outc_cod = 'HO'` covers 5,709,555 reports and was
 already parsed but unused. Stratifying the screen on it splits the analysis
 population into genuinely comparable halves rather than shaving 1.4% off one
-end, and is reported in §4.9.
+end, and is reported in §4.12.
 
 What the drug-list exclusion did show is that removing one confounder reveals
 the next: the replacement top hits were naloxone + zopiclone, which carries an
@@ -1225,7 +1265,7 @@ interaction: systemic fusidic acid with a statin is contraindicated.
 It appears in the `plausible` band because **neither reference contains it**.
 Fusidic acid is not approved for systemic use in the United States, so openFDA
 returns no label for it at all and no fusidic acid pair can ever be
-`label_documented` (§4.5); it is also absent from the authors' own implicated-drug
+`label_documented` (§4.8); it is also absent from the authors' own implicated-drug
 list. The screen ranked a genuine contraindicated interaction first and both
 evaluation references were blind to it.
 
@@ -1254,7 +1294,7 @@ two of them are the same contraindication: fusidic acid with atorvastatin and
 with simvastatin, ranked first and third in the entire screen.
 
 **Abiraterone + rosuvastatin is the one entry that clears both nulls.** Its
-Ω₀₂₅ of **+1.82** is remarkable in context: §4.3 shows the multiplicative null
+Ω₀₂₅ of **+1.82** is remarkable in context: §4.4 shows the multiplicative null
 is systematically negative in this regime and fires on only 2.2% of
 strongly-associated non-interacting pairs, so a pair clearing it here is
 clearing the conservative test where that test almost never fires. We report
@@ -1274,9 +1314,9 @@ novel. But the earlier claim that every era-stable pair traces to confounding
 was too strong: the top of the ranking is a genuine severe interaction that the
 references could not see. That is a statement about the references at least as
 much as about the method, and it is the concrete form of the reference-quality
-limitation quantified in §4.5 and §4.10.
+limitation quantified in §4.8 and §4.13.
 
-### 4.8 Conclusions do not depend on the unverified shrinkage constant (Figure 6)
+### 4.11 Conclusions do not depend on the unverified shrinkage constant (Figure 6)
 
 α = 0.5 could not be verified against the source. Varying it over a 20-fold
 range and recalibrating the threshold on the full negative-control pool at each
@@ -1290,21 +1330,21 @@ Control recovery varies by two pairs and the signal count by 7% across the
 range. No conclusion in this paper turns on the value of α. The constant remains
 unverified against Norén et al., but is no longer a live dependency.
 
-### 4.9 Sensitivity analyses
+### 4.12 Sensitivity analyses
 
 > **These analyses are post-hoc.** None was pre-planned. Each was added in
 > response to a specific objection raised during internal review, and several
 > changed the paper's conclusions. Counting all seven rounds, this manuscript
 > reports the outcome of roughly fifty distinct analyses.
 > No correction has been applied across them, and the intervals below are
-> therefore nominal. The two claims the paper rests on (§4.1, §4.4) were
-> specified before any result was seen; nothing in §4.9 was.
+> therefore nominal. The two claims the paper rests on (§4.1, §4.6) were
+> specified before any result was seen; nothing in §4.12 was.
 >
 > The most recent round added the induced-correlation simulation (§4.1), the
-> held-out threshold calibration (§4.3), the Benjamini–Hochberg comparison and
-> the reference-coverage restriction (§4.5), the endpoint-specific era-stable
-> analysis (§4.6), the polypharmacy cap sweep (below) and the matched-threshold
-> held-out control comparison (§4.10). Four of those **contradicted** claims in
+> held-out threshold calibration (§4.4), the Benjamini–Hochberg comparison and
+> the reference-coverage restriction (§4.8), the endpoint-specific era-stable
+> analysis (§4.9), the polypharmacy cap sweep (below) and the matched-threshold
+> held-out control comparison (§4.13). Four of those **contradicted** claims in
 > the previous version, and each is flagged where it appears.
 
 **Screen size and the power of the negative result.** The negative result at
@@ -1344,7 +1384,7 @@ outcome-based selection manufactures the result, not that it does not.
 
 The count of era-stable pairs is almost entirely a function of how many bins are
 demanded, from 84 at two bins to 3 at five. This is a further reason not to
-treat that count as a finding (§4.6).
+treat that count as a finding (§4.9).
 
 **Ingredient resolution accuracy.** Coverage was reported in §3.4; accuracy is
 bounded here. Across 32,655 verbatim drug names carrying FDA's own `prod_ai`
@@ -1353,7 +1393,7 @@ ingredient for that name, and **95.9%** of names are annotated unanimously.
 Level-2 backfill copies that annotation, so this bounds its reliability.
 
 **The polypharmacy cap was chosen on the evaluation set.** 20 drugs per case was
-adopted in §4.4 because it improved control recovery *and* the false-positive
+adopted in §4.6 because it improved control recovery *and* the false-positive
 rate — a decision made by looking at the controls, which was not previously
 disclosed as such. Varying it:
 
@@ -1374,7 +1414,7 @@ is a round number that was not tuned further, and the conclusion is flat across
 15–40. No result in this paper turns on the choice, but the choice was made
 after seeing the controls.
 
-**Inpatient status, using the reported outcome code.** §4.7 explains why the
+**Inpatient status, using the reported outcome code.** §4.10 explains why the
 30-drug proxy (1.4% of cases) cannot exclude inpatient confounding. FAERS
 records the outcome directly, and stratifying the whole screen on
 `outc_cod = 'HO'` splits the population into two large, comparable halves:
@@ -1413,9 +1453,9 @@ hundred drugs are not independent trials, and resampling drugs moves the
 estimate to 1.723 with an interval spanning unity. No subgroup claim is made on
 either scale, and these subgroups are underpowered.
 
-### 4.10 Recovery on controls the authors did not choose
+### 4.13 Recovery on controls the authors did not choose
 
-The 16 positive controls were author-selected, and leave-one-out (§4.2) bounds
+The 16 positive controls were author-selected, and leave-one-out (§4.3) bounds
 optimism only in the choice of *estimand*, not of controls. A second control set
 was therefore drawn by FDA labelling rather than by us: every label-documented
 myotoxicity pair with at least 50 co-reports that is **not** among the 16.
@@ -1462,7 +1502,7 @@ Pinning the value down needs a severity-graded reference that distinguishes
 pair-specific interactions from class warnings — which is precisely what
 DrugBank or a curated DDI compendium would supply, and what this study lacked.
 
-### 4.11 Does the failure generalise beyond this event?
+### 4.14 Does the failure generalise beyond this event?
 
 The paper's claim is conditional — Ω fails *when the drugs under study are the
 leading reported causes*. One event demonstrates the phenomenon, not the
@@ -1495,7 +1535,7 @@ drug-dominant event whose rate is within 4% of it. Amiodarone + sotalol, two of
 the most strongly QT-prolonging agents in use, scores Ω = −1.63.
 
 **That apparent replication does not survive matched error rates, and we report
-it as a failed replication.** Applying §4.3's analysis to torsade, the in-regime
+it as a failed replication.** Applying §4.4's analysis to torsade, the in-regime
 false-positive rates at Ω₀₂₅ > 0 are **2.0% for Ω and 42.8% for the additive
 null** — the additive null fires on nearly half of strongly-associated
 non-interacting pairs. Recalibrating both to a common in-regime rate (152
@@ -1595,7 +1635,7 @@ against author-curated reference lists should be read accordingly.
   of screened ingredients — 9.9% of pairs**, among them fusidic acid. Widening
   the label reference to 800 ingredients raises the absent share to 17.2% and
   adds cerivastatin, the fibrates and telithromycin, but none of those four
-  entered the top-200 screen and they do not bear on this result (§4.5). §4.5 reports the analysis restricted to
+  entered the top-200 screen and they do not bear on this result (§4.8). §4.8 reports the analysis restricted to
   label-covered pairs and the conclusion is unchanged, but the residual
   insensitivity biases enrichment *toward* this paper's own conclusion, not away
   from it. **A curated, ingredient-level, severity-graded DDI compendium remains
@@ -1603,7 +1643,7 @@ against author-curated reference lists should be read accordingly.
   false-positive rate is still an upper bound.
 
 - **The screen's top-ranked pair is a documented interaction no reference
-  contained.** Atorvastatin + fusidic acid (§4.7) has the highest event rate in
+  contained.** Atorvastatin + fusidic acid (§4.10) has the highest event rate in
   the screen, is era-stable, and is contraindicated in practice, yet is absent
   from both the authors' list and openFDA. It is not a novel discovery, but its
   presence means the negative discovery result measures the references at least
@@ -1617,13 +1657,13 @@ against author-curated reference lists should be read accordingly.
   text (§3.6); that verification had been intended and never performed.
 
 - **The headline contrast is not robust to widening both design choices at
-  once.** Of the four tier × role-policy arms (§4.3), three show the additive
+  once.** Of the four tier × role-policy arms (§4.4), three show the additive
   null recovering 7–8 more controls than the multiplicative one and the fourth
   shows no difference at all. The pre-specified arm is one of the three, but a
   reader is entitled to weigh the fourth.
 - **Ingredient resolution accuracy is bounded, not directly measured.** FDA's
   own annotation of a given verbatim name is 98.99% self-consistent
-  (§4.9), which bounds the level-2 backfill, but no manual audit against an
+  (§4.12), which bounds the level-2 backfill, but no manual audit against an
   external ground truth was performed.
 - **The PT list had a single curator.** A second human reader was not
   available. A mechanical second annotation — every PT matching the myotoxicity
@@ -1634,11 +1674,11 @@ against author-curated reference lists should be read accordingly.
   (0.174) reflects that over-inclusion rather than disagreement about the
   curated terms. This is a coverage check, **not** an inter-rater statistic, and
   does not substitute for a second reader.
-- **Era bin boundaries are a researcher degree of freedom.** §4.9 shows the
+- **Era bin boundaries are a researcher degree of freedom.** §4.12 shows the
   era-stable count runs from 84 to 3 depending purely on how many bins are
   demanded.
 - **The near-duplicate rule uses exact set matching**, and provably misses the
-  clusters documented in §4.4. The residual is now bounded: among event cases
+  clusters documented in §4.6. The residual is now bounded: among event cases
   with a populated date and age, blocking on date/age/sex/country and comparing
   drug sets by Jaccard similarity finds 421 further pairs above 0.8 that the
   exact rule did not merge, affecting **226 cases (1.17% of event cases)**.
@@ -1655,13 +1695,13 @@ against author-curated reference lists should be read accordingly.
   EudraVigilance likewise publishes single-substance report counts. Two pipeline
   *components* are externally benchmarked — deduplication against AEOLUS (8%
   apart) and ingredient resolution against DiAna (98.0% vs 98.94%) — and the
-  central finding replicates on a second event within FAERS (§4.11). But no
+  central finding replicates on a second event within FAERS (§4.14). But no
   external reporting system has been used, and conclusions may be
   FAERS-specific.
-- **Demographic subgroups are underpowered.** §4.9 reports sex-stratified
+- **Demographic subgroups are underpowered.** §4.12 reports sex-stratified
   results; both intervals include unity. Age and country were not stratified.
 - **α = 0.5 is corroborated by secondary sources, not by the primary.** Two
-  independent sources state α = 0.5 and the Ω₀₂₅ > 0 threshold (§2), and §4.8
+  independent sources state α = 0.5 and the Ω₀₂₅ > 0 threshold (§2), and §4.11
   shows no conclusion depends on α across a 20-fold range. The primary paper
   remains paywalled and unread by the authors.
 - **Deduplication now benchmarked against AEOLUS** (Banda et al., 2016): over
@@ -1692,12 +1732,12 @@ against author-curated reference lists should be read accordingly.
   1.988× on the dependence-respecting interval. A real but modest
   enrichment would still be missed.
 - **Screened drugs are selected on the outcome**, which is selection on the
-  dependent variable. Reselecting by total report volume (§4.9) does not change
+  dependent variable. Reselecting by total report volume (§4.12) does not change
   the conclusion, but the negative controls are drawn from the same selected
   universe and share any induced bias.
 - **The conditional claim is not fully established, and the intended negative
   case was invalid rather than underpowered.** The Ω failure replicates on
-  torsade de pointes (§4.11), so it is not specific to rhabdomyolysis. But the
+  torsade de pointes (§4.14), so it is not specific to rhabdomyolysis. But the
   *condition* — that failure follows from the drugs being the dominant cause —
   needs an event where marginals are weak and Ω performs well. The anaphylaxis
   arm was intended as that case and **cannot serve as one at any sample size**:
@@ -1761,7 +1801,7 @@ contrast under the independent FDA-labelling annotation; the last is the
 against. Under both annotations, removing control-drug pairs moves enrichment
 to unity. The era-stable composition enrichment is deliberately **not** plotted
 here — it does not survive the two corrections applied to every other
-enrichment in this paper, and is tabulated with its corrections in §4.6.
+enrichment in this paper, and is tabulated with its corrections in §4.9.
 
 **Figure 4** — `figure4_era_stability.png`. Number of era-stable pairs observed
 (red diamond) against the number expected by chance (bar, with 95% interval)

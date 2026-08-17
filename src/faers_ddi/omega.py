@@ -350,3 +350,33 @@ def omega_additive_quantile(
     if not np.isfinite(expected):
         return float("nan")
     return float(_omega_quantile_from_counts(t.n_1_1_1, expected, q, alpha))
+
+
+# --- a third estimand: anchor on the victim drug's own partners ---------------
+
+
+def within_victim_excess(n_ab: float, n_abz: float, partner_rates_a, partner_rates_b,
+                         alpha: float = ALPHA, min_partners: int = 20):
+    """log2 excess over what each drug does with its OTHER partners.
+
+    Round 30. Both published nulls compare a pair against a global expectation
+    built from the two marginals, and this paper's central finding is that such
+    expectations misbehave exactly when the marginals are large. The obvious
+    alternative is not to use a global expectation at all: ask instead whether
+    drug A with drug B produces more events than drug A produces with its other
+    partners, and symmetrically for B. The victim drug's own contribution then
+    cancels by construction rather than being modelled.
+
+    Returns the smaller of the two excesses, so a pair must exceed BOTH drugs'
+    partner baselines -- a pair carried entirely by one dangerous drug scores
+    zero on the other's anchor. Returns None when either drug has too few
+    partners to form a baseline.
+    """
+    out = []
+    for rates in (partner_rates_a, partner_rates_b):
+        rates = [r for r in rates if r is not None]
+        if len(rates) < min_partners:
+            return None
+        base = float(np.median(rates))
+        out.append(float(np.log2((n_abz + alpha) / (n_ab * base + alpha))))
+    return min(out)

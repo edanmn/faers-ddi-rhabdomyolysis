@@ -1501,14 +1501,49 @@ def test_event_definition_matches_the_pt_config(manuscript, numbers):
 # So: an explicit registry, the same pattern as the withdrawn-claim and RETIRED
 # registries. It only covers what is listed, which is honest about its scope --
 # add an entry when a citation carries real weight.
+# Round 30 renumbered §4 after three sections were inserted; these move with it.
 CROSS_REFERENCE_BINDINGS = {
-    "in regime the rates are": "4.3",
-    "resampling the victim drug": "4.3",
-    "analysis to torsade": "4.3",
-    "the analysis restricted to pairs whose two labels both exist": "4.5",
-    "varied across a 20-fold range as a sensitivity analysis": "4.8",
-    "with a control set drawn by FDA labelling": "4.10",
+    "in regime the rates are": "4.4",
+    "resampling the victim drug": "4.4",
+    "analysis to torsade": "4.4",
+    "the analysis restricted to pairs whose two labels both exist": "4.8",
+    "varied across a 20-fold range as a sensitivity analysis": "4.11",
+    "with a control set drawn by FDA labelling": "4.13",
 }
+
+
+def test_section_numbers_are_unique_and_sequential(manuscript):
+    """Round 30. Three sections were inserted into §4 without renumbering,
+    producing two §4.2, two §4.4 and two §4.5. Every existing reference to
+    those numbers then pointed at two different sections at once, and the
+    round-28 existence check passed throughout -- the numbers all resolved,
+    just not uniquely. This is the round-20 duplicate-table defect in a
+    different medium.
+
+    Numbering is structure, not decoration: a reader following §4.4 must arrive
+    somewhere specific.
+    """
+    import re as _re
+    from collections import Counter
+
+    numbers = _re.findall(r"^#{2,4}\s+(\d+(?:\.\d+)*)\.?\s", manuscript, _re.M)
+    duplicates = [n for n, c in Counter(numbers).items() if c > 1]
+    assert not duplicates, (
+        f"duplicate section numbers {sorted(duplicates)}; every reference to "
+        f"them is ambiguous")
+
+    # subsections of each chapter must run 1..n with no gaps
+    from collections import defaultdict
+    children = defaultdict(list)
+    for n in numbers:
+        if "." in n:
+            parent, child = n.rsplit(".", 1)
+            children[parent].append(int(child))
+    for parent, kids in children.items():
+        kids.sort()
+        assert kids == list(range(1, len(kids) + 1)), (
+            f"§{parent} subsections are {kids}, not sequential from 1; an "
+            f"insertion or deletion did not renumber")
 
 
 def test_load_bearing_cross_references_point_at_the_right_section(manuscript):
