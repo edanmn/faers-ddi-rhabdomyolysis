@@ -1462,11 +1462,15 @@ associations with the event. Line is ordinary least squares. The stronger the
 marginal associations, the more protective Ω appears.
 
 **Figure 3** — `figure3_band_enrichment.png`. Signal enrichment relative to
-unsupported pairs, log scale, with 95% intervals, under the author-curated
-annotation and the independent FDA-labelling annotation. Points left of each
-divider are pooled; points right of it exclude pairs containing a
-positive-control drug. Removing those pairs removes the effect under both
-annotations.
+unsupported pairs, log scale, with 95% intervals. Five points in three groups.
+The first two are the author-curated annotation, pooled and then with pairs
+containing a positive-control drug removed; the middle two are the same
+contrast under the independent FDA-labelling annotation; the last is the
+`plausible` discovery band, the quantity those scopes are being compared
+against. Under both annotations, removing control-drug pairs moves enrichment
+to unity. The era-stable composition enrichment is deliberately **not** plotted
+here — it does not survive the two corrections applied to every other
+enrichment in this paper, and is tabulated with its corrections in §4.6.
 
 **Figure 4** — `figure4_era_stability.png`. Number of era-stable pairs observed
 (red diamond) against the number expected by chance (bar, with 95% interval)

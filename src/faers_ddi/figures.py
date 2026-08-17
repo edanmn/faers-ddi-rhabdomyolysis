@@ -85,8 +85,25 @@ def figure_2_correlation(numbers: dict, path):
     fig.tight_layout(); fig.savefig(path, dpi=200); plt.close(fig)
 
 
-def figure_3_bands(numbers: dict, path):
-    """Enrichment under the author-curated and the independent annotation."""
+# Round 21: the entries are built here rather than inline in the plotting code
+# so that a test can assert WHAT the figure plots, not merely that it renders.
+# The figure previously carried a sixth point -- the any-endpoint, all-pairs
+# era-stable enrichment of 13.31x, interval excluding unity, drawn in the same
+# colour as the surviving results. Section 4.6 retracts that number: corrected
+# for endpoint-relevance and control drugs it is 0/142, nothing at all. A reader
+# skimming figures saw the largest effect in the paper, and the text disowned it
+# two pages later. It is removed; the full collapse is tabulated in 4.6, which
+# is the right place for it.
+FIGURE_3_RETRACTED = ("label_reference", "era_stable")
+
+
+def figure_3_entries(numbers: dict) -> list:
+    """(label, value, interval, colour) for each point in Figure 3.
+
+    Every entry is an annotation SCOPE -- who wrote the reference, and whether
+    pairs containing a positive-control drug are included -- plus the discovery
+    band, which is the quantity the scopes are being compared against.
+    """
     bands = numbers["tier_c"]["bands_pooled"]
     ind = numbers["independent_annotation"]
     lr = numbers.get("label_reference", {})
@@ -103,12 +120,15 @@ def figure_3_bands(numbers: dict, path):
              lr["pooled"]["enrichment_ci"], PALETTE["good"]),
             ("FDA labels\nno control drug", lr["excluding_control_drugs"]["enrichment"],
              lr["excluding_control_drugs"]["enrichment_ci"], PALETTE["bad"]),
-            ("FDA labels\nera-stable", lr["era_stable"]["enrichment"],
-             lr["era_stable"]["enrichment_ci"], PALETTE["good"]),
         ]
     entries.append(("plausible band\n(novel discovery)", bands["plausible"]["enrichment"],
                     bands["plausible"]["enrichment_ci"], PALETTE["bad"]))
+    return entries
 
+
+def figure_3_bands(numbers: dict, path):
+    """Enrichment under the author-curated and the independent annotation."""
+    entries = figure_3_entries(numbers)
     labels = [e[0] for e in entries]
     values = np.array([e[1] for e in entries], dtype=float)
     lows = np.array([e[2][0] if e[2] else e[1] for e in entries], dtype=float)
@@ -116,14 +136,14 @@ def figure_3_bands(numbers: dict, path):
     colours = [e[3] for e in entries]
 
     x = np.arange(len(entries))
-    fig, ax = plt.subplots(figsize=(10, 4.8))
+    fig, ax = plt.subplots(figsize=(9, 4.8))
     ax.axhline(1.0, color=PALETTE["neutral"], lw=1.0, ls="--", zorder=1)
     ax.errorbar(x, values, yerr=[values - lows, highs - values], fmt="none",
                 ecolor=PALETTE["neutral"], capsize=5, lw=1.4, zorder=3)
     for xi, v, col in zip(x, values, colours):
         ax.plot(xi, v, "o", ms=9, color=col, zorder=4)
     ax.axvline(1.5, color=PALETTE["grid"], lw=1.0)
-    ax.axvline(4.5, color=PALETTE["grid"], lw=1.0)
+    ax.axvline(3.5, color=PALETTE["grid"], lw=1.0)
     ax.set_yscale("log")
     ax.set_xticks(x, labels, fontsize=8)
     ax.set_ylabel("enrichment (log scale)")

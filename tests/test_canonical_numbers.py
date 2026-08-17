@@ -160,6 +160,45 @@ def test_manuscript_reports_era_stability_validated_on_negatives(manuscript, num
     assert "not distinguishable from chance" in manuscript.lower()
 
 
+def test_figures_do_not_plot_retracted_quantities(numbers, manuscript):
+    """Round 21. Figure 3 plotted the any-endpoint, all-pairs era-stable
+    enrichment -- 13.31x, interval excluding unity, the largest effect in the
+    paper -- in the same colour as the results that survive. §4.6 retracts it:
+    corrected for endpoint-relevance and control drugs it is 0/142, nothing.
+    A reader who skims figures saw the artefact the paper exists to warn about,
+    presented as a finding.
+
+    Guards the figure's DATA rather than its rendering, which is why
+    figures.figure_3_entries exists as a separate function.
+    """
+    from faers_ddi import figures
+
+    lr = numbers.get("label_reference") or {}
+    if not lr.get("era_stable"):
+        pytest.skip("no era-stable label-reference block")
+    retracted = float(lr["era_stable"]["enrichment"])
+
+    plotted = [float(v) for _, v, _, _ in figures.figure_3_entries(numbers)]
+    assert retracted not in plotted, (
+        f"Figure 3 plots {retracted}, the era-stable enrichment that §4.6 "
+        f"retracts; it must not appear beside the results that survive")
+
+    # and every point it DOES plot must be an annotation scope or the band
+    labels = [lbl for lbl, _, _, _ in figures.figure_3_entries(numbers)]
+    for lbl in labels:
+        flat = " ".join(lbl.split()).lower()
+        assert ("pooled" in flat or "no control drug" in flat
+                or "plausible band" in flat), (
+            f"Figure 3 point {lbl!r} is neither an annotation scope nor the "
+            f"discovery band; the caption describes only those")
+
+    # the caption must say how many points there are, and mean it
+    flat_ms = " ".join(manuscript.split())
+    words = {2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six", 7: "Seven"}
+    assert f"{words[len(labels)]} points" in flat_ms, (
+        f"Figure 3 plots {len(labels)} points; the caption does not say so")
+
+
 def test_tables_that_declare_a_source_match_it(manuscript):
     """Round 20's structural guard: a table may declare its source, and every
     numeric cell in it is then verified against that source record.
