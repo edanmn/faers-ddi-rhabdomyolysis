@@ -73,7 +73,7 @@ python -m faers_ddi.generalization            # torsade / anaphylaxis
 python -m faers_ddi.audit                     # provenance, coverage, FDR, cap sweep
 python -m faers_ddi.regime                    # in-regime error rates, matched recovery
 python -m faers_ddi.figures                   # 7 figures
-python -m pytest                              # 343 tests
+python -m pytest                              # 346 tests
 python paper/build.py                         # manuscript.md -> .tex -> .pdf
 python paper/build.py --check                 # non-zero if any .tex is stale
 ```
@@ -118,7 +118,7 @@ from is third-party and deliberately gitignored — do not commit it.
 
 **`results/canonical_numbers.json` is the single source of truth.** Nothing is
 quoted anywhere that does not come from it. `tests/test_canonical_numbers.py`
-(343 tests) asserts the prose against it.
+(346 tests) asserts the prose against it.
 
 `paper/build.py` generates `.tex` from `.md` via pandoc + tectonic. **Never edit
 a `.tex` by hand** — it is regenerated. Two-column documents declare a body-page
@@ -158,7 +158,7 @@ a new derivation from this manuscript, not a revival of the archived pair.
 
 ## 5. Read this before writing any test
 
-This project has been through **twenty-eight adversarial review rounds**. The
+This project has been through **thirty adversarial review rounds**. The
 consistent failure has not been in the analysis — it has been in the guards.
 **Seven times a test written to catch a specific defect was too weak to catch
 it:**
@@ -205,7 +205,7 @@ Standing practice, non-negotiable:
   `test_no_maintained_document_carries_a_withdrawn_claim`, tagged with the round
   that retracted them.
 
-**343 passing means the stated numbers match the computed ones. It does not mean
+**346 passing means the stated numbers match the computed ones. It does not mean
 the right quantity was computed, nor that the sentence built on a correct
 number says what the number means** (r17). Round 11 overturned the central claim while
 every test passed, before and after.
@@ -385,7 +385,89 @@ finds something too.
 
 ---
 
-## 9. Session log — 2026-08-04
+## 9. Session log — 2026-08-17 (rounds 28–30): the novelty push
+
+The author asked for the paper to be "more novel", clarified as *change the
+methods*, not the framing. Recorded in full because two of its lessons are
+about how this project can go wrong in a new way.
+
+### 9.0 What was asked, and the line drawn
+
+"Restructure so we have positive findings" is legitimate if it means surfacing
+contributions buried under negative framing, and misconduct if it means
+manufacturing them. The work done was the first: **no number changed, no
+limitation was removed** (Limitations is still ~1,300 words and still carries
+the fourth-arm failure, the invalid anaphylaxis arm, the bracketed 12–86%
+sensitivity and the post-hoc disclosure). What changed is which sentences lead.
+
+### 9.1 Four candidate novelties; one survived
+
+| idea | outcome |
+|---|---|
+| **Conjunction of both nulls** | **Refuted.** Byte-identical to the multiplicative null alone (4/16, 2.22%) — which is what nesting predicts |
+| **Nesting is a new result** | **Published already.** Jung & Jung, *PLOS ONE* 2024, state it. Corrected, cited as reference 13 |
+| **OATP1B1 mechanism for abiraterone + rosuvastatin** | **Dropped.** The cached label documents CYP2D6/CYP2C8 only; rosuvastatin is not a CYP2C8 substrate. This was model recall, not evidence |
+| **Strength-varying threshold** | **Works as designed, fails at the objective.** Flattens FPR spread 0.080→0.032 over 200 held-out halves; halves recovery 11.0→5.5/16 |
+
+**Check novelty against the literature before claiming it.** The nesting claim
+was written into the abstract, introduction, §4.2 and the conclusion as
+contribution #1 before it was checked. It took one search to find it published.
+
+### 9.2 What survived, and is in the paper
+
+- **The nesting *condition*.** Jung & Jung state the implication
+  unconditionally. It requires both marginals on the same side of unity, since
+  the expectations differ by (RR_A−1)(RR_B−1). Verified: 163 of 16,138
+  negative controls violate the unconditional form, **0** of the 6,163 with
+  both marginals above 1. Remaining failures are both-*protective* pairs, where
+  the floor at max(p_A,p_B) in E_add binds.
+- **An operating characteristic** (§4.5). Recovering 12/16 known interactions
+  costs ~7.5% in-regime FPR — three times nominal. The additive advantage is
+  −1 to +2 pairs across eight operating points.
+- **A third estimand** (§4.7), `omega.within_victim_excess`: anchor on each
+  drug's own partner distribution, no global expectation. Recovers 15/15 at 15%
+  FPR (additive 14, multiplicative 12) and is worst of the three at 2.5%.
+  **No estimand dominates** — three principles, one conclusion.
+- **`audit.top_ranked_pairs`**: the screen's top-5 with the §4.10 proxy test.
+  The top three carry their own signal (8.4/16.7/19.5% third-drug) against
+  64.7% and 100% for the two proxies below them.
+
+### 9.3 The defect this session created
+
+Inserting three sections into §4 without renumbering produced **two §4.2, two
+§4.4 and two §4.5**. Every reference to those numbers then pointed at two
+sections at once, and the round-28 existence guard passed throughout — the
+numbers resolved, just not uniquely. Same defect as round 20's duplicate
+tables, different medium.
+
+Fixed by renumbering §4.1–4.14, remapping pre-existing references **by rule**
+and the three new sections' references **by intent** (they were written against
+the old numbering). `test_section_numbers_are_unique_and_sequential` now
+requires uniqueness *and* no gaps.
+
+### 9.4 State
+
+- **346 tests**, build clean, manuscript **39 pages**, tree clean, pushed.
+- Blocking submission: **authors/affiliations**. Nothing else.
+- Unverifiable list is down to determinism and the two external benchmarks
+  (AEOLUS, DiAna) — all inherently outside the artefact.
+
+### 9.5 The honest read
+
+Four novelty attempts, one survivor and one refinement. That ratio is the
+signal: there is little undiscovered novelty left in this dataset. The
+remaining headroom is access-limited, not analysis-limited — a severity-graded
+reference to replace the label proxy, or pair-level VigiBase to test whether
+any of this replicates outside FAERS.
+
+**Do not attempt to raise novelty by rewriting.** It was tried, it produced a
+false claim within one turn, and a literature check caught it. The paper's
+contribution is a methodological warning plus the numbers to act on it, and
+that is what it should be sold as.
+
+---
+
+## 9A. Session log — 2026-08-04
 
 The session that took this project from "no version control at all" to r17.
 Recorded because several of its decisions are not recoverable from the diff, and
