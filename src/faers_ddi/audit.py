@@ -461,6 +461,46 @@ def top_ranked_pairs(con: duckdb.DuckDBPyConnection, tier: str,
     }
 
 
+def nesting_condition(negative_rows: list[dict]) -> dict:
+    """The condition under which the multiplicative signal set nests inside the
+    additive one, and how often the literature's unconditional form fails.
+
+    Round 29. Jung & Jung (2024) state that satisfying the multiplicative
+    assumption implies satisfying the additive one. Under their simulation
+    scenarios, which assume positive single-drug effects, that is right: with
+    a = RR_A and b = RR_B, the multiplicative expectation is proportional to ab
+    and the additive one to a + b - 1, and ab - (a + b - 1) = (a-1)(b-1) >= 0
+    exactly when both drugs sit on the same side of unity.
+
+    It is not right in general, and a real screen is full of the exceptions.
+    Reported here as the condition (both marginals elevated) together with the
+    count of pairs that violate the unconditional form.
+    """
+    both_up = viol_up = viol_all = total = 0
+    for row in negative_rows:
+        try:
+            rr_a, rr_b = float(row["rr_a"]), float(row["rr_b"])
+            mult, add = float(row["omega_lower"]), float(row["omega_add_lower"])
+        except (TypeError, ValueError, KeyError):
+            continue
+        total += 1
+        violates = mult > 0 and not add > 0
+        viol_all += violates
+        if rr_a > 1 and rr_b > 1:
+            both_up += 1
+            viol_up += violates
+    return {
+        "note": "the multiplicative signal set nests inside the additive one "
+                "when both marginals are elevated; the unconditional form "
+                "stated in the literature fails otherwise",
+        "n_pairs": total,
+        "n_both_elevated": both_up,
+        "violations_all": viol_all,
+        "violations_both_elevated": viol_up,
+        "nesting_exact_when_both_elevated": viol_up == 0,
+    }
+
+
 def null_nesting(screen_rows: list[dict]) -> dict:
     """When do the two nulls stop being different tests?
 

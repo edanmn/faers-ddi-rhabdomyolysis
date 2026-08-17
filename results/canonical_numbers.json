@@ -320,6 +320,14 @@
         }
       ]
     },
+    "nesting_condition": {
+      "n_both_elevated": 6163,
+      "n_pairs": 16138,
+      "nesting_exact_when_both_elevated": true,
+      "note": "the multiplicative signal set nests inside the additive one when both marginals are elevated; the unconditional form stated in the literature fails otherwise",
+      "violations_all": 163,
+      "violations_both_elevated": 0
+    },
     "null_nesting": {
       "multiplicative_signals_not_additive": 64,
       "n_expectation_ordered": 13208,

@@ -1532,6 +1532,26 @@ def test_load_bearing_cross_references_point_at_the_right_section(manuscript):
                 f"established in §{expected}: {sentence[:150]}")
 
 
+def test_nesting_result_credits_prior_work(manuscript, numbers):
+    """Round 29. The nesting implication was added as a lead contribution and a
+    literature check found it already stated by Jung and Jung (2024). What is
+    ours is the CONDITION -- both marginals elevated, since the expectations
+    differ by (RR_A-1)(RR_B-1) -- and the demonstration that the unconditional
+    form fails on real data. Claiming the implication itself would be a false
+    novelty claim, which is worse than the framing problem this restructure was
+    meant to fix.
+    """
+    flat = " ".join(manuscript.split())
+    nc = numbers["audit"]["nesting_condition"]
+    assert "Jung" in flat, (
+        "the nesting implication is prior work and must be credited")
+    assert f"{nc['violations_all']}" in flat and f"{nc['n_both_elevated']:,}" in flat, (
+        "the paper must show where the unconditional form fails and where it "
+        "does not, or it is claiming the prior result rather than refining it")
+    assert nc["nesting_exact_when_both_elevated"], (
+        "a both-elevated pair violates the nesting; the stated condition is wrong")
+
+
 def test_null_nesting_claim_matches_the_data(manuscript, numbers):
     """Round 29. The paper's lead contribution is that E_mult >= E_add forces
     the multiplicative signal set inside the additive one, so the two nulls

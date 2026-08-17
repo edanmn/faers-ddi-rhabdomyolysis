@@ -14,13 +14,16 @@ the two nulls induce nested signal sets, give a test for when that happens that
 requires no outcome data, and supply the calibrated error rates the comparison
 should be made at instead.**
 
-**Key result.** Both statistics are log₂((n + α)/(E + α)) under identical
-shrinkage, so E_mult ≥ E_add forces {Ω₀₂₅ > 0} ⊆ {Ω_add,₀₂₅ > 0}: the nulls
-become one ordering read at two thresholds. That ordering holds for
-**98.3%** of pairs whose expected joint rate
-exceeds 5% and only **16.9%** of pairs below
-0.5%, with **no exception among 13,208 ordered pairs**. Both
-expectations depend only on the marginals, so a screen can check this in advance.
+**Key result.** That the multiplicative assumption implies the additive one is
+known (Jung and Jung, 2024) but is stated unconditionally; it holds only when
+both marginals are elevated, since the expectations differ by
+(RR_A − 1)(RR_B − 1). The unconditional form fails for 163 of
+16,138 generated negative controls and for none of the
+6,163 with both marginals above 1. The condition is met by
+**98.3%** of drug-dominant pairs against
+**16.9%** of diffuse ones, so in the regime
+where DDI methods are validated the two nulls collapse to one ordering at two
+thresholds — checkable from the marginals before any outcome is examined.
 
 **Methods.** We assembled the complete public history of the FDA Adverse Event
 Reporting System — 90 quarterly archives, 2004Q1–2026Q2, 328,476,258 rows —
@@ -137,16 +140,22 @@ the methodological problem which is this paper's main contribution.
 **Contributions.** This paper provides five things a DDI screen can use
 directly.
 
-1. **A pre-hoc test for whether the choice of null matters at all.** Both
-   statistics are log₂((n + α)/(E + α)) under identical shrinkage, so they
-   differ only through E. Because the posterior quantile decreases in E,
-   E_mult ≥ E_add forces the multiplicative signal set to lie *inside* the
-   additive one. We show that antecedent holds for **98.3%** of pairs whose
-   expected joint rate exceeds 5% and only **16.9%** of pairs below 0.5%, with
-   **no exception in 13,208 ordered pairs**. Where it holds, the two nulls
-   cannot disagree about which pairs signal — only about where the threshold
-   sits. Both expectations are functions of the marginals alone, so this is
-   checkable before any outcome is examined (§4.2).
+1. **The condition under which the choice of null stops mattering, and how
+   often it is met.** That satisfying the multiplicative assumption implies
+   satisfying the additive one is stated by Jung and Jung (2024), without
+   conditions. It is not unconditional. With *a* = RR_A and *b* = RR_B the two
+   expectations are proportional to *ab* and *a + b − 1*, and
+   *ab* − (*a* + *b* − 1) = (*a* − 1)(*b* − 1), so the implication requires both
+   marginals on the same side of unity. We give the exact condition — **both
+   drugs elevated** — and show it is not academic: among
+   16,138 generated negative controls the unconditional form fails for
+   **163** pairs, and for **none** of the
+   6,163 pairs where both marginals exceed 1. The condition is
+   met by **98.3%** of drug-dominant pairs
+   and **16.9%** of diffuse ones, so in the
+   regime where DDI methods are validated the two nulls are one ordering at two
+   thresholds — and it is checkable from the marginals before any outcome is
+   examined (§4.2).
 2. **The first calibrated error rates for both nulls in the regime where DDI
    methods are validated**, on a purpose-built pool of 2,345 strongly-associated
    non-interacting pairs: Ω₀₂₅ > 0 fires on **2.2% (95% CI 1.24–3.34%)** and
@@ -559,6 +568,15 @@ drug-dominant event it is a question almost nothing passes.
 The comparison in §4.1 has a structural explanation, and it is checkable before
 any outcome data is used.
 
+**This is a refinement of a known relationship, not a new one.** Jung and Jung
+(2024) state that satisfying the multiplicative assumption implies satisfying
+the additive one, and draw the threshold consequence — that the additive model
+signals earlier and the multiplicative model marks stronger interactions. They
+state it without conditions. It holds under the positive single-drug effects
+their simulation assumes, and fails otherwise; what follows gives the condition,
+shows that real screens violate the unconditional form, and quantifies where it
+binds.
+
 Both statistics are log₂((n + α)/(E + α)) under identical shrinkage (§3.8), so
 they differ **only** through the expectation. The gamma-Poisson posterior
 quantile is decreasing in E, which gives an exact implication:
@@ -567,6 +585,19 @@ $$E^{\mathrm{mult}}_{111} \;\ge\; E^{\mathrm{add}}_{111}
 \quad\Longrightarrow\quad \Omega_{025} \le \Omega_{\mathrm{add},025}
 \quad\Longrightarrow\quad
 \{\Omega_{025} > 0\} \subseteq \{\Omega_{\mathrm{add},025} > 0\}$$
+
+**When are they ordered?** Writing *a* = RR_A and *b* = RR_B, the multiplicative
+expectation is proportional to *ab* and the additive one to *a + b − 1*, so
+
+$$E^{\mathrm{mult}}_{111} - E^{\mathrm{add}}_{111} \;\propto\; (a-1)(b-1)$$
+
+and the ordering holds exactly when both marginals fall on the same side of
+unity. Both drugs elevated is therefore sufficient, and the data agree without
+exception: among the 16,138 generated negative controls the
+unconditional form fails for **163** pairs and for **none** of
+the **6,163** where both marginals exceed 1. (The remaining
+failures are pairs where both drugs are *protective*; there the floor at
+max(p_A, p_B) in E_add binds and the proportionality above no longer governs.)
 
 Where the expectations are ordered that way, the multiplicative null cannot
 signal on a pair the additive null misses. The two are then **not competing
@@ -1736,6 +1767,10 @@ Verified against indexed sources. PMIDs and DOIs as listed.
 12. Noguchi Y, Tachi T, Teramachi H. Review of statistical methodologies for
     detecting drug–drug interactions using spontaneous reporting systems.
     *Front Pharmacol.* 2019;10:1319. doi:10.3389/fphar.2019.01319
+
+13. Jung Y, Jung H. A simulation-based comparison of drug–drug interaction
+    signal detection methods. *PLOS ONE.* 2024;19(4):e0300268.
+    doi:10.1371/journal.pone.0300268
 
 **Secondary corroboration for the Ω definition** (see §2): reference 12, a
 peer-reviewed review of DDI statistical methodologies, together with Uppsala
