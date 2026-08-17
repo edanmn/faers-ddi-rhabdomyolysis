@@ -307,3 +307,61 @@ def cluster_proportion_ci(successes: list[bool], clusters: list[str],
         "largest_cluster_share": round(
             max(len(g) for g in grouped) / len(successes), 4),
     }
+
+
+def pair_cluster_proportion_ci(successes, pairs, n_boot: int = 20_000,
+                               seed: int = 0, level: float = 0.95,
+                               min_pairs: int = 50) -> dict:
+    """Bootstrap interval for a proportion over DRUG PAIRS, resampling drugs.
+
+    Added in round 23 for the two numbers that carry this paper's calibration
+    claim: the in-regime false-positive rates, 2.2% (multiplicative) and 9.3%
+    (additive) on 2,345 pairs. Those pairs are drawn from 1,577 drugs and each
+    drug recurs across many of them, so a binomial interval treats dependent
+    trials as independent and is too narrow. The paper had promised a cluster
+    bootstrap for pair-aggregated quantities in Methods and had not applied it
+    here -- on the two rates the headline rests on.
+
+    `cluster_proportion_ci` cannot be used: it assigns each trial to one
+    cluster, and a pair belongs to two drugs. This follows
+    `mantel_haenszel_bootstrap` instead -- resample drugs with replacement and
+    keep the pairs whose BOTH endpoints survive the draw. That respects the
+    dependence at the cost of a smaller effective sample per draw, which is the
+    honest trade.
+    """
+    successes = np.asarray(successes, dtype=bool)
+    if not len(successes):
+        return {"n": 0, "n_drugs": 0}
+
+    drugs = sorted({d for pair in pairs for d in pair})
+    index = {d: i for i, d in enumerate(drugs)}
+    left = np.array([index[a] for a, _ in pairs])
+    right = np.array([index[b] for _, b in pairs])
+
+    rng = np.random.default_rng(seed)
+    draws = []
+    for _ in range(n_boot):
+        keep = np.zeros(len(drugs), dtype=bool)
+        keep[rng.choice(len(drugs), size=len(drugs), replace=True)] = True
+        mask = keep[left] & keep[right]
+        if mask.sum() < min_pairs:
+            continue
+        draws.append(float(successes[mask].mean()))
+
+    tail = (1 - level) / 2
+    naive_lo, naive_hi = proportion_ci(int(successes.sum()), len(successes), level)
+    out = {
+        "n": int(len(successes)),
+        "n_drugs": len(drugs),
+        "signalled": int(successes.sum()),
+        "rate": round(float(successes.mean()), 4),
+        "naive_binomial_ci_ANTICONSERVATIVE": [round(naive_lo, 4), round(naive_hi, 4)],
+        "n_boot_effective": len(draws),
+    }
+    if len(draws) < 100:
+        out["cluster_ci"] = None
+        return out
+    lo = float(np.percentile(draws, 100 * tail))
+    hi = float(np.percentile(draws, 100 * (1 - tail)))
+    out["cluster_ci"] = [round(lo, 4), round(hi, 4)]
+    return out

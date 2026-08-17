@@ -27,7 +27,7 @@ the analysis is not expected to change. What remains is clerical (§7).
 | Tier A interval (cluster bootstrap on victim drug) | **50–100%** (naive binomial 62–97% is too narrow) |
 | Tier B calibrated threshold | **+0.436**, held-out FPR 5.03% (4.37–5.74%) |
 | Pooled FPR at Ω₀₂₅ > 0 | additive 6.67%, multiplicative 6.44% |
-| **In-regime FPR** (2,345 strongly-associated non-interacting pairs) | **additive 9.3%, multiplicative 2.2%** (nominal 2.5%) — see r17: only the additive figure is a miscalibration |
+| **In-regime FPR** (2,345 pairs, 478 drugs) | **additive 9.3% (CI 7.29–11.32%), multiplicative 2.2% (CI 1.24–3.34%)** vs nominal 2.5%, cluster bootstrap over drugs (r23). The multiplicative interval **covers** 2.5%; the additive one excludes it — the miscalibration is one-sided |
 | **Recovery gap at matched in-regime FPR** | **1–2 pairs** (8 at the conventional threshold) |
 | Torsade in-regime additive FPR | **42.8%** — the 9/10-vs-0/10 result is an operating-point artefact |
 | Screen | 1,022 of 17,375 signalled; **1,212** expected by chance strength-matched (872 pooled) |
@@ -73,7 +73,7 @@ python -m faers_ddi.generalization            # torsade / anaphylaxis
 python -m faers_ddi.audit                     # provenance, coverage, FDR, cap sweep
 python -m faers_ddi.regime                    # in-regime error rates, matched recovery
 python -m faers_ddi.figures                   # 7 figures
-python -m pytest                              # 335 tests
+python -m pytest                              # 336 tests
 python paper/build.py                         # manuscript.md -> .tex -> .pdf
 python paper/build.py --check                 # non-zero if any .tex is stale
 ```
@@ -118,7 +118,7 @@ from is third-party and deliberately gitignored — do not commit it.
 
 **`results/canonical_numbers.json` is the single source of truth.** Nothing is
 quoted anywhere that does not come from it. `tests/test_canonical_numbers.py`
-(335 tests) asserts the prose against it.
+(336 tests) asserts the prose against it.
 
 `paper/build.py` generates `.tex` from `.md` via pandoc + tectonic. **Never edit
 a `.tex` by hand** — it is regenerated. Two-column documents declare a body-page
@@ -158,7 +158,7 @@ a new derivation from this manuscript, not a revival of the archived pair.
 
 ## 5. Read this before writing any test
 
-This project has been through **twenty-two adversarial review rounds**. The
+This project has been through **twenty-three adversarial review rounds**. The
 consistent failure has not been in the analysis — it has been in the guards.
 **Seven times a test written to catch a specific defect was too weak to catch
 it:**
@@ -205,7 +205,7 @@ Standing practice, non-negotiable:
   `test_no_maintained_document_carries_a_withdrawn_claim`, tagged with the round
   that retracted them.
 
-**335 passing means the stated numbers match the computed ones. It does not mean
+**336 passing means the stated numbers match the computed ones. It does not mean
 the right quantity was computed, nor that the sentence built on a correct
 number says what the number means** (r17). Round 11 overturned the central claim while
 every test passed, before and after.
@@ -279,7 +279,11 @@ screened "ingredients" are non-drug placeholders (immaterial, disclosed).
    weakened**, when the papers are genuinely complete.
 2. **Four round-17 findings need pipeline runs and are NOT fixed.** The prose
    corrections landed; these did not, and each is a live reviewer objection:
-   - **No interval on either headline in-regime rate.** `regime.high_marginal_
+   - ~~**No interval on either headline in-regime rate.**~~ **DONE r23** —
+     `statistics.pair_cluster_proportion_ci` resamples drugs and keeps pairs
+     whose both endpoints survive; `regime` emits it for both nulls on both
+     pools. This was the oldest open finding in the project.
+   - **(remaining)** `regime.high_marginal_
      pool.at_positive_control_strength` stores bare point estimates. Methods
      promise a cluster bootstrap over drugs for pair-aggregated quantities and
      it is not applied here — on the two numbers carrying Paper A's claim, over

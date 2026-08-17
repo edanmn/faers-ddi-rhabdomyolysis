@@ -92,7 +92,8 @@ positive controls, measured the false-positive rate against the full pool of
 4/16 positive controls against \textbf{12/16} for an additive (excess-risk) null at
 the same threshold. The pooled false-positive rates of the two nulls are close
 (6.4\% vs 6.7\%), but that pooling is over a pool that does not occupy the regime
-where recovery is measured; in regime the rates are 2.2\% and 9.3\%, so the
+where recovery is measured; in regime the rates are 2.2\% (95\% CI 1.24--3.34\%,
+cluster bootstrap over drugs) and 9.3\% (7.29--11.32\%), so the
 recovery comparison is between two very different operating points (§4.6).
 We adopted the additive null after observing this. Ω also becomes more negative
 as the marginal associations strengthen (r = −0.63, n = 16, 95\% CI −0.86 to
@@ -765,8 +766,31 @@ interactions --- 19,826 pairs. Across the whole pool the additive null fires on
 \textbf{7.2\%} and the multiplicative on \textbf{3.7\%}. Restricted to the \textbf{2,345} pairs
 at positive-control strength the rates are \textbf{9.3\%} and \textbf{2.2\%}, against 9.0\%
 and 1.2\% on the 166 in-regime pairs the standard generator happens to yield.
+
+Those 2,345 pairs are drawn from 478 drugs and each drug recurs across many of
+them, so the interval must respect that dependence as it does elsewhere in this
+paper. Resampling drugs rather than pairs (20,000 draws):
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{longtable}[]{@{}lrll@{}}
+\toprule\noalign{}
+null & rate & cluster bootstrap 95\% CI & naive binomial (too narrow) \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+multiplicative & 52/2,345 = \textbf{2.2\%} & \textbf{1.24--3.34\%} & 1.68--2.87\% \\
+additive & 219/2,345 = \textbf{9.3\%} & \textbf{7.29--11.32\%} & 8.21--10.57\% \\
+\end{longtable}
+}
+
 \textbf{Against a nominal 2.5\%, Ω runs at close to its advertised rate in this regime
-(2.2\%) while Ω\_add runs close to fourfold above it (9.3\%).} The miscalibration
+(2.2\%, interval covering 2.5\%) while Ω\_add runs close to fourfold above it
+(9.3\%, interval excluding it).} The clustered interval is nearly twice the
+width of the binomial one, and the conclusion does not depend on which is used
+for the additive null --- but for the multiplicative null it is the difference
+between an interval that comfortably covers the nominal rate and one that
+barely does. The miscalibration
 is one-sided: on error rate alone, only the additive null is out of
 specification. What disqualifies Ω here is power rather than size --- it is
 systematically negative in this regime, so it holds its nominal rate by almost

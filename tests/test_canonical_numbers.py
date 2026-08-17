@@ -254,7 +254,7 @@ def test_figures_do_not_plot_retracted_quantities(numbers, manuscript):
         f"Figure 3 plots {len(labels)} points; the caption does not say so")
 
 
-def test_tables_that_declare_a_source_match_it(manuscript):
+def test_tables_that_declare_a_source_match_it(manuscript, numbers):
     """Round 20's structural guard: a table may declare its source, and every
     numeric cell in it is then verified against that source record.
 
@@ -285,6 +285,46 @@ def test_tables_that_declare_a_source_match_it(manuscript):
 
     for filename, opts, block in tables:
         filters = dict(_re.findall(r"(\w+)=(\S+)", opts))
+
+        # A table may instead declare a path into the canonical file. The scope
+        # is one sub-object, so unlike a corpus-membership check this has real
+        # power -- a wrong digit will not be found in a dozen sibling values.
+        if filename.startswith("canonical:"):
+            node = numbers
+            for key in filename.split(":", 1)[1].split("."):
+                assert key in node, f"canonical path {filename} breaks at {key!r}"
+                node = node[key]
+            leaves = []
+
+            def _collect(o):
+                if isinstance(o, dict):
+                    for v in o.values():
+                        _collect(v)
+                elif isinstance(o, list):
+                    for v in o:
+                        _collect(v)
+                elif isinstance(o, (int, float)) and not isinstance(o, bool):
+                    leaves.append(float(o))
+
+            _collect(node)
+            derivable = set()
+            for v in leaves:
+                derivable |= {f"{v:g}", f"{v:.0f}", f"{v:.1f}", f"{v:.2f}",
+                              f"{100 * v:.0f}", f"{100 * v:.1f}", f"{100 * v:.2f}"}
+                if abs(v) >= 1000 and v == int(v):
+                    derivable.add(f"{int(v):,}")
+            lines = block.strip().split("\n")
+            # The first line is the header; numbers in it are label text ("95% CI"),
+            # not data. Every remaining row is checked cell by cell.
+            for line in lines[1:]:
+                if _re.match(r"^\|[\s\-:|]+\|$", line):
+                    continue
+                for num in _re.findall(r"(?<![\w.])(\d+(?:,\d{3})*(?:\.\d+)?)", line):
+                    assert num in derivable or num.replace(",", "") in derivable, (
+                        f"{num} in row {line.strip()!r} is not derivable from "
+                        f"{filename}")
+            continue
+
         path = cfg.path("tables") / filename
         assert path.exists(), f"declared source {filename} does not exist"
         with open(path) as handle:
@@ -1368,6 +1408,45 @@ def test_in_regime_error_rates_are_reported(manuscript, regime):
     # lost by making this specific.
     assert "essentially identical false-positive" not in manuscript.lower(), (
         "the matched-FPR framing was withdrawn")
+
+
+def test_in_regime_rates_carry_a_clustered_interval(manuscript, regime):
+    """Round 23. The two rates carrying the calibration claim shipped as bare
+    point estimates for six rounds, while Methods promised a cluster bootstrap
+    for pair-aggregated quantities. The 2,345 pairs come from 478 drugs and each
+    drug recurs across many, so the binomial interval is too narrow.
+
+    Resampling drugs gives 1.24-3.34% (multiplicative) and 7.29-11.32%
+    (additive). That is what makes the paper's central correction provable: the
+    multiplicative interval COVERS the nominal 2.5% and the additive one
+    excludes it, so the miscalibration is one-sided as claimed. A reviewer who
+    recomputes will do exactly this.
+    """
+    strong = regime["high_marginal_pool"]["at_positive_control_strength"]
+    flat = " ".join(manuscript.split())
+
+    for null in ("multiplicative", "additive"):
+        block = strong.get(f"fpr_{null}_clustered")
+        assert block and block.get("cluster_ci"), (
+            f"no clustered interval computed for the in-regime {null} rate")
+        lo, hi = block["cluster_ci"]
+        naive = block["naive_binomial_ci_ANTICONSERVATIVE"]
+        assert (hi - lo) > (naive[1] - naive[0]), (
+            f"the clustered interval for {null} is not wider than the binomial "
+            f"one; that would mean the dependence correction did nothing")
+        assert f"{100 * lo:.2f}" in flat and f"{100 * hi:.2f}" in flat, (
+            f"the manuscript does not report the clustered interval "
+            f"{100 * lo:.2f}-{100 * hi:.2f}% for the in-regime {null} rate")
+
+    # the direction of the claim, asserted rather than assumed
+    m = strong["fpr_multiplicative_clustered"]["cluster_ci"]
+    a = strong["fpr_additive_clustered"]["cluster_ci"]
+    assert m[0] <= 0.025 <= m[1], (
+        "the multiplicative interval no longer covers the nominal 2.5%; the "
+        "one-sided-miscalibration claim needs rewriting, not this guard")
+    assert not (a[0] <= 0.025 <= a[1]), (
+        "the additive interval now covers 2.5%; the claim that only the "
+        "additive null is miscalibrated on error rate would no longer hold")
 
 
 def test_matched_recovery_gap_is_reported(manuscript, regime):

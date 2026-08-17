@@ -126,6 +126,17 @@ def in_regime(negatives: list[dict], positives: list[dict],
         "in_regime_n": int(mask.sum()),
         "in_regime_fpr_additive": round(float(add[mask].mean()), 4),
         "in_regime_fpr_multiplicative": round(float(mult[mask].mean()), 4),
+        # Round 23. These two rates carry the paper's calibration claim and had
+        # shipped as bare point estimates for six rounds, while Methods promised
+        # a cluster bootstrap for pair-aggregated quantities. The pairs are not
+        # independent -- each drug recurs across many of them -- so the binomial
+        # interval is too narrow. Resampling drugs is the honest version.
+        "in_regime_fpr_additive_clustered": st.pair_cluster_proportion_ci(
+            add[mask], [(r["drug_a"], r["drug_b"]) for r, m in zip(usable, mask) if m],
+            seed=SEED),
+        "in_regime_fpr_multiplicative_clustered": st.pair_cluster_proportion_ci(
+            mult[mask], [(r["drug_a"], r["drug_b"]) for r, m in zip(usable, mask) if m],
+            seed=SEED),
     }
 
 
@@ -354,10 +365,17 @@ def main(argv: list[str] | None = None) -> int:
     })
     strong_mask = x_pool >= ir["in_regime_cut"]
     if strong_mask.sum():
+        strong_pairs = [(r["drug_a"], r["drug_b"])
+                        for r, m in zip(pool, strong_mask) if m]
         built["at_positive_control_strength"] = {
             "n": int(strong_mask.sum()),
             "fpr_additive": round(float(add[strong_mask].mean()), 4),
             "fpr_multiplicative": round(float(mult[strong_mask].mean()), 4),
+            # Round 23: the headline pair, now with the interval Methods promised.
+            "fpr_additive_clustered": st.pair_cluster_proportion_ci(
+                add[strong_mask], strong_pairs, seed=SEED),
+            "fpr_multiplicative_clustered": st.pair_cluster_proportion_ci(
+                mult[strong_mask], strong_pairs, seed=SEED),
         }
     results["high_marginal_pool"] = built
     log.info("  %d pairs, median strength %.2f: additive %.1f%%, multiplicative %.1f%%",

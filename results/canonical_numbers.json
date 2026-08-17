@@ -1536,7 +1536,37 @@
     "high_marginal_pool": {
       "at_positive_control_strength": {
         "fpr_additive": 0.0934,
+        "fpr_additive_clustered": {
+          "cluster_ci": [
+            0.0729,
+            0.1132
+          ],
+          "n": 2345,
+          "n_boot_effective": 20000,
+          "n_drugs": 478,
+          "naive_binomial_ci_ANTICONSERVATIVE": [
+            0.0821,
+            0.1057
+          ],
+          "rate": 0.0934,
+          "signalled": 219
+        },
         "fpr_multiplicative": 0.0222,
+        "fpr_multiplicative_clustered": {
+          "cluster_ci": [
+            0.0124,
+            0.0334
+          ],
+          "n": 2345,
+          "n_boot_effective": 20000,
+          "n_drugs": 478,
+          "naive_binomial_ci_ANTICONSERVATIVE": [
+            0.0168,
+            0.0287
+          ],
+          "rate": 0.0222,
+          "signalled": 52
+        },
         "n": 2345
       },
       "fpr_additive": 0.0725,
@@ -1551,7 +1581,37 @@
     "in_regime": {
       "in_regime_cut": 6.41,
       "in_regime_fpr_additive": 0.0904,
+      "in_regime_fpr_additive_clustered": {
+        "cluster_ci": [
+          0.037,
+          0.14
+        ],
+        "n": 166,
+        "n_boot_effective": 14322,
+        "n_drugs": 77,
+        "naive_binomial_ci_ANTICONSERVATIVE": [
+          0.0538,
+          0.1411
+        ],
+        "rate": 0.0904,
+        "signalled": 15
+      },
       "in_regime_fpr_multiplicative": 0.012,
+      "in_regime_fpr_multiplicative_clustered": {
+        "cluster_ci": [
+          0.0,
+          0.026
+        ],
+        "n": 166,
+        "n_boot_effective": 14322,
+        "n_drugs": 77,
+        "naive_binomial_ci_ANTICONSERVATIVE": [
+          0.0025,
+          0.0381
+        ],
+        "rate": 0.012,
+        "signalled": 2
+      },
       "in_regime_n": 166,
       "negative_strength_median": 0.56,
       "negatives_reaching_positive_iqr": 11,
@@ -1707,7 +1767,37 @@
       "in_regime": {
         "in_regime_cut": 7.45,
         "in_regime_fpr_additive": 0.4276,
+        "in_regime_fpr_additive_clustered": {
+          "cluster_ci": [
+            0.2683,
+            0.5686
+          ],
+          "n": 152,
+          "n_boot_effective": 14606,
+          "n_drugs": 39,
+          "naive_binomial_ci_ANTICONSERVATIVE": [
+            0.351,
+            0.507
+          ],
+          "rate": 0.4276,
+          "signalled": 65
+        },
         "in_regime_fpr_multiplicative": 0.0197,
+        "in_regime_fpr_multiplicative_clustered": {
+          "cluster_ci": [
+            0.0,
+            0.0484
+          ],
+          "n": 152,
+          "n_boot_effective": 14606,
+          "n_drugs": 39,
+          "naive_binomial_ci_ANTICONSERVATIVE": [
+            0.0056,
+            0.0517
+          ],
+          "rate": 0.0197,
+          "signalled": 3
+        },
         "in_regime_n": 152,
         "negative_strength_median": 0.54,
         "negatives_reaching_positive_iqr": 94,
