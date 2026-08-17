@@ -73,7 +73,7 @@ python -m faers_ddi.generalization            # torsade / anaphylaxis
 python -m faers_ddi.audit                     # provenance, coverage, FDR, cap sweep
 python -m faers_ddi.regime                    # in-regime error rates, matched recovery
 python -m faers_ddi.figures                   # 7 figures
-python -m pytest                              # 339 tests
+python -m pytest                              # 340 tests
 python paper/build.py                         # manuscript.md -> .tex -> .pdf
 python paper/build.py --check                 # non-zero if any .tex is stale
 ```
@@ -118,7 +118,7 @@ from is third-party and deliberately gitignored — do not commit it.
 
 **`results/canonical_numbers.json` is the single source of truth.** Nothing is
 quoted anywhere that does not come from it. `tests/test_canonical_numbers.py`
-(339 tests) asserts the prose against it.
+(340 tests) asserts the prose against it.
 
 `paper/build.py` generates `.tex` from `.md` via pandoc + tectonic. **Never edit
 a `.tex` by hand** — it is regenerated. Two-column documents declare a body-page
@@ -158,7 +158,7 @@ a new derivation from this manuscript, not a revival of the archived pair.
 
 ## 5. Read this before writing any test
 
-This project has been through **twenty-five adversarial review rounds**. The
+This project has been through **twenty-six adversarial review rounds**. The
 consistent failure has not been in the analysis — it has been in the guards.
 **Seven times a test written to catch a specific defect was too weak to catch
 it:**
@@ -205,7 +205,7 @@ Standing practice, non-negotiable:
   `test_no_maintained_document_carries_a_withdrawn_claim`, tagged with the round
   that retracted them.
 
-**339 passing means the stated numbers match the computed ones. It does not mean
+**340 passing means the stated numbers match the computed ones. It does not mean
 the right quantity was computed, nor that the sentence built on a correct
 number says what the number means** (r17). Round 11 overturned the central claim while
 every test passed, before and after.
@@ -218,6 +218,8 @@ Detail in `results/PHASE*_FINDINGS.md` (16 files). The ones that bite:
 
 | claim | status |
 |---|---|
+| "0 orphans across all 328,476,258 rows" | **overstated r26** — the orphan check covers the **six child tables, 303,663,833 rows**; DEMO is the parent and cannot orphan itself. The manifest check covers all seven (328,476,258) and is separate evidence |
+| 104,186 vs 98,102 withdrawn cases | **reconciled r26** — not a contradiction: 104,186 match in either era (what stage 4 removes), 98,102 in FAERS-era DEMO. `validate_parse` filtered `era <> laers` without saying so. The 6,084 LAERS-only ids are **evidence for** the shared id space |
 | "the broad tier includes the two MedDRA concepts held out…" | **wrong r25** — broad adds **13 PTs in 7 concepts**, including MYALGIA (163,419 reports). Fixing the event definition in r24 left this characterisation behind, so the paper stated two compositions for one tier |
 | "the event was defined by 23 PTs in 10 concepts" | **wrong r24** — that is the whole curation. Every primary result uses the **core** tier: **10 PTs in 3 concepts**. core admits 42,058 event cases, broad 339,063 — **8×**. Stated now, and guarded from the config outward |
 | `tier_b_pairs.csv` shipping 2,000 rows | **wrong r24** — the analysis uses **16,138**. The shipped file was a balanced sample from the retired `n_pairs: 2000` regime, and recomputed the threshold at +1.273 vs +0.436. Regenerated; config key set to null |

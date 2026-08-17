@@ -135,6 +135,13 @@ def run_checks() -> tuple[list[dict], bool]:
             "detail": f"{count:,} unique case ids, range {low:,}-{high:,}",
         })
 
+        # Round 26: this counted FAERS-era matches only, and the detail string
+        # said "appear in DEMO" without saying so -- while dedup stage 4 removes
+        # on case_id across BOTH eras and reports 104,186. Two shipped numbers
+        # for one quantity, 6% apart, with nothing to reconcile them. Both are
+        # now emitted, and the difference is informative: ids matching only in
+        # LAERS are withdrawn FAERS caseids that also occur as LAERS case
+        # numbers, which is evidence FOR the shared id space stage 3 assumes.
         matched, = con.execute(f"""
             SELECT count(DISTINCT d.case_id)
             FROM read_parquet('{deleted_path}') d
@@ -142,6 +149,22 @@ def run_checks() -> tuple[list[dict], bool]:
                 SELECT 1 FROM read_parquet('{_glob("demo")}') m
                 WHERE m.case_id = d.case_id AND m.era <> 'laers')
         """).fetchone()
+        matched_all, = con.execute(f"""
+            SELECT count(DISTINCT d.case_id)
+            FROM read_parquet('{deleted_path}') d
+            WHERE EXISTS (
+                SELECT 1 FROM read_parquet('{_glob("demo")}') m
+                WHERE m.case_id = d.case_id)
+        """).fetchone()
+        findings.append({
+            "check": "deleted_cases_match_demo_either_era", "scope": "all",
+            "value": matched_all, "denominator": count,
+            "rate": matched_all / count if count else 0.0, "status": "PASS",
+            "detail": f"{matched_all:,}/{count:,} deleted case ids appear in DEMO "
+                      f"in either era; {matched_all - matched:,} appear only in "
+                      f"LAERS. Dedup stage 4 removes on case_id across both eras, "
+                      f"so {matched_all:,} is the number it drops",
+        })
         rate = matched / count if count else 0.0
         # Not all deleted ids need be present -- a case deleted before it was
         # ever published never appears. But near-zero overlap would mean the
@@ -151,7 +174,8 @@ def run_checks() -> tuple[list[dict], bool]:
         findings.append({
             "check": "deleted_cases_match_demo", "scope": "all",
             "value": matched, "denominator": count, "rate": rate, "status": status,
-            "detail": f"{matched:,}/{count:,} deleted case ids appear in DEMO",
+            "detail": f"{matched:,}/{count:,} deleted case ids appear in "
+                      f"FAERS-era DEMO",
         })
 
     return findings, ok

@@ -1472,6 +1472,80 @@ def test_event_definition_matches_the_pt_config(manuscript, numbers):
             f"confused")
 
 
+def test_parse_validation_claims_match_the_validation_table(manuscript):
+    """Round 26. The paper said "0 orphans across all 328,476,258 rows". That
+    total is every parsed row across seven tables; the orphan check runs on the
+    six CHILD tables, 303,663,833 rows, because DEMO is the parent of the
+    relation and cannot orphan itself. An 8% overstatement of the scope of the
+    paper's central parse-validation claim.
+
+    It also quoted 104,186 withdrawn cases removed while the validation table
+    reported 98,102 -- two shipped numbers for one quantity, unreconciled,
+    because the check filtered to FAERS-era DEMO without saying so.
+
+    Runs from the validation TABLE outward to the prose, the same direction as
+    the tier-composition guard. Nothing here previously checked the artefacts
+    that validate the parse.
+    """
+    import csv as _csv
+
+    path = cfg.path("tables") / "parse_validation.csv"
+    if not path.exists():
+        pytest.skip("parse_validation.csv not generated")
+    with path.open() as fh:
+        rows = list(_csv.DictReader(fh))
+
+    child = [r for r in rows if r["check"] == "child_resolves_to_demo"]
+    assert child, "no orphan checks in the validation table"
+    assert all(int(r["value"]) == 0 for r in child), "an orphan check is failing"
+    child_rows = sum(int(r["denominator"]) for r in child)
+
+    manifest = [r for r in rows if r["check"] == "rowcount_matches_manifest"]
+    all_rows = sum(int(r["denominator"]) for r in manifest)
+    assert all_rows > child_rows, "the child tables cannot be every parsed row"
+
+    flat = " ".join(manuscript.split())
+    assert f"{child_rows:,}" in flat, (
+        f"the orphan claim must be scoped to the {child_rows:,} child-table rows "
+        f"it actually covers, not the {all_rows:,} parsed in total")
+    # The CLAIM sentence -- the one asserting a zero-orphan result -- must not
+    # attach the all-tables total to it. Matching any sentence containing
+    # "orphan" was too crude: the corrected prose explains that DEMO "cannot be
+    # orphaned" and cites the manifest total in the same sentence, legitimately.
+    import re as _re
+    claims = [s for s in _re.split(r"(?<=[.!?])\s+", flat)
+              if _re.search(r"\b(0|zero|no)\s+orphans?\b", s, _re.I)]
+    assert claims, "no zero-orphan claim found; the parse validation is the "\
+                   "paper's evidence that the delimiter bug did not bite"
+    for sentence in claims:
+        assert f"{child_rows:,}" in sentence, (
+            f"the zero-orphan claim must state the {child_rows:,} child-table "
+            f"rows it covers: {sentence[:170]}")
+        assert f"{all_rows:,}" not in sentence, (
+            f"the zero-orphan claim attributes the all-tables total "
+            f"{all_rows:,} to a check that covers {child_rows:,}: "
+            f"{sentence[:170]}")
+
+    # both withdrawn-case counts must be reconciled where they appear
+    either = [r for r in rows if r["check"] == "deleted_cases_match_demo_either_era"]
+    faers = [r for r in rows if r["check"] == "deleted_cases_match_demo"]
+    if either and faers:
+        both, only_faers = int(either[0]["value"]), int(faers[0]["value"])
+        # Triggered by the number the paper ALWAYS carries -- the attrition
+        # removal count -- not by the one it might omit. The first version fired
+        # only if 98,102 was present, so deleting the reconciliation deleted the
+        # trigger and the guard passed. A guard whose precondition the defect
+        # removes is not a guard.
+        assert f"{both:,}" in flat, (
+            f"the attrition table must report the {both:,} withdrawn cases "
+            f"removed at stage 4")
+        assert f"{only_faers:,}" in flat and f"{both - only_faers:,}" in flat, (
+            f"the paper reports {both:,} withdrawn cases removed while "
+            f"parse_validation.csv reports {only_faers:,} matching in FAERS-era "
+            f"DEMO. Both must appear with the {both - only_faers:,} LAERS-only "
+            f"difference, or the two shipped numbers read as a contradiction")
+
+
 def test_every_tier_composition_statement_agrees_with_the_config(manuscript, numbers):
     """Round 25. Round 24 fixed the event definition in §3.5 and the Abstract,
     and left §4.3 saying the broad tier 'includes the two MedDRA concepts held

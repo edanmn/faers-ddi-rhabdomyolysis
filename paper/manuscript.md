@@ -236,7 +236,12 @@ leading column to the index and shifts every column left by one, silently. In
 `DRUG` this moves `drug_seq` into `primaryid`; both are integers, every type
 check passes, and the pipeline completes with every drug attributed to the wrong
 report. Parsing is therefore validated by referential integrity rather than by
-type: **0 orphans across all 328,476,258 rows**.
+type: **0 orphans across all 303,663,833 child-table rows** — every `DRUG`,
+`REAC`, `INDI`, `THER`, `OUTC` and `RPSR` row resolves to a `DEMO` row in its
+own quarter. `DEMO` itself is the parent of that relation and so cannot be
+orphaned; it is checked differently, against the download manifest, as are the
+other six: parsed row counts match the manifest for all seven tables,
+**328,476,258 rows** in total.
 
 ### 3.3 Deduplication
 
@@ -258,6 +263,16 @@ than the 24,812,425 raw.
 | FDA-deleted cases | 20,588,497 | 104,186 |
 | near-duplicates | 20,294,190 | 294,307 |
 | one case per report | 20,293,421 | 769 |
+
+**Two counts of the withdrawn cases, and why they differ.** FDA publishes
+229,233 withdrawn case identifiers. **104,186** of them occur in `DEMO` and are
+removed at stage 4; **98,102** occur in FAERS-era `DEMO` specifically. The
+6,084-case difference is identifiers that appear *only* under LAERS numbering —
+withdrawn FAERS `caseid` values that also occur as LAERS `case` numbers. That is
+not a discrepancy to explain away but a second line of evidence for the shared
+identifier space stage 3 depends on, arrived at independently of the
+demographic agreement reported below. Both counts are in
+`results/tables/parse_validation.csv`; the removal operates on the union.
 
 **The cross-era bridge was validated, not assumed.** 82,342 identifiers appear
 in both numbering systems. Event date agreed on 33.3% of them against 0.0% at a

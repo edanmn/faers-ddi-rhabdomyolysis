@@ -14,4 +14,5 @@ rowcount_matches_manifest,reac,PASS,0,82257716,0.0,"parquet 82,257,716 vs manife
 rowcount_matches_manifest,rpsr,PASS,0,2716858,0.0,"parquet 2,716,858 vs manifest 2,716,858"
 rowcount_matches_manifest,ther,PASS,0,35772081,0.0,"parquet 35,772,081 vs manifest 35,772,081"
 deleted_cases_loaded,all,PASS,229233,229233,0.0,"229,233 unique case ids, range 1,000,000-26,977,487"
-deleted_cases_match_demo,all,PASS,98102,229233,0.42795758027858116,"98,102/229,233 deleted case ids appear in DEMO"
+deleted_cases_match_demo_either_era,all,PASS,104186,229233,0.45449826159409856,"104,186/229,233 deleted case ids appear in DEMO in either era; 6,084 appear only in LAERS. Dedup stage 4 removes on case_id across both eras, so 104,186 is the number it drops"
+deleted_cases_match_demo,all,PASS,98102,229233,0.42795758027858116,"98,102/229,233 deleted case ids appear in FAERS-era DEMO"
