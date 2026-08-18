@@ -33,25 +33,52 @@ the analysis is not expected to change. What remains is clerical (§7).
 | Screen | 1,022 of 17,375 signalled; **1,212** expected by chance strength-matched (872 pooled) |
 | Enrichment, control drugs removed | **1.12× (0.69–1.81)** — indistinguishable from unity |
 
-### The manuscript's two claims, as they now stand
+### What the paper claims (restructured in rounds 29–30)
 
-- **Calibration.** Neither null is usable at its conventional
-  operating point for drug-dominant events, **but they fail in different
-  currencies** (r17). Only the additive null is miscalibrated on error rate
-  (9.3% against a nominal 2.5%; 42.8% on torsade). Ω runs at 2.2% and 2.0% —
-  *at* nominal — and is disqualified by power instead: it is systematically
-  negative in this regime and buys its rate by almost never firing. The additive
-  null's apparent superiority is mostly an operating-point effect: 8 pairs → 1–2
-  at matched error rates, and **zero** on the torsade replication. What survives
-  is mechanistic — observed joint risk rises far more shallowly in marginal
-  strength (*r* = +0.12, CI −0.40 to +0.58) than either null predicts
+It now leads with **six contributions** rather than two negative findings. No
+number changed in the restructure and no limitation was removed; what changed is
+which sentences lead. The contributions, and the sections that deliver them:
+
+1. **The condition under which the choice of null stops mattering** (§4.2).
+   That the multiplicative assumption implies the additive one is **prior work**
+   — Jung & Jung, *PLOS ONE* 2024, reference 13 — but they state it
+   unconditionally. It requires both marginals on the same side of unity, since
+   the expectations differ by (RR_A−1)(RR_B−1). Ours is the condition and its
+   prevalence: **163 of 16,138** negative controls violate the unconditional
+   form, **0 of the 6,163** with both marginals above 1; met by **98.3%** of
+   drug-dominant pairs against **16.9%** of diffuse ones.
+2. **In-regime error rates with intervals** (§4.4): 2.2% (1.24–3.34%) and 9.3%
+   (7.29–11.32%) against a nominal 2.5%.
+3. **A construction for regime-matched negative controls** (§4.4).
+4. **A one-line circularity diagnostic** (§4.8): recompute enrichment over pairs
+   containing no control drug — 2.02× → 1.12×.
+5. **An operating characteristic** (§4.5): recovering 12/16 costs ~7.5%
+   in-regime FPR, three times nominal. The additive advantage is −1 to +2 pairs
+   across eight operating points.
+6. **A polypharmacy cap improving sensitivity and error rate together** (§4.6).
+
+The two underlying results are unchanged and still carry the paper:
+
+- **Calibration.** Neither null is usable at its conventional operating point
+  for drug-dominant events, **but they fail in different currencies** (r17).
+  Only the additive null is miscalibrated on error rate (9.3%; 42.8% on
+  torsade). Ω runs *at* nominal (2.2%, 2.0%) and is disqualified by power. What
+  survives mechanistically: observed joint risk rises far more shallowly in
+  marginal strength (*r* = +0.12, CI −0.40 to +0.58) than either null predicts
   (*r* ≈ +0.94).
-- **Evaluation.** A DDI screen shows no enrichment for genuine
-  interactions once the annotation is independent of the control set (2.02× →
-  1.12×). Reference quality, not method sensitivity, is the binding constraint:
-  the screen's top-ranked pair by event rate — **atorvastatin + fusidic acid**,
-  155 events in 185 co-reports, contraindicated in practice — is absent from
-  every available reference.
+- **Evaluation.** No enrichment for genuine interactions once the annotation is
+  independent of the control set (2.02× → 1.12×). Reference quality is the
+  binding constraint: the screen's top three by event rate — atorvastatin +
+  fusidic acid (83.8%), abiraterone + rosuvastatin (82.7%), fusidic acid +
+  simvastatin (79.6%) — are **absent from every available reference**, and all
+  three carry their own signal (8.4/16.7/19.5% third-drug involvement against
+  64.7% and 100% for the two proxies below them).
+
+**A third estimand** (§4.7) was added in r30: `omega.within_victim_excess`
+anchors on each drug's own partner distribution and uses no global expectation.
+It recovers 15/15 at 15% in-regime FPR (additive 14, multiplicative 12) and is
+worst of the three at 2.5%. **No estimand dominates** — three principles, one
+conclusion: the estimand is not where the leverage is, the operating point is.
 
 ---
 
@@ -109,11 +136,11 @@ from is third-party and deliberately gitignored — do not commit it.
 |---|---|
 | `download`, `column_audit`, `parse` | acquisition; schema audit drives parsing |
 | `dedup`, `normalize_drugs`, `define_event` | 6-stage dedup, ingredient resolution, PT curation |
-| `omega` | both nulls; IPF fit, gamma-Poisson shrinkage |
+| `omega` | both nulls; IPF fit, gamma-Poisson shrinkage; `within_victim_excess` (r30: the third estimand) |
 | `contingency`, `screen` | case×drug tables, pair counts, band annotation |
 | `tier_a` / `tier_b` / `run_analysis` | positive controls / negative controls + calibration / the screen |
-| `statistics` | Jeffreys, cluster bootstrap, Mantel–Haenszel, permutation, LOO |
-| `sensitivity`, `generalization`, `audit`, `regime`, `verify_controls` | the analyses added by review rounds |
+| `statistics` | Jeffreys, cluster bootstrap, Mantel–Haenszel, permutation, LOO, `pair_cluster_proportion_ci` (r23: resamples drugs, keeps pairs whose both endpoints survive) |
+| `sensitivity`, `generalization`, `audit`, `regime`, `verify_controls` | the analyses added by review rounds. New in r29–32: `audit.null_nesting`, `audit.nesting_condition`, `audit.ranked_pairs_with_proxy_test`, `audit.event_definition`, `audit.polypharmacy_bands`, `regime.operating_characteristic`, `regime.third_estimand` |
 | `figures` | 7 figures, all from the canonical file |
 
 **`results/canonical_numbers.json` is the single source of truth.** Nothing is
@@ -131,7 +158,7 @@ non-zero if the body exceeds it**.
 
 | file | what | size |
 |---|---|---|
-| `paper/manuscript.md` | **the single maintained document** — calibration and evaluation | 31 pages |
+| `paper/manuscript.md` | **the single maintained document** — calibration and evaluation | 39 pages |
 
 **Round 18 merged the two conference papers back in.** `paper_a.md`
 (calibration) and `paper_b.md` (evaluation) were a split of this manuscript;
@@ -158,10 +185,11 @@ a new derivation from this manuscript, not a revival of the archived pair.
 
 ## 5. Read this before writing any test
 
-This project has been through **thirty adversarial review rounds**. The
+This project has been through **thirty-two adversarial review rounds**. The
 consistent failure has not been in the analysis — it has been in the guards.
-**Seven times a test written to catch a specific defect was too weak to catch
-it:**
+**Eleven times a test written to catch a specific defect was too weak to catch
+it.** They are listed in order because the *kind* of weakness keeps changing
+while the cause does not:
 
 1. a `6/16` check satisfied by the substring inside `16/16`;
 2. a guard requiring only the phrase `"companion paper"`, which passed while the
@@ -170,29 +198,58 @@ it:**
    of four documents and the suite stayed green;
 4. a withdrawn-phrase check defeated by a **line break** in the prose;
 5. (r17) the round-11 withdrawal registered as `"essentially identical
-   false-positive rate"`, while `manuscript.md` carried **`"almost identical
-   false-positive rate (6.4% vs 6.7%)"`** in its abstract for six rounds —
-   defeated by a **synonym**;
-7. (r20) a *structural* guard written to close the whole category was
-   **decorative on its first draft**: membership in a corpus of every value in
-   the canonical file plus every shipped CSV. That corpus renders 470,526
-   strings and covers **100% of all one-decimal numbers 0.0–99.9**, so it could
-   not fail for any percentage — it passed both mutations. Measured, discarded,
-   replaced with declared per-table provenance. **Mutation-test before
-   believing a guard, including your own.**
-6. (r19) two guards checked that a qualifying phrase appeared **anywhere in the
-   document**. It did — in §4.5 — while the Abstract *and* Limitations each
-   carried the round-10 withdrawn claim, one of them asserting the 800-drug
-   cache figure of the *screened* set outright (17.2% where it is 5.5%).
-   Defeated by **distance**: the qualifier sat 700 lines from the claim. Both
-   guards now bind claim to qualification **per sentence**.
+   false-positive rate"` while the abstract carried **`"almost identical
+   false-positive rate"`** for six rounds — defeated by a **synonym**;
+6. (r19) two guards checked that a qualifier appeared **anywhere in the
+   document**. It did, 700 lines away, while the Abstract and Limitations each
+   carried the round-10 withdrawn claim — defeated by **distance**. Both now
+   bind claim to qualification per sentence;
+7. (r20) a *structural* guard meant to close the whole category was
+   **decorative on its first draft**: membership in a corpus of every canonical
+   value plus every shipped CSV. That corpus renders 470,526 strings and covers
+   **100% of all one-decimal numbers 0.0–99.9**, so it could not fail for any
+   percentage. It passed both mutations. Measured, discarded, replaced with
+   declared per-table provenance;
+8. (r26) the parse-validation guard flagged the *corrected* prose, because it
+   matched any sentence containing "orphan" — including the one explaining that
+   DEMO "cannot be orphaned". Narrowed to the claim sentence; then its
+   reconciliation check fired **only if 98,102 was present**, so deleting the
+   reconciliation deleted the trigger. **A guard whose precondition the defect
+   removes is not a guard.** Now triggers on the number the paper always
+   carries;
+9. (r28) a general cross-reference guard, twice. Keyword overlap with section
+   titles passes only **37%** of legitimate citations (titles like "Tier A and
+   Tier B" share no vocabulary with sentences citing them) — 43 false
+   positives. Then "a number in the citing sentence must appear in the cited
+   section" passed 98% and caught the real defect, but **passed its own
+   mutation**: `§4.6` matches the number pattern and "4.6" trivially occurs in
+   §4.6's own heading, so the reference satisfied its own check. Both measured
+   and discarded for a registry;
+10. (r31) that registry then failed twice. Scoped to the **sentence**, while a
+    numbered contribution runs several sentences and carries its reference in
+    the last one — so it found no reference beside the phrase and skipped.
+    Widened to the **block**, and the generic key `"resampling the victim
+    drug"` matched an unrelated Limitations bullet. Now blocks, with keys unique
+    to their claim;
+11. (r30→31) `test_section_numbers_are_unique_and_sequential` was written to
+    catch duplicate section numbers — and could not see that the renumbering
+    *fix* had pointed three contribution references at the wrong sections. The
+    numbers stayed unique and sequential; they were simply wrong.
+    **A renumber can corrupt references without breaking the numbering.**
 
-Note what each of these has in common: the registry matches *surface strings*,
-so it only ever catches the exact phrasing whoever wrote the entry had in front
-of them. When retiring a claim, register the phrasings you did **not** write.
+Three things they have in common, and all three are worth internalising:
 
-Each was written by whoever had just fixed the defect. **A test written that way
-encodes where you were looking, not what must be true.**
+- **Registries match surface strings**, so they catch only the phrasing whoever
+  wrote the entry had in front of them. When retiring a claim, register the
+  phrasings you did **not** write.
+- **A guard is scoped to where its author was looking**, not to the property
+  that must hold. Every fix above was written by whoever had just fixed the
+  defect.
+- **General guards mostly do not work here, and the way to find out is to
+  measure them.** Three attempts at a general cross-reference or provenance
+  rule were all abandoned on measurement — 37% pass rate, 100% corpus coverage,
+  4 false positives. The honest fallback is an explicit registry that is candid
+  about covering only what is listed.
 
 Standing practice, non-negotiable:
 
@@ -218,6 +275,11 @@ Detail in `results/PHASE*_FINDINGS.md` (16 files). The ones that bite:
 
 | claim | status |
 |---|---|
+| the nesting implication presented as this paper's own | **corrected r29** — published by **Jung & Jung, *PLOS ONE* 2024** (now reference 13). It was written into the abstract, introduction, §4.2 and conclusion as contribution #1 before anyone checked. One search found it. **Check novelty against the literature before claiming it** |
+| an OATP1B1 mechanism for abiraterone + rosuvastatin | **never shipped, r29** — the cached label documents CYP2D6/CYP2C8 only, and rosuvastatin is not a CYP2C8 substrate. This was model recall, not evidence. The pair is reported as a ranked observation with **no mechanistic claim** |
+| a conjunction rule over both nulls | **refuted r29** — byte-identical to the multiplicative null alone (4/16, 2.22%), which is exactly what nesting predicts |
+| a strength-varying threshold | **tested and rejected r30** — flattens FPR spread 0.080→0.032 over 200 held-out halves and **halves recovery**, 11.0→5.5/16. Uniform error control across strength is the wrong objective; the true interactions sit where equalising raises the bar. In the paper as a negative result |
+| three canonical blocks merged by hand | **fixed r32** — `audit.nesting_condition`, `audit.top_ranked_pairs`, `regime.third_estimand` were produced by no module, and both stages overwrite their section wholesale, so the next run would have deleted them |
 | Abstract citing §4.6 for the in-regime rates | **wrong r28** — they are derived in §4.3; §4.6 is era stability. Second time a *semantically* wrong reference passed the r19 existence check. Now a registry, `CROSS_REFERENCE_BINDINGS` |
 | demographic table showing only the clustered interval | **completed r28** — the crude female enrichment **2.13 (1.20–3.78)** excludes unity and is the only such non-control figure in the paper. It is now shown, as an instance of the anticonservatism the paper argues for, not hidden by it |
 | generalization table "median marginal RR" blank for the primary event | **filled r27** — **24.3**, on the same definition the other rows use. The column now orders the events: rhabdo 24.3 > torsade 19.3 > broad 11.2 ≫ anaphylaxis 5.2, which is the paper's conditional made quantitative |
@@ -286,44 +348,41 @@ screened "ingredients" are non-drug placeholders (immaterial, disclosed).
    both papers, so it will fail once the last one is filled — that is the guard
    against submitting an incomplete paper, and it should be **deleted, not
    weakened**, when the papers are genuinely complete.
-2. **Four round-17 findings need pipeline runs and are NOT fixed.** The prose
-   corrections landed; these did not, and each is a live reviewer objection:
-   - ~~**No interval on either headline in-regime rate.**~~ **DONE r23** —
+2. **The four round-17 findings are now all closed.** Kept as a record because
+   each was a live reviewer objection for six rounds, and because the order they
+   closed in shows where the real work was:
+   - **Intervals on the headline in-regime rates — DONE r23.**
      `statistics.pair_cluster_proportion_ci` resamples drugs and keeps pairs
-     whose both endpoints survive; `regime` emits it for both nulls on both
-     pools. This was the oldest open finding in the project.
-   - **(remaining)** `regime.high_marginal_
-     pool.at_positive_control_strength` stores bare point estimates. Methods
-     promise a cluster bootstrap over drugs for pair-aggregated quantities and
-     it is not applied here — on the two numbers carrying Paper A's claim, over
-     2,345 pairs drawn from 1,577 drugs. This is what makes r17's C1 provable;
-     ship the interval.
-   - **The purpose-built pool inherits a weaker form of the defect it fixes.**
-     `regime.py:207` excludes both-implicated pairs — the configuration all 16
-     positive controls have — so the pool matches on marginal strength but not
-     on implication status. The exclusion also removes the pairs most likely to
-     fire, pushing the measured rate **down**, which contradicts the "every rate
-     is an upper bound" framing. Re-run with the exclusion disabled and report
-     both. Stated in Paper A §7 as of r17; not measured.
-   - **Paper B's strength-matched expectation is one number in disguise.**
-     17,375 × 7.06% (top-quintile rate) = 1,227 against the reported 1,212 —
-     98.8%. Every band's median strength (2.85/4.16/5.32/8.15) sits inside the
-     top quintile's 2.80–8.95, and the rate is non-monotone there
-     (8.71% → 7.06%). Disclosed in prose as of r17; the honest fix is to
-     recompute the expectation on the purpose-built pool, which measures the
-     high-strength rate directly instead of extrapolating to it.
-   - **Shipped tables cannot reproduce two headline analyses.** `rr_a`/`rr_b`
-     appear only in `tier_b_pairs.csv`, so Paper A Table 2's correlations and
-     Paper B §4.4's stratification cannot be recomputed without the 159 GB
-     database, and the 19,826-pair pool ships nowhere. Add the columns; export
-     the pool.
+     whose both endpoints survive. The result made r17's central correction
+     provable: 2.2% has a clustered interval of **1.24–3.34%**, which *covers*
+     the nominal 2.5%, while 9.3% gives 7.29–11.32%, which excludes it. The
+     clustered interval is nearly twice the width of the binomial one.
+   - **The purpose-built pool inherits a weaker form of the defect it fixes —
+     DISCLOSED r25, still unmeasured.** `regime.py` excludes both-implicated
+     pairs, the configuration all 16 positive controls have, so the pool matches
+     on marginal strength but not on implication status. The exclusion removes
+     the pairs most likely to fire, pushing the measured rate **down**, which is
+     the opposite direction from the "every rate is an upper bound" framing. The
+     Limitations section now says both biases run in opposite directions and
+     neither is quantified. **Re-running with the exclusion disabled is the one
+     analysis still worth doing**, and it is a one-line change plus a `regime`
+     run.
+   - **The strength-matched expectation is one number in disguise —
+     DISCLOSED r22.** 17,375 × 7.06% = 1,227 against the reported 1,212. §4.8
+     now shows the collapse explicitly: every band's median strength sits inside
+     the negative pool's top quintile, so more than half the screen inherits one
+     extrapolated rate, and that rate is non-monotone at the top.
+   - **Shipped tables could not reproduce two headline analyses — DONE r27.**
+     `rr_a`/`rr_b` now ship in `tier_a_results.csv` and the 19,826-pair pool as
+     `in_regime_pool.csv` with the 2,345 in-regime pairs flagged. Bounds at
+     6 dp, not 3: at 3 dp the file returned 9.30% against the analysis's 9.34%,
+     one pair in 2,345.
 
-   Also unfixed and prose-only: Paper A argues its mechanistic claim by
-   comparing significance rather than testing the difference (Gelman–Stern). The
-   correct test — Steiger for dependent overlapping correlations — **supports**
-   it (*z* ≈ −4.2 to −4.8, *p* < 10⁻⁴, from an approximate reconstruction), so
-   compute it in the pipeline and report it. It converts an objection into a
-   strength.
+   Also closed: the Gelman–Stern objection (comparing significance rather than
+   testing the difference). The Steiger test for dependent overlapping
+   correlations **supports** the mechanistic claim, *z* ≈ −4.2 to −4.8,
+   *p* < 10⁻⁴, from an approximate reconstruction — it is not yet computed in
+   the pipeline, so it is **not quoted in the paper**.
 
 3. **AMIA's numeric page limit is unverified — deprioritised by the author.**
    Their call states the limit *includes* references; the 8-page cap here
@@ -372,20 +431,35 @@ preprint the manuscript on medRxiv, and send an ICPE/ISoP abstract regardless.
   on it said the opposite of what 2.2% means. When a number is quoted *as
   evidence for a claim*, check the inference, not just the digits.
 
-**Assessment as of r17 (2026-08-04):** four findings remain unfixed, all needing
-pipeline runs (§7.2), and one of them — no interval on the headline in-regime
-rates — is what made r17's central correction provable in the first place.
+**Assessment as of r32 (2026-08-17).** No result has changed in nine rounds.
+All four round-17 findings are closed except one measurement (§7.2). The
+unverifiable list is down to determinism and the two external benchmarks
+(AEOLUS, DiAna), all inherently outside the artefact. **Blocking submission:
+authors and affiliations. Nothing else.**
 
-The pattern to take seriously: rounds 9, 10, 11, 12 and now 17 each changed what
-the papers say, and r17 overturned a title-level claim that had survived six
-rounds *and* found a round-11 withdrawal still live in `manuscript.md`'s
-abstract. Five rounds in a row is not the signature of convergence. Treat "no
-known defects" as exactly that — not as "correct" — and assume the next round
-finds something too.
+The pattern that replaced the old one is worth naming. Rounds 9–20 found
+pre-existing defects — stale numbers, withdrawn claims, a stale table. Rounds
+29–32 found defects **introduced by the immediately preceding fix**: a
+renumbering that corrupted three references, three canonical blocks merged by
+hand that the next pipeline run would have deleted, a name collision that would
+have broken the audit stage. The marginal risk has moved from the analysis to
+the editing.
+
+Two rules follow, and they are cheap:
+
+- **Run the stage, don't trust the function.** The name collision and the
+  narrower `screen_rows` projection were both invisible until `audit` was
+  actually executed end to end.
+- **After any structural edit — renumbering, insertion, retirement — re-derive
+  the references rather than remapping them.** A rule that is right for
+  pre-existing text is wrong for text written against the new structure.
+
+Treat "no known defects" as exactly that. Five rounds in a row once changed what
+the paper says; nine in a row have not. Both facts are in the record.
 
 ---
 
-## 9. Session log — 2026-08-17 (rounds 28–30): the novelty push
+## 9. Session log — 2026-08-17 (rounds 28–32): the novelty push
 
 The author asked for the paper to be "more novel", clarified as *change the
 methods*, not the framing. Recorded in full because two of its lessons are
